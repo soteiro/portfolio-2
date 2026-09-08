@@ -1,0 +1,63 @@
+---
+// index.astro
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Sidebar from '../components/Sidebar.astro';
+import { portfolioData } from '../data/portfolio';
+---
+
+<Layout>
+  <div class="container">
+    <!-- Whimsical Hero Section -->
+    <Hero />
+
+    <!-- Main Content Layout (Josh W. Comeau 2-column grid) -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1.9fr_1fr] gap-14 lg:gap-18 pt-4 pb-16" id="projects">
+      <!-- Left Column: Projects & Articles -->
+      <section class="flex flex-col gap-8">
+        <div class="flex items-baseline justify-between mb-2">
+          <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Proyectos & Creaciones</h2>
+          <span class="text-[0.8125rem] font-mono text-text-muted">{portfolioData.projects.length} proyectos</span>
+        </div>
+
+        <div class="flex flex-col gap-8">
+          {portfolioData.projects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+
+        <!-- Latest Writing / Articles Section -->
+        {portfolioData.articles && portfolioData.articles.length > 0 && (
+          <div class="mt-14 flex flex-col gap-6" id="articles">
+            <div class="flex items-baseline justify-between mb-2">
+              <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Artículos & Casos de Estudio</h2>
+            </div>
+            <div class="flex flex-col gap-6">
+              {portfolioData.articles.map((article) => (
+                <article class="p-6 md:p-7 bg-card-bg border border-card-border rounded-xl flex flex-col gap-2 transition duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
+                  <div class="flex items-center gap-2 text-[0.8125rem] text-text-muted">
+                    <span class="text-primary font-medium">{article.category}</span>
+                    <span>•</span>
+                    <span>{article.date}</span>
+                    <span>•</span>
+                    <span>{article.readTime}</span>
+                  </div>
+                  <h3 class="text-xl font-bold m-0">
+                    <a href={`/about`} class="text-inherit no-underline transition-colors duration-200 hover:text-primary hover:underline hover:decoration-primary">
+                      {article.title}
+                    </a>
+                  </h3>
+                  <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">{article.excerpt}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      <!-- Right Column: Categories Filter, Popular Highlights, Newsletter/Contact -->
+      <Sidebar />
+    </div>
+  </div>
+</Layout>

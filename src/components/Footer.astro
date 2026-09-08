@@ -1,0 +1,215 @@
+---
+import CloudWavesBottom from "./CloudWavesBottom.astro";
+import { portfolioData } from "../data/portfolio";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer
+  class="relative mt-24 pt-56 pb-12 bg-gradient-b from-sky-from to-sky-to text-page-text overflow-hidden"
+>
+  <!-- Inverted Cloud Wave Divider -->
+  <CloudWavesBottom />
+
+  <div class="max-w-1100px mx-auto px-6 relative z-10">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-8 lg:gap-12 pb-12 border-b border-black/10 dark:border-white/10"
+    >
+      <!-- Mascot / Intro Column -->
+      <div class="flex flex-col gap-4 max-w-sm sm:col-span-2 lg:col-span-1">
+        <a
+          href="/"
+          class="inline-flex items-baseline text-2xl font-bold text-primary"
+        >
+          <span>{portfolioData.name.first}</span>
+          <span class="text-secondary mx-0.5">{portfolioData.name.initial}</span
+          >
+          <span>{portfolioData.name.last}</span>
+        </a>
+        <p
+          class="text-[0.9375rem] leading-relaxed text-page-text opacity-85 m-0"
+        >
+          ¡Gracias por visitar mi portafolio! Diseñado y construido con un
+          enfoque en interfaces alegres, accesibles y de alto rendimiento.
+        </p>
+
+        <!-- Social Icons Row -->
+        <div class="flex items-center gap-3 pt-2">
+          {
+            portfolioData.social.github && (
+              <a
+                href={portfolioData.social.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg"
+                aria-label="GitHub"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                  <path d="M9 18c-4.51 2-5-2-7-2" />
+                </svg>
+              </a>
+            )
+          }
+          {
+            portfolioData.social.linkedin && (
+              <a
+                href={portfolioData.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg"
+                aria-label="LinkedIn"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                  <rect width="4" height="12" x="2" y="9" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+            )
+          }
+          <!-- {portfolioData.social?.bluesky && (
+            <a href={portfolioData.social.bluesky} target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg" aria-label="BlueSky">
+              <svg width="20" height="20" viewBox="0 0 25 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 8.56C12 8.56 7.87 0.22 2.71 1.06C-0.9 1.64 2.18 10.57 3.22 12.07C4.26 13.57 6.32 12.57 6.32 12.57C6.32 12.57 0.64 14.07 5.29 18.57C9.73 22.88 12 16.07 12 16.07"></path>
+                <path d="M12.15 8.62C12.15 8.62 16.28 0.28 21.44 1.12C25.06 1.7 21.98 10.63 20.93 12.13C19.89 13.63 17.83 12.63 17.83 12.63C17.83 12.63 23.51 14.13 18.86 18.63C14.42 22.93 12.15 16.13 12.15 16.13"></path>
+              </svg>
+            </a>
+          )} -->
+          <!-- {portfolioData.social.rss && (
+            <a href={portfolioData.social.rss} target="_blank" class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg" aria-label="RSS Feed">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 11 a 9 9 0 0 1 9 9"></path>
+                <path d="M4 4 a 16 16 0 0 1 16 16"></path>
+                <circle cx="5" cy="19" r="1"></circle>
+              </svg>
+            </a>
+          )}
+        </div>
+      </div> -->
+
+          <!-- Links Column: Navigation -->
+          <div class="flex flex-col gap-3.5">
+            <h3
+              class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0"
+            >
+              Explore
+            </h3>
+            <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+              <li>
+                <a
+                  href="/#projects"
+                  class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
+                  >Featured Work</a>
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
+                  >About Me</a>
+              </li>
+              <li>
+                <a
+                  href="/#skills"
+                  class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
+                  >Skills & Stack</a>
+              </li>
+              <li>
+                <a
+                  href="/#contact"
+                  class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
+                  >Contact & Inquiries</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Links Column: Skills / Stack -->
+          <div class="flex flex-col gap-3.5">
+            <h3
+              class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0"
+            >
+              Categories
+            </h3>
+            <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+              {
+                portfolioData.categories.slice(0, 4).map((cat) => (
+                  <li>
+                    <a
+                      href="/#skills"
+                      class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
+                    >
+                      {cat.name}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          <!-- Links Column: Featured Highlights -->
+          <div class="flex flex-col gap-3.5">
+            <h3
+              class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0"
+            >
+              Highlights
+            </h3>
+            <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+              {
+                portfolioData.popularHighlights.slice(0, 3).map((h) => (
+                  <li>
+                    <a
+                      href={h.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
+                    >
+                      {h.title}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom Copyright & Details -->
+        <div
+          class="flex flex-wrap justify-between items-center gap-4 pt-8 text-[0.8125rem] opacity-80"
+        >
+          <p class="m-0">
+            © {currentYear}
+            {portfolioData.name.display}. Crafted with curiosity & Astro.
+          </p>
+          <div class="flex gap-4">
+            <span
+              >Plantilla de Portafolio en <a
+                href="https://astro.build"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline">Astro</a
+              ></span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

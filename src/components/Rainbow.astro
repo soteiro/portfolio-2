@@ -1,0 +1,345 @@
+---
+// Rainbow.astro
+// Josh W. Comeau's iconic interactive Rainbow:
+// 1. Enters with a staggered spring animation across all color bands
+// 2. Rests in a vibrant semicircle arch
+// 3. Reacts magnetically to the cursor/touch pointer with fluid spring physics
+---
+
+<div class="relative w-full max-w-440px max-sm:max-w-330px h-240px max-sm:h-190px mx-auto flex items-end justify-center select-none touch-none" id="rainbow-wrapper">
+  <!-- Interactive Canvas for the Rainbow bands -->
+  <canvas id="rainbow-canvas" class="absolute inset-0 w-full h-full z-2 cursor-crosshair" aria-label="Arcoíris interactivo animado"></canvas>
+
+  <!-- Left and right marshmallow cloud anchors -->
+  <div class="absolute -bottom-0.5 z-3 pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] transition-transform duration-300 left-2 max-sm:left-0.5 w-90px max-sm:w-72px" aria-hidden="true">
+    <svg viewBox="0 0 100 60" class="w-full h-auto">
+      <path d="M10 50 C5 50 0 45 0 38 C0 30 6 25 14 25 C16 12 28 5 42 5 C56 5 66 14 70 24 C75 22 80 23 84 26 C93 28 100 36 100 45 C100 52 94 58 86 58 L10 58 Z" fill="var(--color-cloud-300)" />
+      <path d="M14 50 C10 50 6 46 6 40 C6 33 11 28 18 28 C20 17 30 10 42 10 C54 10 63 18 66 27 C70 25 75 26 78 29 C86 31 92 38 92 46 C92 51 87 56 80 56 L14 56 Z" fill="var(--color-background)" />
+    </svg>
+  </div>
+
+  <div class="absolute -bottom-0.5 z-3 pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] transition-transform duration-300 right-2 max-sm:right-0.5 w-90px max-sm:w-72px -scale-x-100" aria-hidden="true">
+    <svg viewBox="0 0 100 60" class="w-full h-auto">
+      <path d="M10 50 C5 50 0 45 0 38 C0 30 6 25 14 25 C16 12 28 5 42 5 C56 5 66 14 70 24 C75 22 80 23 84 26 C93 28 100 36 100 45 C100 52 94 58 86 58 L10 58 Z" fill="var(--color-cloud-300)" />
+      <path d="M14 50 C10 50 6 46 6 40 C6 33 11 28 18 28 C20 17 30 10 42 10 C54 10 63 18 66 27 C70 25 75 26 78 29 C86 31 92 38 92 46 C92 51 87 56 80 56 L14 56 Z" fill="var(--color-background)" />
+    </svg>
+  </div>
+
+  <!-- Whimsical hint badge -->
+  <div class="rainbow-hint absolute -top-2.5 z-5 text-xs font-bold text-primary bg-page px-3 py-1 rounded-full border border-dashed border-primary shadow-md pointer-events-none opacity-90 transition duration-500 animate-[bounceHint_3s_ease-in-out_infinite] [&.hidden]:opacity-0 [&.hidden]:scale-80" id="rainbow-hint" aria-hidden="true">
+    <span>✨ ¡Pasa el puntero por el arcoíris!</span>
+  </div>
+</div>
+
+<script>
+  // Rainbow Interactive Animation Engine
+  interface Point {
+    baseX: number;
+    baseY: number;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    angle: number;
+  }
+
+  interface Band {
+    color: string;
+    radius: number;
+    thickness: number;
+    points: Point[];
+    enterProgress: number; // 0 to 1
+    enterDelay: number;    // seconds
+  }
+
+  class WhimsicalRainbow {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    wrapper: HTMLElement;
+    hint: HTMLElement | null;
+
+    bands: Band[] = [];
+    width = 440;
+    height = 240;
+    centerX = 220;
+    centerY = 225;
+
+    // Mouse state
+    mouseX = -1000;
+    mouseY = -1000;
+    isHovering = false;
+    animFrameId = 0;
+    startTime = 0;
+    hasEntered = false;
+
+    // Audio notes (pentatonic scale for rainbow strings)
+    noteFrequencies = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5]; // C5, D5, E5, G5, A5, C6
+    lastAudioTime = 0;
+
+    constructor(canvas: HTMLCanvasElement, wrapper: HTMLElement) {
+      this.canvas = canvas;
+      this.wrapper = wrapper;
+      this.ctx = canvas.getContext('2d')!;
+      this.hint = document.getElementById('rainbow-hint');
+
+      this.initBands();
+      this.handleResize();
+      this.bindEvents();
+
+      this.startTime = performance.now();
+      this.loop = this.loop.bind(this);
+      this.animFrameId = requestAnimationFrame(this.loop);
+    }
+
+    initBands() {
+      // Josh's signature neon-pastel rainbow colors: Red/Coral, Orange, Yellow, Green, Cyan, Purple
+      const colors = [
+        '#FF5964', // Coral Red
+        '#FF9233', // Vivid Orange
+        '#FFD13B', // Sunny Yellow
+        '#35E385', // Mint Green
+        '#38B6FF', // Sky Blue
+        '#9757D7'  // Electric Purple
+      ];
+
+      const numPoints = 36;
+      const baseRadius = Math.min(this.width * 0.42, 175);
+      const bandThickness = Math.max(9, Math.min(13, this.width / 34));
+      const spacing = bandThickness + 2;
+
+      this.bands = colors.map((color, bandIndex) => {
+        const radius = baseRadius - bandIndex * spacing;
+        const points: Point[] = [];
+
+        for (let i = 0; i < numPoints; i++) {
+          // Angle from Math.PI (left) to 0 (right)
+          const angle = Math.PI - (Math.PI * i) / (numPoints - 1);
+          const bx = this.centerX + Math.cos(angle) * radius;
+          const by = this.centerY - Math.sin(angle) * radius;
+
+          points.push({
+            baseX: bx,
+            baseY: by,
+            x: bx,
+            y: by,
+            vx: 0,
+            vy: 0,
+            angle
+          });
+        }
+
+        return {
+          color,
+          radius,
+          thickness: bandThickness,
+          points,
+          enterProgress: 0,
+          enterDelay: bandIndex * 0.1 // Staggered enter
+        };
+      });
+    }
+
+    handleResize() {
+      const rect = this.wrapper.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      this.width = rect.width;
+      this.height = rect.height;
+      this.centerX = this.width / 2;
+      this.centerY = this.height - 15;
+
+      this.canvas.width = this.width * dpr;
+      this.canvas.height = this.height * dpr;
+      this.ctx.resetTransform?.();
+      this.ctx.scale(dpr, dpr);
+
+      // Re-anchor baseline points to new size
+      this.initBands();
+    }
+
+    bindEvents() {
+      window.addEventListener('resize', () => this.handleResize());
+
+      const onPointerMove = (clientX: number, clientY: number) => {
+        const rect = this.canvas.getBoundingClientRect();
+        this.mouseX = clientX - rect.left;
+        this.mouseY = clientY - rect.top;
+        this.isHovering = true;
+
+        if (this.hint && !this.hint.classList.contains('hidden')) {
+          this.hint.classList.add('hidden');
+        }
+
+        // Trigger gentle sound when cursor moves across bands
+        this.triggerPlayfulSound();
+      };
+
+      this.canvas.addEventListener('mousemove', (e) => {
+        onPointerMove(e.clientX, e.clientY);
+      });
+
+      this.canvas.addEventListener('mouseleave', () => {
+        this.isHovering = false;
+        this.mouseX = -1000;
+        this.mouseY = -1000;
+      });
+
+      // Touch support
+      this.canvas.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      this.canvas.addEventListener('touchend', () => {
+        this.isHovering = false;
+        this.mouseX = -1000;
+        this.mouseY = -1000;
+      });
+    }
+
+    triggerPlayfulSound() {
+      const now = performance.now();
+      if (now - this.lastAudioTime < 90) return;
+
+      // Check if sound is enabled
+      const soundEnabled = localStorage.getItem('sound-enabled') !== 'false';
+      if (!soundEnabled) return;
+
+      try {
+        const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        if (!AudioCtx) return;
+        
+        // Pick frequency based on mouse position
+        const noteIndex = Math.floor(Math.random() * this.noteFrequencies.length);
+        const freq = this.noteFrequencies[noteIndex];
+
+        const audioCtx = new AudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.12);
+        this.lastAudioTime = now;
+      } catch (e) {}
+    }
+
+    loop(timestamp: number) {
+      const elapsed = (timestamp - this.startTime) / 1000;
+      this.ctx.clearRect(0, 0, this.width, this.height);
+
+      let allEntered = true;
+
+      // Spring physics constants
+      const stiffness = 0.14;
+      const damping = 0.74;
+      const maxMagneticPull = 55; // Maximum displacement towards cursor
+      const influenceRadius = 140; // Proximity radius for magnet pull
+
+      this.bands.forEach((band) => {
+        // 1. Enter Animation (draw-in from 0 to 1 with elastic feel)
+        if (elapsed > band.enterDelay) {
+          const t = Math.min(1, (elapsed - band.enterDelay) / 0.85);
+          // Cubic elastic-ish out easing
+          const eased = 1 - Math.pow(1 - t, 3);
+          band.enterProgress = eased;
+        } else {
+          band.enterProgress = 0;
+          allEntered = false;
+        }
+
+        if (band.enterProgress < 0.999) {
+          allEntered = false;
+        }
+
+        const visibleCount = Math.floor(band.points.length * band.enterProgress);
+        if (visibleCount < 2) return;
+
+        // 2. Physics & Magnet Update
+        for (let i = 0; i < visibleCount; i++) {
+          const pt = band.points[i];
+          let targetX = pt.baseX;
+          let targetY = pt.baseY;
+
+          // Magnetic pull toward cursor
+          if (this.isHovering && this.hasEntered) {
+            const dx = this.mouseX - pt.x;
+            const dy = this.mouseY - pt.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < influenceRadius && dist > 0.001) {
+              // Smooth inverse falloff (strongest when close, fading smoothly at edge)
+              const factor = Math.pow(1 - dist / influenceRadius, 2);
+              const pull = factor * maxMagneticPull;
+              targetX += (dx / dist) * pull;
+              targetY += (dy / dist) * pull;
+            }
+          }
+
+          // Gentle breathing idle wobble when not pulled
+          if (!this.isHovering && this.hasEntered) {
+            const idleOffset = Math.sin(elapsed * 2 + pt.angle * 3) * 1.5;
+            targetY += idleOffset;
+          }
+
+          // Spring step: F = -k * x - c * v
+          const ax = (targetX - pt.x) * stiffness;
+          const ay = (targetY - pt.y) * stiffness;
+
+          pt.vx = (pt.vx + ax) * damping;
+          pt.vy = (pt.vy + ay) * damping;
+
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+        }
+
+        // 3. Smooth Canvas Curve Rendering (Quadratic midpoints)
+        this.ctx.beginPath();
+        this.ctx.moveTo(band.points[0].x, band.points[0].y);
+
+        for (let i = 1; i < visibleCount - 1; i++) {
+          const xc = (band.points[i].x + band.points[i + 1].x) / 2;
+          const yc = (band.points[i].y + band.points[i + 1].y) / 2;
+          this.ctx.quadraticCurveTo(band.points[i].x, band.points[i].y, xc, yc);
+        }
+
+        if (visibleCount > 1) {
+          const last = band.points[visibleCount - 1];
+          this.ctx.lineTo(last.x, last.y);
+        }
+
+        this.ctx.strokeStyle = band.color;
+        this.ctx.lineWidth = band.thickness;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        this.ctx.stroke();
+      });
+
+      if (allEntered) {
+        this.hasEntered = true;
+      }
+
+      this.animFrameId = requestAnimationFrame(this.loop);
+    }
+  }
+
+  function setupRainbow() {
+    const canvas = document.getElementById('rainbow-canvas') as HTMLCanvasElement | null;
+    const wrapper = document.getElementById('rainbow-wrapper');
+    if (!canvas || !wrapper) return;
+
+    new WhimsicalRainbow(canvas, wrapper);
+  }
+
+  setupRainbow();
+  document.addEventListener('astro:after-swap', setupRainbow);
+</script>

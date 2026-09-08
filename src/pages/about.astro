@@ -1,0 +1,90 @@
+---
+// about.astro
+import Layout from '../layouts/Layout.astro';
+import Callout from '../components/Callout.astro';
+import { portfolioData } from '../data/portfolio';
+---
+
+<Layout title={`Sobre mí — ${portfolioData.name.display}`}>
+  <div class="container max-w-50rem pt-8 pb-20">
+    <article>
+      <header class="flex flex-col gap-4 mb-12">
+        <span class="text-[0.8125rem] font-bold uppercase tracking-[0.125rem] text-secondary">Trayectoria & Filosofía</span>
+        <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0">¡Hola! Soy <span class="text-primary">{portfolioData.name.display}</span> 👋</h1>
+        <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
+          {portfolioData.role} en {portfolioData.location}. {portfolioData.bio}
+        </p>
+      </header>
+
+      <section class="flex flex-col gap-6 text-lg leading-relaxed text-page-text">
+        <p>
+          Construyo aplicaciones web con un gran enfoque en el detalle y el rendimiento. Creo firmemente que las interfaces no solo deben ser funcionales, sino también agradables e intuitivas, con micro-interacciones sutiles, navegación accesible y tiempos de carga óptimos.
+        </p>
+
+        <Callout type="tip" title="Filosofía de Trabajo">
+          El gran software nace de la unión entre una ingeniería rigurosa y un diseño empático. El rendimiento, la accesibilidad y la estética no compiten entre sí, sino que se potencian mutuamente.
+        </Callout>
+
+        <h2 class="text-2xl font-bold mt-6 text-page-text">Especialidades y Tecnologías</h2>
+        <p>
+          A lo largo de mi experiencia, he trabajado en distintas áreas del desarrollo web moderno:
+        </p>
+
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-6 my-4">
+          <div class="p-6 bg-card-bg border border-card-border rounded-xl">
+            <h3 class="text-base font-bold text-primary mb-4">Lenguajes</h3>
+            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
+              {portfolioData.skills.languages.map((item) => (
+                <li><code>{item}</code></li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="p-6 bg-card-bg border border-card-border rounded-xl">
+            <h3 class="text-base font-bold text-primary mb-4">Frameworks y Librerías</h3>
+            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
+              {portfolioData.skills.frameworks.map((item) => (
+                <li><code>{item}</code></li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="p-6 bg-card-bg border border-card-border rounded-xl">
+            <h3 class="text-base font-bold text-primary mb-4">Áreas de Enfoque</h3>
+            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
+              {portfolioData.skills.specialties.map((item) => (
+                <li><span>{item}</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <Callout type="info" title="Micro-interacciones y Accesibilidad">
+          Me encanta incorporar detalles que hagan única a cada aplicación: desde animaciones físicas suaves con CSS moderno hasta soporte completo para lectores de pantalla y navegación por teclado.
+        </Callout>
+
+        <h2 class="text-2xl font-bold mt-6 text-page-text">Colaboración y Contacto</h2>
+        <p>
+          Siempre estoy abierto a colaborar en proyectos interesantes, desarrollo de nuevos productos o iniciativas open source. Si te gustaría conversar sobre una idea, no dudes en escribirme.
+        </p>
+
+        <div class="mt-8 p-10 bg-card-bg border-2 border-dashed border-cloud-500 rounded-3xl flex flex-col gap-4 text-center items-center">
+          <h3 class="text-2xl font-bold m-0">¿Tienes un proyecto en mente? Hablemos ✨</h3>
+          <p class="text-text-muted max-w-lg m-0 text-base">
+            Puedes enviarme un mensaje por correo electrónico o conectar a través de mis perfiles sociales.
+          </p>
+          <div class="flex gap-4 flex-wrap justify-center mt-2">
+            <a href={`mailto:${portfolioData.social.email}`} class="josh-button">
+              <span>Enviar un correo</span>
+            </a>
+            {portfolioData.social.github && (
+              <a href={portfolioData.social.github} target="_blank" rel="noopener noreferrer" class="josh-button josh-button-secondary">
+                <span>Ver mi GitHub</span>
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    </article>
+  </div>
+</Layout>

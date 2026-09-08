@@ -1,0 +1,72 @@
+---
+// Layout.astro
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CloudWavesTop from '../components/CloudWavesTop.astro';
+import '../styles/global.css';
+import { portfolioData } from '../data/portfolio';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${portfolioData.name.display} — ${portfolioData.role}`,
+  description = portfolioData.tagline,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" data-color-mode="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={portfolioData.name.display} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <!-- FOUC Prevention Script (Josh's exact inline theme initialization) -->
+    <script is:inline>
+      (function() {
+        const DEFAULT_MODE = 'light';
+        let colorMode;
+        try {
+          colorMode = localStorage.getItem('saved-color-theme');
+        } catch (e) {}
+
+        if (!colorMode) {
+          colorMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        if (!['light', 'dark'].includes(colorMode)) {
+          colorMode = DEFAULT_MODE;
+        }
+
+        document.documentElement.setAttribute('data-color-mode', colorMode);
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Main Header -->
+    <Header />
+
+    <!-- Multi-layered Cloud Waves Header -->
+    <CloudWavesTop />
+
+    <!-- Main Page Content -->
+    <main id="main-content" class="flex-1 relative z-5 -mt-16 md:-mt-24">
+      <slot />
+    </main>
+
+    <!-- Site Footer with Inverted Clouds -->
+    <Footer />
+  </body>
+</html>
