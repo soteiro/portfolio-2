@@ -44,8 +44,8 @@ export const portfolioData = {
   // Redes sociales y contacto / Social links
   social: {
     github: "https://github.com/soteiro",
-    // twitter: "https://twitter.com/tu-usuario",
-    // bluesky: "https://bsky.app/profile/tu-usuario",
+    twitter: "https://twitter.com/tu-usuario",
+    bluesky: "https://bsky.app/profile/tu-usuario",
     linkedin: "https://linkedin.com/in/diego-ignacio-soto",
     email: "hola@tu-dominio.com",
     rss: "/rss.xml"

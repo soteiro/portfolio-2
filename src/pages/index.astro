@@ -8,12 +8,12 @@ import { portfolioData } from '../data/portfolio';
 ---
 
 <Layout>
-  <div class="container">
-    <!-- Whimsical Hero Section -->
-    <Hero />
+  <!-- Hero superimposed on CloudWavesTop -->
+  <Hero slot="hero" />
 
+  <div class="container">
     <!-- Main Content Layout (Josh W. Comeau 2-column grid) -->
-    <div class="grid grid-cols-1 lg:grid-cols-[1.9fr_1fr] gap-14 lg:gap-18 pt-4 pb-16" id="projects">
+    <div class="grid grid-cols-1 lg:grid-cols-[1.9fr_1fr] gap-14 lg:gap-18 pt-6 pb-16" id="projects">
       <!-- Left Column: Projects & Articles -->
       <section class="flex flex-col gap-8">
         <div class="flex items-baseline justify-between mb-2">

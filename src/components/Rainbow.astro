@@ -6,7 +6,7 @@
 // 3. Reacts magnetically to the cursor/touch pointer with fluid spring physics
 ---
 
-<div class="relative w-full max-w-440px max-sm:max-w-330px h-240px max-sm:h-190px mx-auto flex items-end justify-center select-none touch-none" id="rainbow-wrapper">
+<div class="relative w-full max-w-[460px] max-sm:max-w-[340px] h-[260px] max-sm:h-[200px] mx-auto flex items-end justify-center select-none touch-none" id="rainbow-wrapper">
   <!-- Interactive Canvas for the Rainbow bands -->
   <canvas id="rainbow-canvas" class="absolute inset-0 w-full h-full z-2 cursor-crosshair" aria-label="Arcoíris interactivo animado"></canvas>
 
@@ -33,24 +33,32 @@
 
 <script>
   // Rainbow Interactive Animation Engine
-  interface Point {
-    baseX: number;
-    baseY: number;
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
-    angle: number;
+  // Each band is a dashed arc. A dash keeps its place on the arch and only
+  // changes orientation: it swings to point at the cursor (iron-filings
+  // style), stretching longer and thinner the closer the pointer gets.
+  interface Dash {
+    cx: number;        // fixed centre on the arch
+    cy: number;
+    arcAngle: number;  // position along the arch (PI = left, 0 = right)
+    baseAngle: number; // tangent orientation, the resting pose
+    angle: number;     // current orientation
+    vAngle: number;    // angular velocity, for the spring
+    length: number;
+    width: number;
   }
 
   interface Band {
     color: string;
-    radius: number;
     thickness: number;
-    points: Point[];
+    dashes: Dash[];
     enterProgress: number; // 0 to 1
     enterDelay: number;    // seconds
   }
+
+  // Dash shape, in multiples of a band's thickness
+  const REST_LENGTH = 0.35; // resting length: a round dot
+  const STRETCH = 2.0;      // extra length when fully aligned to the pointer
+  const DASH_STEP = 2.2;    // spacing between dash centres along the arch
 
   class WhimsicalRainbow {
     canvas: HTMLCanvasElement;
@@ -59,9 +67,9 @@
     hint: HTMLElement | null;
 
     bands: Band[] = [];
-    width = 440;
-    height = 240;
-    centerX = 220;
+    width = 200;
+    height = 200;
+    centerX = 100;
     centerY = 225;
 
     // Mouse state
@@ -75,6 +83,7 @@
     // Audio notes (pentatonic scale for rainbow strings)
     noteFrequencies = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5]; // C5, D5, E5, G5, A5, C6
     lastAudioTime = 0;
+    audioCtx: AudioContext | null = null;
 
     constructor(canvas: HTMLCanvasElement, wrapper: HTMLElement) {
       this.canvas = canvas;
@@ -82,7 +91,6 @@
       this.ctx = canvas.getContext('2d')!;
       this.hint = document.getElementById('rainbow-hint');
 
-      this.initBands();
       this.handleResize();
       this.bindEvents();
 
@@ -92,49 +100,54 @@
     }
 
     initBands() {
-      // Josh's signature neon-pastel rainbow colors: Red/Coral, Orange, Yellow, Green, Cyan, Purple
+      // Josh's signature neon-pastel rainbow colors (from outer arch to inner):
+      // Purple, Blue, Green, Yellow, Orange, Red
       const colors = [
-        '#FF5964', // Coral Red
-        '#FF9233', // Vivid Orange
-        '#FFD13B', // Sunny Yellow
-        '#35E385', // Mint Green
+        '#9757D7', // Electric Purple (outermost)
         '#38B6FF', // Sky Blue
-        '#9757D7'  // Electric Purple
+        '#35E385', // Mint Green
+        '#FFD13B', // Sunny Yellow
+        '#FF9233', // Vivid Orange
+        '#FF5964'  // Coral Red (innermost)
       ];
 
-      const numPoints = 36;
-      const baseRadius = Math.min(this.width * 0.42, 175);
+      const baseRadius = Math.min(this.width * 0.44, 185);
       const bandThickness = Math.max(9, Math.min(13, this.width / 34));
-      const spacing = bandThickness + 2;
+      const spacing = bandThickness + 3;
 
       this.bands = colors.map((color, bandIndex) => {
         const radius = baseRadius - bandIndex * spacing;
-        const points: Point[] = [];
+        // At rest a dash is barely longer than it is thick: a round dot.
+        const dashLength = bandThickness * REST_LENGTH;
+        // Constant gap between dashes, so inner arcs simply hold fewer of them
+        const step = bandThickness * DASH_STEP;
+        const count = Math.max(6, Math.round((Math.PI * radius) / step));
+        const dashes: Dash[] = [];
 
-        for (let i = 0; i < numPoints; i++) {
-          // Angle from Math.PI (left) to 0 (right)
-          const angle = Math.PI - (Math.PI * i) / (numPoints - 1);
-          const bx = this.centerX + Math.cos(angle) * radius;
-          const by = this.centerY - Math.sin(angle) * radius;
+        for (let i = 0; i < count; i++) {
+          // Inset by half a step so no dash straddles the cloud anchors
+          const arcAngle = Math.PI - (Math.PI * (i + 0.5)) / count;
+          // Tangent to the arch. Negated because the canvas Y axis points down.
+          const tangent = -(arcAngle + Math.PI / 2);
 
-          points.push({
-            baseX: bx,
-            baseY: by,
-            x: bx,
-            y: by,
-            vx: 0,
-            vy: 0,
-            angle
+          dashes.push({
+            cx: this.centerX + Math.cos(arcAngle) * radius,
+            cy: this.centerY - Math.sin(arcAngle) * radius,
+            arcAngle,
+            baseAngle: tangent,
+            angle: tangent,
+            vAngle: 0,
+            length: dashLength,
+            width: bandThickness
           });
         }
 
         return {
           color,
-          radius,
           thickness: bandThickness,
-          points,
+          dashes,
           enterProgress: 0,
-          enterDelay: bandIndex * 0.1 // Staggered enter
+          enterDelay: bandIndex * 0.25 // Staggered enter
         };
       });
     }
@@ -153,7 +166,7 @@
       this.ctx.resetTransform?.();
       this.ctx.scale(dpr, dpr);
 
-      // Re-anchor baseline points to new size
+      // Re-anchor the dashes to the new size
       this.initBands();
     }
 
@@ -209,12 +222,16 @@
       try {
         const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         if (!AudioCtx) return;
-        
+
+        // One context for the whole page, created on first note
+        if (!this.audioCtx) this.audioCtx = new AudioCtx();
+        const audioCtx = this.audioCtx;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
         // Pick frequency based on mouse position
         const noteIndex = Math.floor(Math.random() * this.noteFrequencies.length);
         const freq = this.noteFrequencies[noteIndex];
 
-        const audioCtx = new AudioCtx();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
@@ -239,89 +256,76 @@
 
       let allEntered = true;
 
-      // Spring physics constants
-      const stiffness = 0.14;
-      const damping = 0.74;
-      const maxMagneticPull = 55; // Maximum displacement towards cursor
-      const influenceRadius = 140; // Proximity radius for magnet pull
+      // Angular spring: how eagerly a dash swings to its target orientation
+      const stiffness = 0.18;
+      const damping = 0.72;
+      const influenceRadius = Math.max(90, this.width * 0.32);
+
+      this.ctx.lineCap = 'round';
 
       this.bands.forEach((band) => {
-        // 1. Enter Animation (draw-in from 0 to 1 with elastic feel)
+        // 1. Enter animation: dashes fan in left to right, staggered per band
         if (elapsed > band.enterDelay) {
           const t = Math.min(1, (elapsed - band.enterDelay) / 0.85);
-          // Cubic elastic-ish out easing
-          const eased = 1 - Math.pow(1 - t, 3);
-          band.enterProgress = eased;
+          band.enterProgress = 1 - Math.pow(1 - t, 3);
         } else {
           band.enterProgress = 0;
-          allEntered = false;
         }
 
         if (band.enterProgress < 0.999) {
           allEntered = false;
         }
 
-        const visibleCount = Math.floor(band.points.length * band.enterProgress);
-        if (visibleCount < 2) return;
+        const visibleCount = Math.round(band.dashes.length * band.enterProgress);
+        const restLength = band.thickness * REST_LENGTH;
 
-        // 2. Physics & Magnet Update
         for (let i = 0; i < visibleCount; i++) {
-          const pt = band.points[i];
-          let targetX = pt.baseX;
-          let targetY = pt.baseY;
+          const dash = band.dashes[i];
 
-          // Magnetic pull toward cursor
+          // 2. How strongly this dash feels the pointer: 0 at rest, 1 fully aligned
+          let pull = 0;
+          let targetAngle = dash.baseAngle;
+
           if (this.isHovering && this.hasEntered) {
-            const dx = this.mouseX - pt.x;
-            const dy = this.mouseY - pt.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const dx = this.mouseX - dash.cx;
+            const dy = this.mouseY - dash.cy;
+            const dist = Math.hypot(dx, dy);
 
-            if (dist < influenceRadius && dist > 0.001) {
-              // Smooth inverse falloff (strongest when close, fading smoothly at edge)
-              const factor = Math.pow(1 - dist / influenceRadius, 2);
-              const pull = factor * maxMagneticPull;
-              targetX += (dx / dist) * pull;
-              targetY += (dy / dist) * pull;
+            if (dist < influenceRadius) {
+              pull = Math.pow(1 - dist / influenceRadius, 1.6);
+              targetAngle = Math.atan2(dy, dx);
             }
+          } else if (this.hasEntered) {
+            // Gentle breathing wobble while the pointer is away
+            targetAngle += Math.sin(elapsed * 1.6 + dash.arcAngle * 2.5) * 0.06;
           }
 
-          // Gentle breathing idle wobble when not pulled
-          if (!this.isHovering && this.hasEntered) {
-            const idleOffset = Math.sin(elapsed * 2 + pt.angle * 3) * 1.5;
-            targetY += idleOffset;
-          }
+          // 3. Spring the orientation. A dash is symmetric, so the shortest
+          // path is taken modulo PI: it never spins a needless half turn.
+          let diff = targetAngle - dash.angle;
+          diff = (((diff + Math.PI / 2) % Math.PI) + Math.PI) % Math.PI - Math.PI / 2;
 
-          // Spring step: F = -k * x - c * v
-          const ax = (targetX - pt.x) * stiffness;
-          const ay = (targetY - pt.y) * stiffness;
+          dash.vAngle = (dash.vAngle + diff * stiffness) * damping;
+          dash.angle += dash.vAngle;
 
-          pt.vx = (pt.vx + ax) * damping;
-          pt.vy = (pt.vy + ay) * damping;
+          // 4. An aligned dash stretches out and thins down
+          const targetLength = restLength + band.thickness * STRETCH * pull;
+          const targetWidth = band.thickness * (1 - pull * 0.58);
+          dash.length += (targetLength - dash.length) * 0.2;
+          dash.width += (targetWidth - dash.width) * 0.2;
 
-          pt.x += pt.vx;
-          pt.y += pt.vy;
+          // 5. Draw it as a straight stroke centred on its fixed spot
+          const half = dash.length / 2;
+          const ox = Math.cos(dash.angle) * half;
+          const oy = Math.sin(dash.angle) * half;
+
+          this.ctx.beginPath();
+          this.ctx.moveTo(dash.cx - ox, dash.cy - oy);
+          this.ctx.lineTo(dash.cx + ox, dash.cy + oy);
+          this.ctx.strokeStyle = band.color;
+          this.ctx.lineWidth = dash.width;
+          this.ctx.stroke();
         }
-
-        // 3. Smooth Canvas Curve Rendering (Quadratic midpoints)
-        this.ctx.beginPath();
-        this.ctx.moveTo(band.points[0].x, band.points[0].y);
-
-        for (let i = 1; i < visibleCount - 1; i++) {
-          const xc = (band.points[i].x + band.points[i + 1].x) / 2;
-          const yc = (band.points[i].y + band.points[i + 1].y) / 2;
-          this.ctx.quadraticCurveTo(band.points[i].x, band.points[i].y, xc, yc);
-        }
-
-        if (visibleCount > 1) {
-          const last = band.points[visibleCount - 1];
-          this.ctx.lineTo(last.x, last.y);
-        }
-
-        this.ctx.strokeStyle = band.color;
-        this.ctx.lineWidth = band.thickness;
-        this.ctx.lineCap = 'round';
-        this.ctx.lineJoin = 'round';
-        this.ctx.stroke();
       });
 
       if (allEntered) {

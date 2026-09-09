@@ -1,11 +1,20 @@
 ---
 // CloudWavesTop.astro
 // Josh W. Comeau's iconic multi-layered organic cloud waves transition from the sky header into page background
+
+interface Props {
+  hasHero?: boolean;
+}
+
+const { hasHero = false } = Astro.props;
 ---
 
-<div class="relative isolate bg-sky-from overflow-hidden -mt-28 pt-28 transition-[background] duration-350">
-  <!-- Sky background gradient and background clouds -->
-  <div class="flex flex-col justify-end items-center overflow-hidden bg-gradient-b from-sky-from to-sky-to -mt-8 transition-[background] duration-350">
+<div class={`relative isolate bg-sky-from overflow-hidden -mt-20 pt-20 transition-[background] duration-350 ${hasHero ? 'min-h-[38rem] sm:min-h-[42rem] flex flex-col justify-between' : 'h-22rem md:h-26rem'}`}>
+  <!-- Sky background gradient -->
+  <div class="absolute inset-0 bg-gradient-b from-sky-from to-sky-to transition-[background] duration-350 pointer-events-none -z-10"></div>
+
+  <!-- Background Clouds (Layer 1: Darker accent & Layer 2: Mid cloud) -->
+  <div class="absolute inset-x-0 bottom-0 pointer-events-none flex justify-center overflow-hidden z-0">
     <svg
       width="5120"
       height="456"
@@ -29,8 +38,17 @@
     </svg>
   </div>
 
+  <!-- Hero Content (Overlayed directly on top of the sky and cloud waves) -->
+  {hasHero && (
+    <div class="relative z-10 w-full">
+      <div class="container">
+        <slot />
+      </div>
+    </div>
+  )}
+
   <!-- Layer 3: Foreground wave smoothly cut into body background -->
-  <div class="absolute z-3 inset-x-0 bottom-0 w-full h-full pointer-events-none">
+  <div class="absolute z-2 inset-x-0 bottom-0 pointer-events-none flex justify-center overflow-hidden">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="5120"

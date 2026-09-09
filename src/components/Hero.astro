@@ -1,13 +1,13 @@
 ---
-// Hero.astro
 import Rainbow from './Rainbow.astro';
 import { portfolioData } from '../data/portfolio';
 ---
 
-<section class="relative grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-12 items-center pt-4 sm:pt-8 pb-16">
-  <div class="flex flex-col gap-6">
+<section class="relative grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center pt-2 sm:pt-6 pb-20 sm:pb-28">
+  <!-- Left Column: Friendly Greeting & CTAs -->
+  <div class="flex flex-col gap-6 relative z-10">
     <!-- Status Pill -->
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 w-fit bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 rounded-full text-sm font-medium text-page-text">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 w-fit bg-cloud-300/80 dark:bg-cloud-500/80 backdrop-blur-sm border border-cloud-400 dark:border-white/10 rounded-full text-sm font-medium text-page-text shadow-sm">
       <span class="w-2 h-2 rounded-full bg-success-500 ring-2 ring-success-300 animate-pulse"></span>
       <span>{portfolioData.status}</span>
     </div>
@@ -46,33 +46,26 @@ import { portfolioData } from '../data/portfolio';
     </div>
   </div>
 
-  <!-- Whimsical Interactive Rainbow & Mascot Hero Box -->
-  <div class="flex justify-center items-center">
-    <div class="relative w-full max-w-460px flex flex-col items-center px-4 pt-7 pb-5 bg-card-bg border-2 border-dashed border-cloud-500 rounded-[28px] shadow-lg hover:-translate-y-1 hover:shadow-2xl transition duration-300">
-      <div class="absolute text-xl select-none pointer-events-none top-4 right-6 animate-[sparkleFloat_3s_ease-in-out_infinite]">✨</div>
-      <div class="absolute text-xl select-none pointer-events-none bottom-8 left-6 animate-[sparkleFloat_3s_ease-in-out_infinite_1s]">🎨</div>
-      <div class="absolute text-xl select-none pointer-events-none top-8 left-4 animate-[sparkleFloat_3s_ease-in-out_infinite_2s]">🚀</div>
-
-      <!-- Interactive Animated Rainbow that tracks cursor -->
+  <!-- Right Column: Whimsical Interactive Rainbow & Sitting Mascot -->
+  <div class="relative flex flex-col items-center justify-center select-none pt-4 lg:pt-0 z-10">
+    <!-- Interactive Rainbow Arch -->
+    <div class="w-full flex justify-center items-center">
       <Rainbow />
+    </div>
 
-      <!-- Caption with Avatar -->
-      <div class="flex items-center gap-3 mt-3 px-4 py-2 bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 rounded-full">
-        <div class="w-8 h-8 shrink-0">
-          <svg viewBox="0 0 40 40" class="w-full h-full" fill="none" aria-hidden="true">
-            <circle cx="20" cy="20" r="18" fill="var(--color-primary)" />
-            <circle cx="15" cy="17" r="2.5" fill="#ffffff" />
-            <circle cx="25" cy="17" r="2.5" fill="#ffffff" />
-            <path d="M16 23C18 26 22 26 24 23" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
-            <circle cx="13" cy="21" r="1.5" fill="var(--color-secondary)" opacity="0.7" />
-            <circle cx="27" cy="21" r="1.5" fill="var(--color-secondary)" opacity="0.7" />
-          </svg>
-        </div>
-        <div class="flex flex-col">
-          <span class="text-sm font-bold text-page-text leading-tight">{portfolioData.role}</span>
-          <span class="text-xs text-text-muted">{portfolioData.location}</span>
-        </div>
-      </div>
+    <!-- Sitting Mascot directly in front of the Rainbow -->
+    <div class="relative -mt-32 sm:-mt-38 md:-mt-44 z-10 flex flex-col items-center pointer-events-none">
+      <img
+        src="/images/avatar.png"
+        alt={portfolioData.name.display}
+        width="280"
+        height="280"
+        class="w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.35)]"
+        loading="eager"
+        decoding="async"
+      />
+      <!-- Soft ground contact shadow resting on the hill curve -->
+      <div class="w-32 sm:w-40 h-3 bg-black/25 dark:bg-black/40 rounded-[100%] blur-[6px] -mt-2"></div>
     </div>
   </div>
-</section>
+</section>  

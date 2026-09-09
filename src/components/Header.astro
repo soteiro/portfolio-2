@@ -1,5 +1,5 @@
 ---
-// Header.astro
+
 import ThemeToggle from './ThemeToggle.astro';
 import SoundToggle from './SoundToggle.astro';
 import { portfolioData } from '../data/portfolio';
@@ -15,7 +15,7 @@ const { pathname } = Astro.url;
     <header class="flex items-center justify-between h-20 relative z-10">
       <!-- Signature Animated Logo -->
       <a class="inline-flex items-baseline text-[1.625rem] font-medium tracking-[-0.0625rem] text-primary no-underline transition-transform duration-200 hover:scale-[1.03]" href="/" aria-label={`${portfolioData.name.display} Homepage`}>
-        <span class="inline-block">{portfolioData.name.first}</span>
+        <span class="inline-block">{portfolioData.name.first.split(" ")[0]}</span>
         <span class="inline-block relative w-1.125rem mx-1px text-secondary">
           <svg width="14" height="12" viewBox="0 0 14 12" fill="none" class="absolute left-2px -top-1px stroke-secondary animate-[drawSquiggle_0.6s_cubic-bezier(0.27,0.22,0.44,1.03)_both]">
             <path

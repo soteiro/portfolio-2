@@ -15,10 +15,11 @@ const {
   title = `${portfolioData.name.display} — ${portfolioData.role}`,
   description = portfolioData.tagline,
 } = Astro.props;
+const hasHero = Astro.slots.has('hero');
 ---
 
 <!doctype html>
-<html lang="es" data-color-mode="light">
+<html lang="es" data-color-mode="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -36,7 +37,7 @@ const {
     <!-- FOUC Prevention Script (Josh's exact inline theme initialization) -->
     <script is:inline>
       (function() {
-        const DEFAULT_MODE = 'light';
+        const DEFAULT_MODE = 'dark';
         let colorMode;
         try {
           colorMode = localStorage.getItem('saved-color-theme');
@@ -58,11 +59,13 @@ const {
     <!-- Main Header -->
     <Header />
 
-    <!-- Multi-layered Cloud Waves Header -->
-    <CloudWavesTop />
+    <!-- Multi-layered Cloud Waves Header / Hero -->
+    <CloudWavesTop hasHero={hasHero}>
+      <slot name="hero" />
+    </CloudWavesTop>
 
     <!-- Main Page Content -->
-    <main id="main-content" class="flex-1 relative z-5 -mt-16 md:-mt-24">
+    <main id="main-content" class="flex-1 relative z-5">
       <slot />
     </main>
 
