@@ -1,0 +1,108 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getEntry, render } from 'astro:content';
+
+const { slug } = Astro.params;
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
+const project = await getEntry('projects', slug);
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+const { Content } = await render(project);
+---
+
+<Layout title={`${project.data.title} — Proyecto`} description={project.data.description}>
+  <div class="container max-w-50rem pt-8 pb-20">
+    <nav class="mb-8">
+      <a
+        href="/#projects"
+        class="inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-primary transition-colors duration-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Volver a los proyectos</span>
+      </a>
+    </nav>
+
+    <article>
+      <header class="flex flex-col gap-4 mb-10 pb-8 border-b border-card-border">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-secondary">{project.data.category}</span>
+          {project.data.year && <span class="text-xs text-text-muted">• {project.data.year}</span>}
+          {project.data.featured && (
+            <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-warning-100 dark:bg-warning-300 text-warning-700 ml-2">★ Destacado</span>
+          )}
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0 text-page-text">
+          {project.data.title}
+        </h1>
+
+        {project.data.subtitle && (
+          <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
+            {project.data.subtitle}
+          </p>
+        )}
+
+        <div class="flex flex-wrap gap-2 mt-2">
+          {project.data.tags.map((tag: string) => (
+            <span class="text-[0.8125rem] font-mono px-2.5 py-1 rounded-md bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 text-page-text">#{tag}</span>
+          ))}
+        </div>
+
+        {(project.data.demoUrl || project.data.githubUrl) && (
+          <div class="flex items-center gap-4 mt-4 pt-4 border-t border-card-border">
+            {project.data.demoUrl && (
+              <a
+                href={project.data.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:opacity-90 transition duration-200"
+              >
+                <span>Ver demo en vivo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+            )}
+            {project.data.githubUrl && (
+              <a
+                href={project.data.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-cloud-300 dark:bg-cloud-500 text-page-text hover:text-primary transition duration-200"
+              >
+                <span>Código en GitHub</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+              </a>
+            )}
+          </div>
+        )}
+      </header>
+
+      <section class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-page-text flex flex-col gap-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-2 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_p]:m-0 [&_ul]:list-disc [&_ul]:pl-6 [&_code]:bg-cloud-300 dark:[&_code]:bg-cloud-500 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_pre]:bg-card-bg [&_pre]:border [&_pre]:border-card-border [&_pre]:p-4 [&_pre]:rounded-xl [&_pre]:overflow-x-auto">
+        <Content />
+      </section>
+    </article>
+  </div>
+</Layout>

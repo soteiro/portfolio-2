@@ -4,7 +4,38 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Sidebar from '../components/Sidebar.astro';
+import { getCollection } from 'astro:content';
 import { portfolioData } from '../data/portfolio';
+
+// Cargar proyectos desde la colección (gestionada por Keystatic)
+const projectEntries = await getCollection('projects');
+const projects = projectEntries.length > 0
+  ? projectEntries.map((entry) => ({
+      id: entry.id,
+      title: entry.data.title,
+      subtitle: entry.data.subtitle,
+      description: entry.data.description,
+      category: entry.data.category,
+      tags: entry.data.tags,
+      featured: entry.data.featured,
+      demoUrl: entry.data.demoUrl ?? undefined,
+      githubUrl: entry.data.githubUrl ?? undefined,
+      year: entry.data.year ?? undefined,
+    }))
+  : portfolioData.projects;
+
+// Cargar artículos de blog desde la colección
+const blogEntries = await getCollection('blog');
+const articles = blogEntries.length > 0
+  ? blogEntries.map((entry) => ({
+      title: entry.data.title,
+      slug: entry.id,
+      excerpt: entry.data.excerpt,
+      date: String(entry.data.date),
+      readTime: entry.data.readTime,
+      category: entry.data.category,
+    }))
+  : portfolioData.articles;
 ---
 
 <Layout>
@@ -18,23 +49,23 @@ import { portfolioData } from '../data/portfolio';
       <section class="flex flex-col gap-8">
         <div class="flex items-baseline justify-between mb-2">
           <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Proyectos & Creaciones</h2>
-          <span class="text-[0.8125rem] font-mono text-text-muted">{portfolioData.projects.length} proyectos</span>
+          <span class="text-[0.8125rem] font-mono text-text-muted">{projects.length} proyectos</span>
         </div>
 
         <div class="flex flex-col gap-8">
-          {portfolioData.projects.map((project) => (
+          {projects.map((project) => (
             <ProjectCard project={project} />
           ))}
         </div>
 
         <!-- Latest Writing / Articles Section -->
-        {portfolioData.articles && portfolioData.articles.length > 0 && (
+        {articles && articles.length > 0 && (
           <div class="mt-14 flex flex-col gap-6" id="articles">
             <div class="flex items-baseline justify-between mb-2">
               <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Artículos & Casos de Estudio</h2>
             </div>
             <div class="flex flex-col gap-6">
-              {portfolioData.articles.map((article) => (
+              {articles.map((article) => (
                 <article class="p-6 md:p-7 bg-card-bg border border-card-border rounded-xl flex flex-col gap-2 transition duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
                   <div class="flex items-center gap-2 text-[0.8125rem] text-text-muted">
                     <span class="text-primary font-medium">{article.category}</span>
@@ -44,7 +75,7 @@ import { portfolioData } from '../data/portfolio';
                     <span>{article.readTime}</span>
                   </div>
                   <h3 class="text-xl font-bold m-0">
-                    <a href={`/about`} class="text-inherit no-underline transition-colors duration-200 hover:text-primary hover:underline hover:decoration-primary">
+                    <a href={`/blog/${article.slug}`} class="text-inherit no-underline transition-colors duration-200 hover:text-primary hover:underline hover:decoration-primary">
                       {article.title}
                     </a>
                   </h3>
