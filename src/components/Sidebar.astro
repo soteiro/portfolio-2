@@ -2,6 +2,9 @@
 // Sidebar.astro
 // Josh W. Comeau sidebar with Category filter tags, Popular/Featured items, and Contact/Newsletter callout
 import { portfolioData } from '../data/portfolio';
+import { getHighlights } from '../data/highlights';
+
+const highlights = await getHighlights();
 ---
 
 <aside class="flex flex-col gap-14">
@@ -32,12 +35,12 @@ import { portfolioData } from '../data/portfolio';
   <section class="flex flex-col gap-5 sticky top-28">
     <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Destacados</h2>
     <ol class="flex flex-col gap-4 list-none p-0 m-0">
-      {portfolioData.popularHighlights.map((item) => (
+      {highlights.map((item) => (
         <li>
           <a
             href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener noreferrer' : undefined}
             class="group flex items-start gap-3 text-base font-medium leading-snug text-page-text transition duration-200 hover:text-primary hover:translate-x-1"
           >
             <svg

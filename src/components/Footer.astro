@@ -1,8 +1,10 @@
 ---
 import CloudWavesBottom from "./CloudWavesBottom.astro";
 import { portfolioData } from "../data/portfolio";
+import { getHighlights } from "../data/highlights";
 
 const currentYear = new Date().getFullYear();
+const highlights = await getHighlights(3);
 
 ---
 
@@ -211,12 +213,12 @@ const currentYear = new Date().getFullYear();
         </h3>
         <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
           {
-            portfolioData.popularHighlights.slice(0, 3).map((h) => (
+            highlights.map((h) => (
               <li>
                 <a
                   href={h.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={h.external ? "_blank" : undefined}
+                  rel={h.external ? "noopener noreferrer" : undefined}
                   class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
                 >
                   {h.title}
