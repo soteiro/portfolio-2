@@ -1,5 +1,4 @@
 import { getCollection } from 'astro:content';
-import { portfolioData } from './portfolio';
 
 export interface Highlight {
   title: string;
@@ -11,22 +10,13 @@ export interface Highlight {
 
 /**
  * Destacados a partir de los proyectos con `featured: true` en la colección,
- * enlazando a su página interna. Si la colección está vacía se cae a la lista
- * estática de portfolioData, igual que hace index.astro con los proyectos.
+ * enlazando a su página interna. Devuelve una lista vacía si no hay ninguno,
+ * y quien la consume oculta la sección.
  */
 export async function getHighlights(limit = 4): Promise<Highlight[]> {
   const featured = (await getCollection('projects')).filter(
     (project) => project.data.featured
   );
-
-  if (featured.length === 0) {
-    return portfolioData.popularHighlights.slice(0, limit).map((item) => ({
-      title: item.title,
-      url: item.url,
-      category: item.category,
-      external: /^https?:\/\//.test(item.url),
-    }));
-  }
 
   return featured.slice(0, limit).map((project) => ({
     title: project.data.title,

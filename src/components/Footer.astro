@@ -205,29 +205,29 @@ const highlights = await getHighlights(3);
       </div>
 
       <!-- Links Column: Featured Highlights -->
-      <div class="flex flex-col gap-3.5">
-        <h3
-          class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0"
-        >
-          Highlights
-        </h3>
-        <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
-          {
-            highlights.map((h) => (
-              <li>
-                <a
-                  href={h.url}
-                  target={h.external ? "_blank" : undefined}
-                  rel={h.external ? "noopener noreferrer" : undefined}
-                  class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-                >
-                  {h.title}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+      {
+        highlights.length > 0 && (
+          <div class="flex flex-col gap-3.5">
+            <h3 class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0">
+              Highlights
+            </h3>
+            <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
+              {highlights.map((h) => (
+                <li>
+                  <a
+                    href={h.url}
+                    target={h.external ? "_blank" : undefined}
+                    rel={h.external ? "noopener noreferrer" : undefined}
+                    class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
+                  >
+                    {h.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
     </div>
 
     <!-- Bottom Copyright & Details -->

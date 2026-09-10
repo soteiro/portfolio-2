@@ -33,6 +33,8 @@ const highlights = await getHighlights();
 
   <!-- 2. Highlights / Popular Content -->
   <section class="flex flex-col gap-5 sticky top-28">
+    {highlights.length > 0 && (
+    <Fragment>
     <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Destacados</h2>
     <ol class="flex flex-col gap-4 list-none p-0 m-0">
       {highlights.map((item) => (
@@ -63,6 +65,8 @@ const highlights = await getHighlights();
         </li>
       ))}
     </ol>
+    </Fragment>
+    )}
 
     <!-- 3. Work Inquiry / Quick Newsletter Box -->
     <div class="mt-4 p-7 bg-card-bg border-2 border-dashed border-cloud-500 rounded-2xl shadow-sm flex flex-col gap-3" id="contact">

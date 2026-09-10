@@ -5,37 +5,32 @@ import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Sidebar from '../components/Sidebar.astro';
 import { getCollection } from 'astro:content';
-import { portfolioData } from '../data/portfolio';
 
-// Cargar proyectos desde la colección (gestionada por Keystatic)
-const projectEntries = await getCollection('projects');
-const projects = projectEntries.length > 0
-  ? projectEntries.map((entry) => ({
-      id: entry.id,
-      title: entry.data.title,
-      subtitle: entry.data.subtitle,
-      description: entry.data.description,
-      category: entry.data.category,
-      tags: entry.data.tags,
-      featured: entry.data.featured,
-      demoUrl: entry.data.demoUrl ?? undefined,
-      githubUrl: entry.data.githubUrl ?? undefined,
-      year: entry.data.year ?? undefined,
-    }))
-  : portfolioData.projects;
+// Proyectos y artículos vienen de las colecciones, gestionadas desde Keystatic
+// (`pnpm dev` -> /keystatic). Sin entradas, cada sección muestra su vacío.
+const projects = (await getCollection('projects')).map((entry) => ({
+  id: entry.id,
+  title: entry.data.title,
+  subtitle: entry.data.subtitle,
+  description: entry.data.description,
+  category: entry.data.category,
+  tags: entry.data.tags,
+  featured: entry.data.featured,
+  demoUrl: entry.data.demoUrl ?? undefined,
+  githubUrl: entry.data.githubUrl ?? undefined,
+  year: entry.data.year ?? undefined,
+}));
 
-// Cargar artículos de blog desde la colección
-const blogEntries = await getCollection('blog');
-const articles = blogEntries.length > 0
-  ? blogEntries.map((entry) => ({
-      title: entry.data.title,
-      slug: entry.id,
-      excerpt: entry.data.excerpt,
-      date: String(entry.data.date),
-      readTime: entry.data.readTime,
-      category: entry.data.category,
-    }))
-  : portfolioData.articles;
+const articles = (await getCollection('blog'))
+  .sort((a, b) => b.data.dateValue.valueOf() - a.data.dateValue.valueOf())
+  .map((entry) => ({
+    title: entry.data.title,
+    slug: entry.id,
+    excerpt: entry.data.excerpt,
+    date: entry.data.date,
+    readTime: entry.data.readTime,
+    category: entry.data.category,
+  }));
 ---
 
 <Layout>
@@ -53,9 +48,13 @@ const articles = blogEntries.length > 0
         </div>
 
         <div class="flex flex-col gap-8">
-          {projects.map((project) => (
-            <ProjectCard project={project} />
-          ))}
+          {projects.length > 0 ? (
+            projects.map((project) => <ProjectCard project={project} />)
+          ) : (
+            <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
+              Todavía no hay proyectos publicados.
+            </p>
+          )}
         </div>
 
         <!-- Latest Writing / Articles Section -->
