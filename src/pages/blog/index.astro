@@ -1,0 +1,81 @@
+---
+// blog/index.astro — listado de todos los artículos
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// Más recientes primero. `dateValue` conserva la fecha original del
+// frontmatter; `date` ya viene formateada para mostrar (ver content.config.ts).
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.dateValue.valueOf() - a.data.dateValue.valueOf()
+);
+
+const categories = [...new Set(posts.map((post) => post.data.category))];
+---
+
+<Layout
+  title="Blog — Artículos & Casos de Estudio"
+  description="Artículos sobre desarrollo frontend, arquitectura, rendimiento y experiencia de usuario."
+>
+  <div class="container max-w-50rem pt-8 pb-20">
+    <header class="flex flex-col gap-4 mb-12">
+      <span class="text-[0.8125rem] font-bold uppercase tracking-[0.125rem] text-secondary">
+        Escritos
+      </span>
+      <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0">
+        Artículos & <span class="text-primary">Casos de Estudio</span>
+      </h1>
+      <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
+        Notas sobre arquitectura frontend, rendimiento y los detalles pequeños
+        que hacen que una interfaz se sienta bien.
+      </p>
+
+      {categories.length > 0 && (
+        <div class="flex flex-wrap items-center gap-2 mt-2">
+          {categories.map((category) => (
+            <span class="px-2.5 py-0.5 rounded-full text-[0.8125rem] font-medium bg-primary/10 text-primary">
+              {category}
+            </span>
+          ))}
+          <span class="text-[0.8125rem] font-mono text-text-muted ml-1">
+            {posts.length} {posts.length === 1 ? 'artículo' : 'artículos'}
+          </span>
+        </div>
+      )}
+    </header>
+
+    {posts.length > 0 ? (
+      <div class="flex flex-col gap-6">
+        {posts.map((post) => (
+          <article class="p-6 md:p-7 bg-card-bg border border-card-border rounded-xl flex flex-col gap-2 transition duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
+            <div class="flex items-center gap-2 text-[0.8125rem] text-text-muted">
+              <span class="text-primary font-medium">{post.data.category}</span>
+              <span>•</span>
+              <time datetime={post.data.dateValue.toISOString()}>{post.data.date}</time>
+              <span>•</span>
+              <span>{post.data.readTime}</span>
+            </div>
+
+            <h2 class="text-xl font-bold m-0">
+              <a
+                href={`/blog/${post.id}`}
+                class="text-inherit no-underline transition-colors duration-200 hover:text-primary hover:underline hover:decoration-primary"
+              >
+                {post.data.title}
+              </a>
+            </h2>
+
+            {post.data.excerpt && (
+              <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
+                {post.data.excerpt}
+              </p>
+            )}
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p class="text-lg text-text-muted m-0">
+        Todavía no hay artículos publicados. Pronto habrá novedades por acá.
+      </p>
+    )}
+  </div>
+</Layout>
