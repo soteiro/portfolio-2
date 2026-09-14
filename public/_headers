@@ -1,0 +1,37 @@
+# Cabeceras de Cloudflare. El adaptador de Astro añade a este archivo la regla
+# immutable de /_astro/* durante el build; lo de acá cubre el resto.
+#
+# Regla general: todo lo que lleva hash de contenido en el nombre (/_astro/*)
+# se cachea para siempre; lo que conserva una URL fija entre despliegues se
+# cachea poco en el navegador y se revalida en el edge. Si no, actualizar un
+# logo o una imagen social no se ve en producción hasta que expire la caché.
+
+# HTML: siempre revalidar, para que un artículo nuevo o una corrección de
+# metadatos se vean en el acto.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Imágenes sociales: se regeneran con el mismo nombre en cada build. El
+# navegador las guarda 10 minutos y el edge un día, pero sirve la versión vieja
+# mientras busca la nueva en segundo plano.
+/og/*
+  Cache-Control: public, max-age=600, s-maxage=86400, stale-while-revalidate=604800
+
+# Imágenes de public/: misma lógica, con más margen porque cambian poco.
+/images/*
+  Cache-Control: public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800
+
+# Favicon de fallback: los navegadores lo cachean con mucha insistencia, así
+# que conviene un TTL corto para no quedar clavado con un icono viejo.
+/favicon.ico
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# Feed y sitemap: se revisan seguido, no tiene sentido cachearlos largo.
+/rss.xml
+  Cache-Control: public, max-age=1800, s-maxage=3600
+/sitemap-*.xml
+  Cache-Control: public, max-age=1800, s-maxage=3600
+/robots.txt
+  Cache-Control: public, max-age=3600

@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "portfolio",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -11,6 +11,13 @@
     "preview": "astro preview",
     "astro": "astro",
     "og": "node --experimental-strip-types scripts/generate-og.ts"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.1",
@@ -27,9 +34,6 @@
     "react-dom": "^19.3.0",
     "satori": "^0.33.4",
     "tailwindcss": "^4.3.3"
-  },
-  "allowScripts": {
-    "esbuild": true
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",

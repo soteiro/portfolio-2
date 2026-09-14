@@ -11,6 +11,13 @@ import { LOCALE_TAGS, type Locale } from '../config/site';
 import { getLocale } from '../lib/i18n';
 import { personSchema, websiteSchema, jsonLdGraph } from '../lib/seo';
 
+// El logo se importa en vez de referenciarse desde public/: así Astro lo emite
+// en /_astro/ con un hash de contenido en el nombre. Es la única forma de que
+// un cambio de logo llegue de inmediato — un archivo de public/ conserva su
+// URL, y tanto el navegador como el edge de Cloudflare siguen sirviendo la
+// versión cacheada. Con hash, cada versión es una URL nueva.
+import logo from '../assets/logo-portfolio.svg?url';
+
 interface Props {
   title?: string;
   description?: string;
@@ -54,8 +61,14 @@ const graph = jsonLdGraph(personSchema(), websiteSchema(locale), ...pageNodes);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/logo-portfolio.svg" />
-    <link rel="icon" type="image/x-icon" href="/logo-portfolio.svg" sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href={logo} />
+    <!--
+      Fallback para navegadores sin soporte de favicon SVG y para los bots que
+      piden /favicon.ico a la raíz por convención, sin mirar estos <link>.
+      Antes este mismo tag declaraba type="image/x-icon" apuntando al SVG, un
+      tipo MIME que no corresponde y que algunos navegadores descartan.
+    -->
+    <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
     <meta name="generator" content={Astro.generator} /> 
     <meta name="author" content={portfolioData.name.display} />
 
