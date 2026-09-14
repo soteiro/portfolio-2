@@ -9,12 +9,12 @@ interface Props {
 const { hasHero = false } = Astro.props;
 ---
 
-<div class={`relative isolate bg-sky-from overflow-hidden -mt-20 pt-20 transition-[background] duration-350 ${hasHero ? 'min-h-[38rem] sm:min-h-[42rem] flex flex-col justify-between' : 'h-22rem md:h-26rem'}`}>
+<div class={`relative bg-sky-from overflow-hidden pt-20 mb-12 transition-[background] duration-350 ${hasHero ? 'min-h-[32rem] sm:min-h-[36rem] flex flex-col justify-between' : 'h-[18rem] md:h-[20rem]'}`}>
   <!-- Sky background gradient -->
   <div class="absolute inset-0 bg-gradient-b from-sky-from to-sky-to transition-[background] duration-350 pointer-events-none -z-10"></div>
 
   <!-- Background Clouds (Layer 1: Darker accent & Layer 2: Mid cloud) -->
-  <div class="absolute inset-x-0 bottom-0 pointer-events-none flex justify-center overflow-hidden z-0">
+  <div class="absolute p-10  inset-x-0 bottom-0 pointer-events-none flex justify-center overflow-hidden -z-10 mask-[linear-gradient(to_bottom,#000_0%,#000_52%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_bottom,#000_0%,#000_52%,transparent_88%)]">
     <svg
       width="5120"
       height="456"
@@ -41,7 +41,7 @@ const { hasHero = false } = Astro.props;
   <!-- Hero Content (Overlayed directly on top of the sky and cloud waves) -->
   {hasHero && (
     <div class="relative z-10 w-full">
-      <div class="container">
+      <div class="site-container">
         <slot />
       </div>
     </div>

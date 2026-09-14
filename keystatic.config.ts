@@ -22,12 +22,12 @@ export default config({
         category: fields.select({
           label: 'Categoría',
           options: [
-            { label: 'Frontend', value: 'Frontend' },
-            { label: 'Fullstack', value: 'Fullstack' },
             { label: 'Backend', value: 'Backend' },
-            { label: 'Herramientas', value: 'Herramientas' },
+            { label: 'IoT & Telemetría', value: 'IoT' },
+            { label: 'DevOps & Infraestructura', value: 'DevOps' },
+            { label: 'Fullstack', value: 'Fullstack' },
           ],
-          defaultValue: 'Frontend',
+          defaultValue: 'Backend',
         }),
         tags: fields.array(fields.text({ label: 'Tecnología' }), {
           label: 'Tecnologías / Tags',
@@ -70,13 +70,13 @@ export default config({
         category: fields.select({
           label: 'Categoría del artículo',
           options: [
-            { label: 'Frontend', value: 'Frontend' },
-            { label: 'Fullstack', value: 'Fullstack' },
             { label: 'Backend', value: 'Backend' },
-            { label: 'UI/UX', value: 'UI/UX' },
-            { label: 'Rendimiento', value: 'Rendimiento' },
+            { label: 'IoT & Telemetría', value: 'IoT & Telemetría' },
+            { label: 'DevOps & Linux', value: 'DevOps & Linux' },
+            { label: 'Bases de Datos', value: 'Bases de Datos' },
+            { label: 'Arquitectura', value: 'Arquitectura' },
           ],
-          defaultValue: 'Frontend',
+          defaultValue: 'Backend',
         }),
         content: fields.markdoc({
           label: 'Cuerpo del artículo (Markdown)',

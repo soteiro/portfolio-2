@@ -205,9 +205,13 @@ html[data-color-mode="dark"] {
 }
 
 /* Base Reset & Typography */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
+/* En @layer base: fuera de capas ganaria sobre `@layer utilities` de Tailwind
+   y anularia todas las utilidades de margen (-mt-*, mt-*, mb-*...). */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+  }
 }
 
 /* Base resets & document styling */
@@ -271,11 +275,16 @@ a {
 
 /* Container */
 /* Container utility */
-.container {
-  width: 100%;
-  max-width: var(--max-width);
-  margin-inline: auto;
-  padding-inline: var(--viewport-padding);
+/* Nombre propio, no `container`: esa clase colisiona con la utilidad homonima
+   de Tailwind v4. En @layer components para que las utilidades (max-w-*, p-*,
+   -mt-*) puedan sobrescribirla desde el marcado. */
+@layer components {
+  .site-container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--viewport-padding);
+  }
 }
 
 /* Whimsical underline link styling */

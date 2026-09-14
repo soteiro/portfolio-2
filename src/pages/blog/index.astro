@@ -14,19 +14,18 @@ const categories = [...new Set(posts.map((post) => post.data.category))];
 
 <Layout
   title="Blog — Artículos & Casos de Estudio"
-  description="Artículos sobre desarrollo frontend, arquitectura, rendimiento y experiencia de usuario."
+  description="Artículos técnicos sobre sistemas backend concurrentes, telemetría IoT, Linux y optimización de bases de datos."
 >
-  <div class="container max-w-50rem pt-8 pb-20">
-    <header class="flex flex-col gap-4 mb-12">
+  <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20 flex flex-col gap-10">
+    <header class="flex flex-col gap-6">
       <span class="text-[0.8125rem] font-bold uppercase tracking-[0.125rem] text-secondary">
-        Escritos
+        Escritos & Análisis
       </span>
       <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0">
         Artículos & <span class="text-primary">Casos de Estudio</span>
       </h1>
       <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
-        Notas sobre arquitectura frontend, rendimiento y los detalles pequeños
-        que hacen que una interfaz se sienta bien.
+        Notas y lecciones de ingeniería sobre sistemas backend en Go, telemetría IoT a gran escala, Linux sysadmin y optimización de bases de datos en producción.
       </p>
 
       {categories.length > 0 && (

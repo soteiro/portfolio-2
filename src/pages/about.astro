@@ -6,7 +6,7 @@ import { portfolioData } from '../data/portfolio';
 ---
 
 <Layout title={`Sobre mí — ${portfolioData.name.display}`}>
-  <div class="container max-w-50rem pt-8 pb-20">
+  <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20">
     <article>
       <header class="flex flex-col gap-4 mb-12">
         <span class="text-[0.8125rem] font-bold uppercase tracking-[0.125rem] text-secondary">Trayectoria & Filosofía</span>
@@ -18,16 +18,28 @@ import { portfolioData } from '../data/portfolio';
 
       <section class="flex flex-col gap-6 text-lg leading-relaxed text-page-text">
         <p>
-          Construyo aplicaciones web con un gran enfoque en el detalle y el rendimiento. Creo firmemente que las interfaces no solo deben ser funcionales, sino también agradables e intuitivas, con micro-interacciones sutiles, navegación accesible y tiempos de carga óptimos.
+          Me especializo en la arquitectura y desarrollo de infraestructura, protocolos de comunicación y motores backend que permiten a sistemas distribuidos e IoT operar de forma segura, concurrente y a gran escala. Mi enfoque combina un entendimiento profundo del hardware, microcontroladores y redes con ingeniería de software rigurosa sobre entornos Linux.
         </p>
 
-        <Callout type="tip" title="Filosofía de Trabajo">
-          El gran software nace de la unión entre una ingeniería rigurosa y un diseño empático. El rendimiento, la accesibilidad y la estética no compiten entre sí, sino que se potencian mutuamente.
+        <Callout type="tip" title="Filosofía de Ingeniería">
+          En sistemas de telemetría y backend distribuido, la red y el hardware fallarán tarde o temprano. El verdadero desafío de ingeniería no es asumir que todo funcionará, sino diseñar sistemas que resistan el fallo: buffering local, concurrencia segura, aislamiento a nivel de kernel y observabilidad real con SLAs medibles.
         </Callout>
 
-        <h2 class="text-2xl font-bold mt-6 text-page-text">Especialidades y Tecnologías</h2>
         <p>
-          A lo largo de mi experiencia, he trabajado en distintas áreas del desarrollo web moderno:
+          Opero en la intersección entre el mundo físico (sensores estereoscópicos 3D Hella APS-90, gateways LoRaWAN Milesight UG56) y plataformas cloud de alta exigencia, administrando pipelines que procesan <strong>más de 15 millones de eventos mensuales</strong> bajo requerimientos estrictos de disponibilidad y tolerancia a fallos.
+        </p>
+
+        <p>
+          Esto abarca la resolución de problemas de ingeniería complejos en producción: diseñar daemons concurrentes en Go confinados en <strong>Linux Network Namespaces</strong> para atravesar VPNs con rangos IP conflictivos sin alterar el host, liderar migraciones de brokers MQTT a <strong>EMQX</strong> sin tiempo de inactividad, y auditar consultas SQL en <strong>PostgreSQL</strong> sobre tablas con más de 16M de filas, recuperando los indicadores de cumplimiento de SLA del 0% al <strong>95.18%</strong>.
+        </p>
+
+        <p>
+          En la capa de cliente y frontend, mantengo un enfoque puramente orientado a resolver problemas: cuando un sistema backend necesita un panel operativo o aplicación interactiva, elijo <strong>Angular</strong> por su orden, tipado estricto y reactividad eficiente con Signals. Para contenidos estáticos y portafolios, <strong>Astro</strong> resuelve el problema sin sobrecarga de JavaScript en el cliente. Y ante requerimientos móviles, compilo el frontend con Capacitor como mecanismo pragmático de distribución, sin complejidades artificiales.
+        </p>
+
+        <h2 class="text-2xl font-bold mt-6 text-page-text">Competencias Técnicas</h2>
+        <p>
+          Herramientas y tecnologías que utilizo en producción para resolver problemas de escalabilidad y confiabilidad:
         </p>
 
         <div class="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-6 my-4">
@@ -41,7 +53,7 @@ import { portfolioData } from '../data/portfolio';
           </div>
 
           <div class="p-6 bg-card-bg border border-card-border rounded-xl">
-            <h3 class="text-base font-bold text-primary mb-4">Frameworks y Librerías</h3>
+            <h3 class="text-base font-bold text-primary mb-4">Herramientas & Ecosistema</h3>
             <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
               {portfolioData.skills.frameworks.map((item) => (
                 <li><code>{item}</code></li>
@@ -50,7 +62,7 @@ import { portfolioData } from '../data/portfolio';
           </div>
 
           <div class="p-6 bg-card-bg border border-card-border rounded-xl">
-            <h3 class="text-base font-bold text-primary mb-4">Áreas de Enfoque</h3>
+            <h3 class="text-base font-bold text-primary mb-4">Áreas de Especialidad</h3>
             <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
               {portfolioData.skills.specialties.map((item) => (
                 <li><span>{item}</span></li>
@@ -59,27 +71,32 @@ import { portfolioData } from '../data/portfolio';
           </div>
         </div>
 
-        <Callout type="info" title="Micro-interacciones y Accesibilidad">
-          Me encanta incorporar detalles que hagan única a cada aplicación: desde animaciones físicas suaves con CSS moderno hasta soporte completo para lectores de pantalla y navegación por teclado.
+        <Callout type="info" title="Simplicidad Operativa & Seguridad">
+          Priorizo la robustez y la baja sobrecarga operativa: binarios únicos compilados estáticamente en Go, servicios y timers nativos de Systemd, playbooks declarativos en Ansible, políticas DROP estrictas en firewalls y hardening con SELinux.
         </Callout>
 
-        <h2 class="text-2xl font-bold mt-6 text-page-text">Colaboración y Contacto</h2>
+        <h2 class="text-2xl font-bold mt-6 text-page-text">Colaboración y Oportunidades</h2>
         <p>
-          Siempre estoy abierto a colaborar en proyectos interesantes, desarrollo de nuevos productos o iniciativas open source. Si te gustaría conversar sobre una idea, no dudes en escribirme.
+          Estoy disponible para asumir nuevos desafíos como <strong>Software Engineer / Backend & IoT Specialist</strong> en modalidad remota . Si tu equipo necesita resolver cuellos de botella en datos en tiempo real, diseñar daemons resilientes o asegurar infraestructura Linux, conversemos.
         </p>
 
         <div class="mt-8 p-10 bg-card-bg border-2 border-dashed border-cloud-500 rounded-3xl flex flex-col gap-4 text-center items-center">
-          <h3 class="text-2xl font-bold m-0">¿Tienes un proyecto en mente? Hablemos ✨</h3>
+          <h3 class="text-2xl font-bold m-0">¿Hablamos de ingeniería? 📬</h3>
           <p class="text-text-muted max-w-lg m-0 text-base">
-            Puedes enviarme un mensaje por correo electrónico o conectar a través de mis perfiles sociales.
+            Escríbeme directamente por correo electrónico o conectemos a través de LinkedIn y GitHub.
           </p>
           <div class="flex gap-4 flex-wrap justify-center mt-2">
             <a href={`mailto:${portfolioData.social.email}`} class="josh-button">
               <span>Enviar un correo</span>
             </a>
+            {portfolioData.social.linkedin && (
+              <a href={portfolioData.social.linkedin} target="_blank" rel="noopener noreferrer" class="josh-button josh-button-secondary">
+                <span>Conectar en LinkedIn</span>
+              </a>
+            )}
             {portfolioData.social.github && (
               <a href={portfolioData.social.github} target="_blank" rel="noopener noreferrer" class="josh-button josh-button-secondary">
-                <span>Ver mi GitHub</span>
+                <span>Ver GitHub</span>
               </a>
             )}
           </div>

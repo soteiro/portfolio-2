@@ -1,7 +1,6 @@
 ---
 
 import ThemeToggle from './ThemeToggle.astro';
-import SoundToggle from './SoundToggle.astro';
 import { portfolioData } from '../data/portfolio';
 
 const { pathname } = Astro.url;
@@ -44,7 +43,7 @@ const { pathname } = Astro.url;
       <nav class="hidden md:flex items-center" aria-label="Main Navigation">
         <ul class="flex items-center gap-2 list-none p-0 m-0">
           <li>
-            <a class={`flex items-center h-11 px-4 text-base rounded-md transition duration-200 hover:text-primary hover:bg-cloud-300 dark:hover:bg-cloud-400 hover:-translate-y-0.5 ${pathname === '/' ? 'font-medium text-primary' : 'font-normal text-page-text'}`} href="/#projects">Projects</a>
+            <a class={`flex items-center h-11 px-4 text-base rounded-md transition duration-200 hover:text-primary hover:bg-cloud-300 dark:hover:bg-cloud-400 hover:-translate-y-0.5 ${pathname === '/' ? 'font-medium text-primary' : 'font-normal text-page-text'}`} href="/">Projects</a>
           </li>
           <li>
             <a class={`flex items-center h-11 px-4 text-base rounded-md transition duration-200 hover:text-primary hover:bg-cloud-300 dark:hover:bg-cloud-400 hover:-translate-y-0.5 ${pathname.startsWith('/blog') ? 'font-medium text-primary' : 'font-normal text-page-text'}`} href="/blog">Blog</a>
@@ -64,7 +63,7 @@ const { pathname } = Astro.url;
       <!-- Action Buttons -->
       <div class="flex items-center gap-3">
         <!-- Sound Effect Toggle -->
-        <SoundToggle />
+        <!-- <SoundToggle /> -->
 
         <!-- Theme Mode Toggle -->
         <ThemeToggle />
@@ -103,7 +102,7 @@ const { pathname } = Astro.url;
     <div class="p-6 flex flex-col gap-6">
       <nav>
         <ul class="list-none p-0 m-0 flex flex-col gap-2">
-          <li><a href="/#projects" class="block px-4 py-3 text-lg font-medium text-page-text rounded-lg hover:bg-cloud-300 hover:text-primary transition-colors">Projects</a></li>
+          <li><a href="/" class="block px-4 py-3 text-lg font-medium text-page-text rounded-lg hover:bg-cloud-300 hover:text-primary transition-colors">Projects</a></li>
           <li><a href="/blog" class="block px-4 py-3 text-lg font-medium text-page-text rounded-lg hover:bg-cloud-300 hover:text-primary transition-colors">Blog</a></li>
           <li><a href="/about" class="block px-4 py-3 text-lg font-medium text-page-text rounded-lg hover:bg-cloud-300 hover:text-primary transition-colors">About</a></li>
           <li><a href="/#skills" class="block px-4 py-3 text-lg font-medium text-page-text rounded-lg hover:bg-cloud-300 hover:text-primary transition-colors">Skills & Stack</a></li>

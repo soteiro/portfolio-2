@@ -3,24 +3,24 @@ import Rainbow from './Rainbow.astro';
 import { portfolioData } from '../data/portfolio';
 ---
 
-<section class="relative grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center pt-2 sm:pt-6 pb-20 sm:pb-28">
+<section class="relative grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center pt-2 sm:pt-6 pb-10 sm:pb-10">
   <!-- Left Column: Friendly Greeting & CTAs -->
-  <div class="flex flex-col gap-6 relative z-10">
+  <div class=" flex flex-col gap-6 relative z-10">
     <!-- Status Pill -->
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 w-fit bg-cloud-300/80 dark:bg-cloud-500/80 backdrop-blur-sm border border-cloud-400 dark:border-white/10 rounded-full text-sm font-medium text-page-text shadow-sm">
+    <!-- <div class="inline-flex items-center gap-2 px-3.5 py-1.5 w-fit bg-cloud-300/80 dark:bg-cloud-500/80 backdrop-blur-sm border border-cloud-400 dark:border-white/10 rounded-full text-sm font-medium text-page-text shadow-sm">
       <span class="w-2 h-2 rounded-full bg-success-500 ring-2 ring-success-300 animate-pulse"></span>
       <span>{portfolioData.status}</span>
-    </div>
+    </div> -->
 
     <!-- Friendly Greeting -->
-    <h1 class="flex flex-col gap-3 m-0">
+    <!-- <h1 class="flex flex-col gap-3 m-0">
       <span class="block text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight text-page-text">
         ¡Hola! Soy <span class="text-primary">{portfolioData.name.first}</span>. 👋
       </span>
       <span class="block text-xl sm:text-2xl font-medium leading-snug bg-gradient-br from-primary to-secondary bg-clip-text text-transparent">
         {portfolioData.tagline}
       </span>
-    </h1>
+    </h1> -->
 
     <!-- Short Bio -->
     <p class="text-lg text-text-muted max-w-xl leading-relaxed m-0">
@@ -54,7 +54,7 @@ import { portfolioData } from '../data/portfolio';
     </div>
 
     <!-- Sitting Mascot directly in front of the Rainbow -->
-    <div class="relative -mt-32 sm:-mt-38 md:-mt-44 z-10 flex flex-col items-center pointer-events-none">
+    <!-- <div class="relative -mt-32 sm:-mt-38 md:-mt-44 z-10 flex flex-col items-center pointer-events-none">
       <img
         src="/images/avatar.png"
         alt={portfolioData.name.display}
@@ -63,9 +63,9 @@ import { portfolioData } from '../data/portfolio';
         class="w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.35)]"
         loading="eager"
         decoding="async"
-      />
+      />-->
       <!-- Soft ground contact shadow resting on the hill curve -->
-      <div class="w-32 sm:w-40 h-3 bg-black/25 dark:bg-black/40 rounded-[100%] blur-[6px] -mt-2"></div>
-    </div>
+      <!--  <div class="w-32 sm:w-40 h-3 bg-black/25 dark:bg-black/40 rounded-[100%] blur-[6px] -mt-2"></div>
+    </div> -->
   </div>
 </section>  

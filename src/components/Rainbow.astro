@@ -11,14 +11,14 @@
   <canvas id="rainbow-canvas" class="absolute inset-0 w-full h-full z-2 cursor-crosshair" aria-label="Arcoíris interactivo animado"></canvas>
 
   <!-- Left and right marshmallow cloud anchors -->
-  <div class="absolute -bottom-0.5 z-3 pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] transition-transform duration-300 left-2 max-sm:left-0.5 w-90px max-sm:w-72px" aria-hidden="true">
-    <svg viewBox="0 0 100 60" class="w-full h-auto">
+  <div class="hidden absolute -bottom-0.5 z-3 pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] transition-transform duration-300 left-2 max-sm:left-0.5 w-90px max-sm:w-72px md:block" aria-hidden="true">
+    <svg viewBox="0 0 100 60" class="w-full h-auto ">
       <path d="M10 50 C5 50 0 45 0 38 C0 30 6 25 14 25 C16 12 28 5 42 5 C56 5 66 14 70 24 C75 22 80 23 84 26 C93 28 100 36 100 45 C100 52 94 58 86 58 L10 58 Z" fill="var(--color-cloud-300)" />
       <path d="M14 50 C10 50 6 46 6 40 C6 33 11 28 18 28 C20 17 30 10 42 10 C54 10 63 18 66 27 C70 25 75 26 78 29 C86 31 92 38 92 46 C92 51 87 56 80 56 L14 56 Z" fill="var(--color-background)" />
     </svg>
   </div>
 
-  <div class="absolute -bottom-0.5 z-3 pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] transition-transform duration-300 right-2 max-sm:right-0.5 w-90px max-sm:w-72px -scale-x-100" aria-hidden="true">
+  <div class="hidden absolute -bottom-0.5 z-3 pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)] transition-transform duration-300 right-2 max-sm:right-0.5 w-90px max-sm:w-72px -scale-x-100 md:block md:transition-all" aria-hidden="true">
     <svg viewBox="0 0 100 60" class="w-full h-auto">
       <path d="M10 50 C5 50 0 45 0 38 C0 30 6 25 14 25 C16 12 28 5 42 5 C56 5 66 14 70 24 C75 22 80 23 84 26 C93 28 100 36 100 45 C100 52 94 58 86 58 L10 58 Z" fill="var(--color-cloud-300)" />
       <path d="M14 50 C10 50 6 46 6 40 C6 33 11 28 18 28 C20 17 30 10 42 10 C54 10 63 18 66 27 C70 25 75 26 78 29 C86 31 92 38 92 46 C92 51 87 56 80 56 L14 56 Z" fill="var(--color-background)" />
@@ -26,9 +26,9 @@
   </div>
 
   <!-- Whimsical hint badge -->
-  <div class="rainbow-hint absolute -top-2.5 z-5 text-xs font-bold text-primary bg-page px-3 py-1 rounded-full border border-dashed border-primary shadow-md pointer-events-none opacity-90 transition duration-500 animate-[bounceHint_3s_ease-in-out_infinite] [&.hidden]:opacity-0 [&.hidden]:scale-80" id="rainbow-hint" aria-hidden="true">
+  <!-- <div class="rainbow-hint absolute -top-2.5 z-5 text-xs font-bold text-primary bg-page px-3 py-1 rounded-full border border-dashed border-primary shadow-md pointer-events-none opacity-90 transition duration-500 animate-[bounceHint_3s_ease-in-out_infinite] [&.hidden]:opacity-0 [&.hidden]:scale-80" id="rainbow-hint" aria-hidden="true">
     <span>✨ ¡Pasa el puntero por el arcoíris!</span>
-  </div>
+  </div> -->
 </div>
 
 <script>

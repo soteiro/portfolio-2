@@ -9,8 +9,8 @@ const highlights = await getHighlights();
 
 <aside class="flex flex-col gap-14">
   <!-- 1. Categories / Skills Filter Section -->
-  <section class="flex flex-col gap-5">
-    <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Filtrar por Categoría</h2>
+  <section class="flex flex-col gap-5" id="skills">
+    <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Filtrar por Especialidad</h2>
     <div class="flex flex-wrap gap-2" id="category-filter-group">
       <button
         class="category-chip active relative inline-flex items-center px-3.5 py-1.5 text-sm font-medium text-page-text bg-transparent border-0 cursor-pointer rounded-lg transition duration-200 hover:-translate-y-0.5 hover:text-primary [&.active]:text-white [&.active_.chip-bg]:bg-primary [&.active_.chip-bg]:border-primary"
@@ -70,9 +70,9 @@ const highlights = await getHighlights();
 
     <!-- 3. Work Inquiry / Quick Newsletter Box -->
     <div class="mt-4 p-7 bg-card-bg border-2 border-dashed border-cloud-500 rounded-2xl shadow-sm flex flex-col gap-3" id="contact">
-      <h3 class="text-lg font-bold text-page-text m-0">¿Quieres colaborar? 📬</h3>
+      <h3 class="text-lg font-bold text-page-text m-0">¿Hablamos de ingeniería? 📬</h3>
       <p class="text-sm text-text-muted leading-relaxed m-0">
-        Siempre estoy abierto a charlar sobre nuevos proyectos, ideas creativas y desarrollo de software.
+        Disponible para resolver retos en sistemas concurrentes, telemetría IoT o infraestructura Linux.
       </p>
       
       <form onsubmit="event.preventDefault(); alert('¡Gracias por tu interés! Configura tu servicio de formularios (Formspree, Resend, etc.) aquí.');">
