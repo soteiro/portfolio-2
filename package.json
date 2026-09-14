@@ -9,8 +9,9 @@
     "dev": "pnpm run og && astro dev",
     "build": "pnpm run og && astro build --force",
     "preview": "astro preview",
-    "astro": "astro",
-    "og": "node --experimental-strip-types scripts/generate-og.ts"
+    "deploy": "pnpm run build && wrangler deploy -c dist/server/wrangler.json",
+    "og": "node --experimental-strip-types scripts/generate-og.ts",
+    "astro": "astro"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

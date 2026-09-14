@@ -80,3 +80,35 @@ astro dev stop
 # Compilar para producción
 astro build
 ```
+
+---
+
+## 🚀 Despliegue (Cloudflare Workers)
+
+El adaptador de Cloudflare **no** despliega con el `wrangler.jsonc` de la raíz.
+Ese archivo solo aporta los ajustes propios (nombre del Worker, flags de
+compatibilidad, binding de KV); el config real —con `main` y `assets`— lo
+genera el build en `dist/server/wrangler.json`. Por eso `wrangler deploy` a
+secas falla con *«Missing entry-point to Worker script or to assets directory»*:
+hay que pasarle ese archivo.
+
+```sh
+# Compila y despliega en un paso
+pnpm run deploy
+```
+
+En **Cloudflare Workers Builds**, configurar los dos campos por separado:
+
+| Campo          | Valor                                          |
+| -------------- | ---------------------------------------------- |
+| Build command  | `pnpm run build`                               |
+| Deploy command | `npx wrangler deploy -c dist/server/wrangler.json` |
+
+Sin *build command* el pipeline salta directo al deploy, no existe `dist/` y
+falla con el mismo error.
+
+### Variables de entorno
+
+Las de SEO y analítica (`PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN` y demás) van como
+variables del Worker. Están documentadas en `.env.example`; todas son
+opcionales y, sin valor, el tag correspondiente simplemente no se emite.
