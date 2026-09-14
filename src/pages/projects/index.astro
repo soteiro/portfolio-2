@@ -1,0 +1,106 @@
+---
+// projects/index.astro — hub de proyectos.
+//
+// Existe sobre todo por SEO: hasta ahora las fichas solo se enlazaban desde la
+// home, lo que las dejaba a un salto de profundidad y sin una página que
+// concentre la señal temática. Este listado es también la URL que conviene
+// mandar a un cliente potencial.
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { absoluteUrl, breadcrumbSchema, jsonLdGraph, personSchema } from '../../lib/seo';
+
+export const prerender = true;
+
+const entries = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => {
+  // Destacados primero; dentro de cada grupo, los más recientes.
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return Number(b.data.year ?? 0) - Number(a.data.year ?? 0);
+});
+
+const projects = entries.map((entry) => ({
+  id: entry.id,
+  title: entry.data.title,
+  subtitle: entry.data.subtitle,
+  description: entry.data.description,
+  category: entry.data.category,
+  tags: entry.data.tags,
+  featured: entry.data.featured,
+  demoUrl: entry.data.demoUrl ?? undefined,
+  githubUrl: entry.data.githubUrl ?? undefined,
+  year: entry.data.year ?? undefined,
+}));
+
+const categories = [...new Set(projects.map((project) => project.category))];
+
+// CollectionPage + ItemList le da a Google la relación explícita entre el hub
+// y cada ficha, y habilita el listado enriquecido en resultados.
+const jsonLd = JSON.stringify([
+  {
+    '@type': 'CollectionPage',
+    '@id': `${absoluteUrl('/projects')}#page`,
+    name: 'Proyectos',
+    description:
+      'Casos de estudio de sistemas backend, infraestructura Linux y telemetría IoT en producción.',
+    url: absoluteUrl('/projects'),
+    author: { '@id': personSchema()['@id'] },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: projects.length,
+      itemListElement: projects.map((project, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: project.title,
+        url: absoluteUrl(`/projects/${project.id}`),
+      })),
+    },
+  },
+  breadcrumbSchema([
+    { name: 'Inicio', path: '/' },
+    { name: 'Proyectos', path: '/projects' },
+  ]),
+]);
+---
+
+<Layout
+  title="Proyectos — Backend, Linux & IoT"
+  description="Casos de estudio de ingeniería: daemons concurrentes en Go, pipelines de telemetría IoT sobre 15M de eventos mensuales, hardening de servidores Linux y optimización de PostgreSQL."
+  jsonLd={jsonLd}
+>
+  <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20 flex flex-col gap-10">
+    <header class="flex flex-col gap-6">
+      <span class="text-[0.8125rem] font-bold uppercase tracking-[0.125rem] text-secondary">
+        Trabajo & Casos de Estudio
+      </span>
+      <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0">
+        Proyectos de <span class="text-primary">ingeniería</span>
+      </h1>
+      <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
+        Sistemas que construí y sostuve en producción: daemons concurrentes en Go con aislamiento a nivel de kernel, telemetría IoT a gran escala, automatización de infraestructura Linux y optimización de bases de datos.
+      </p>
+
+      {categories.length > 0 && (
+        <div class="flex flex-wrap items-center gap-2 mt-2">
+          {categories.map((category) => (
+            <span class="px-2.5 py-0.5 rounded-full text-[0.8125rem] font-medium bg-primary/10 text-primary">
+              {category}
+            </span>
+          ))}
+          <span class="text-[0.8125rem] font-mono text-text-muted ml-1">
+            {projects.length} {projects.length === 1 ? 'proyecto' : 'proyectos'}
+          </span>
+        </div>
+      )}
+    </header>
+
+    {projects.length > 0 ? (
+      <div class="flex flex-col gap-8">
+        {projects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    ) : (
+      <p class="text-lg text-text-muted m-0">
+        Todavía no hay proyectos publicados.
+      </p>
+    )}
+  </div>
+</Layout>

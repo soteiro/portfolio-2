@@ -34,3 +34,6 @@ pnpm-debug.log*
 .vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
+
+# Imágenes sociales generadas por `pnpm run og` en cada build.
+public/og/

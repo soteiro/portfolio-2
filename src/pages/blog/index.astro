@@ -2,19 +2,53 @@
 // blog/index.astro — listado de todos los artículos
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { absoluteUrl, breadcrumbSchema, PERSON_ID, WEBSITE_ID } from '../../lib/seo';
+
+export const prerender = true;
 
 // Más recientes primero. `dateValue` conserva la fecha original del
 // frontmatter; `date` ya viene formateada para mostrar (ver content.config.ts).
-const posts = (await getCollection('blog')).sort(
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.dateValue.valueOf() - a.data.dateValue.valueOf()
 );
 
 const categories = [...new Set(posts.map((post) => post.data.category))];
+
+// `Blog` + `blogPost` conecta el índice con cada artículo, de modo que Google
+// entienda esta URL como el hub del blog y no como una página suelta más.
+const jsonLd = JSON.stringify([
+  {
+    '@type': 'Blog',
+    '@id': `${absoluteUrl('/blog')}#blog`,
+    name: 'Artículos & Casos de Estudio',
+    description:
+      'Ingeniería de sistemas backend en Go, telemetría IoT, Linux y optimización de bases de datos en producción.',
+    url: absoluteUrl('/blog'),
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': PERSON_ID },
+    isPartOf: { '@id': WEBSITE_ID },
+    blogPost: posts.map((post) => ({
+      '@type': 'BlogPosting',
+      '@id': `${absoluteUrl(`/blog/${post.id}`)}#article`,
+      headline: post.data.title,
+      description: post.data.excerpt,
+      url: absoluteUrl(`/blog/${post.id}`),
+      datePublished: post.data.dateValue.toISOString(),
+      dateModified: (post.data.updated ?? post.data.dateValue).toISOString(),
+      author: { '@id': PERSON_ID },
+    })),
+  },
+  breadcrumbSchema([
+    { name: 'Inicio', path: '/' },
+    { name: 'Blog', path: '/blog' },
+  ]),
+]);
 ---
 
 <Layout
-  title="Blog — Artículos & Casos de Estudio"
-  description="Artículos técnicos sobre sistemas backend concurrentes, telemetría IoT, Linux y optimización de bases de datos."
+  title="Blog — Backend en Go, Linux & Telemetría IoT"
+  description="Artículos técnicos y casos de estudio sobre sistemas backend concurrentes en Go, telemetría IoT a gran escala, administración de Linux y optimización de PostgreSQL en producción."
+  jsonLd={jsonLd}
 >
   <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20 flex flex-col gap-10">
     <header class="flex flex-col gap-6">

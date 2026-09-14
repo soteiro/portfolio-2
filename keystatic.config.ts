@@ -43,6 +43,36 @@ export default config({
           validation: { isRequired: false },
         }),
         year: fields.text({ label: 'Año de realización', defaultValue: '2025' }),
+        updated: fields.date({
+          label: 'Última actualización',
+          description:
+            'Solo si editaste el caso de estudio a fondo. Alimenta lastmod del sitemap y hace que Google vuelva a rastrear la ficha.',
+          validation: { isRequired: false },
+        }),
+        seoTitle: fields.text({
+          label: 'Título para buscadores (SEO)',
+          description:
+            'Opcional. Máximo ~60 caracteres, con lo importante al principio. Si lo dejás vacío se usa el título del proyecto.',
+          validation: { isRequired: false },
+        }),
+        seoDescription: fields.text({
+          label: 'Meta descripción (SEO)',
+          description:
+            'Opcional, 120-155 caracteres. Es el texto que aparece bajo el título en Google. Si lo dejás vacío se usa la descripción de tarjeta.',
+          multiline: true,
+          validation: { isRequired: false },
+        }),
+        ogImage: fields.text({
+          label: 'Imagen social propia (ruta)',
+          description:
+            'Opcional, por ejemplo /images/mi-proyecto.png. Vacío = se genera automáticamente una tarjeta con el título.',
+          validation: { isRequired: false },
+        }),
+        draft: fields.checkbox({
+          label: 'Borrador (no se publica)',
+          description: 'Queda fuera del sitio, del sitemap y del RSS, sin borrar el archivo.',
+          defaultValue: false,
+        }),
         content: fields.markdoc({
           label: 'Descripción detallada / Caso de estudio (Markdown)',
           extension: 'md',
@@ -77,6 +107,42 @@ export default config({
             { label: 'Arquitectura', value: 'Arquitectura' },
           ],
           defaultValue: 'Backend',
+        }),
+        tags: fields.array(fields.text({ label: 'Tag' }), {
+          label: 'Tags / Términos técnicos',
+          description:
+            'Términos concretos del artículo (Go, PostgreSQL, iptables...). Se usan en el JSON-LD y en el RSS.',
+          itemLabel: (props) => props.value || 'Tag',
+        }),
+        updated: fields.date({
+          label: 'Última actualización',
+          description:
+            'Solo para revisiones de fondo. Google muestra esta fecha en el resultado y prioriza contenido fresco.',
+          validation: { isRequired: false },
+        }),
+        seoTitle: fields.text({
+          label: 'Título para buscadores (SEO)',
+          description:
+            'Opcional. Máximo ~60 caracteres, con la palabra clave al principio. Vacío = se usa el título del artículo.',
+          validation: { isRequired: false },
+        }),
+        seoDescription: fields.text({
+          label: 'Meta descripción (SEO)',
+          description:
+            'Opcional, 120-155 caracteres. Es el texto bajo el título en Google. Vacío = se usa el extracto.',
+          multiline: true,
+          validation: { isRequired: false },
+        }),
+        ogImage: fields.text({
+          label: 'Imagen social propia (ruta)',
+          description:
+            'Opcional. Vacío = se genera automáticamente una tarjeta con el título del artículo.',
+          validation: { isRequired: false },
+        }),
+        draft: fields.checkbox({
+          label: 'Borrador (no se publica)',
+          description: 'Queda fuera del sitio, del sitemap y del RSS, sin borrar el archivo.',
+          defaultValue: false,
         }),
         content: fields.markdoc({
           label: 'Cuerpo del artículo (Markdown)',

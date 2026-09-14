@@ -1,25 +1,71 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getEntry, render } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import {
+  absoluteUrl,
+  blogPostingSchema,
+  breadcrumbSchema,
+  ogImageUrl,
+} from '../../lib/seo';
 
-const { slug } = Astro.params;
-if (!slug) {
-  return Astro.redirect('/404');
+// Prerenderizado: el contenido es estático, así que cada artículo se sirve
+// como HTML plano desde el edge. Además es lo que permite que @astrojs/sitemap
+// descubra estas URLs — un sitemap no puede enumerar rutas de SSR.
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 
-const post = await getEntry('blog', slug);
-if (!post) {
-  return Astro.redirect('/404');
-}
-
+const { post } = Astro.props as { post: CollectionEntry<'blog'> };
 const { Content } = await render(post);
+
+const path = `/blog/${post.id}`;
+const url = absoluteUrl(path);
+const description = post.data.seoDescription ?? post.data.excerpt;
+const image = post.data.ogImage ? absoluteUrl(post.data.ogImage) : ogImageUrl(path);
+const modified = post.data.updated ?? undefined;
+
+// `wordCount` es una señal de profundidad que Google usa para distinguir un
+// artículo real de una nota de tres líneas.
+const wordCount = post.body?.trim().split(/\s+/).length ?? undefined;
+
+const jsonLd = JSON.stringify([
+  blogPostingSchema({
+    title: post.data.title,
+    description,
+    url,
+    image,
+    datePublished: post.data.dateValue,
+    dateModified: modified,
+    section: post.data.category,
+    keywords: [post.data.category, ...post.data.tags],
+    wordCount,
+  }),
+  breadcrumbSchema([
+    { name: 'Inicio', path: '/' },
+    { name: 'Blog', path: '/blog' },
+    { name: post.data.title, path },
+  ]),
+]);
 ---
 
-<Layout title={`${post.data.title} — Blog`} description={post.data.excerpt}>
+<Layout
+  title={post.data.seoTitle ?? post.data.title}
+  description={description}
+  type="article"
+  image={image}
+  publishedTime={post.data.dateValue}
+  modifiedTime={modified}
+  section={post.data.category}
+  tags={post.data.tags}
+  jsonLd={jsonLd}
+>
   <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20">
-    <nav class="mb-8">
+    <nav class="mb-8" aria-label="Migas de pan">
       <a
-        href="/#articles"
+        href="/blog"
         class="inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-primary transition-colors duration-200"
       >
         <svg
@@ -32,6 +78,7 @@ const { Content } = await render(post);
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          aria-hidden="true"
         >
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
@@ -42,12 +89,23 @@ const { Content } = await render(post);
 
     <article>
       <header class="flex flex-col gap-4 mb-10 pb-8 border-b border-card-border">
-        <div class="flex items-center gap-3 text-sm text-text-muted">
+        <div class="flex flex-wrap items-center gap-3 text-sm text-text-muted">
           <span class="px-2.5 py-0.5 rounded-full font-medium bg-primary/10 text-primary">{post.data.category}</span>
           <span>•</span>
-          <time>{String(post.data.date)}</time>
+          <time datetime={post.data.dateValue.toISOString()}>{String(post.data.date)}</time>
           <span>•</span>
           <span>{post.data.readTime}</span>
+          {modified && (
+            <>
+              <span>•</span>
+              <span>
+                Actualizado el{' '}
+                <time datetime={modified.toISOString()}>
+                  {modified.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </time>
+              </span>
+            </>
+          )}
         </div>
 
         <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0 text-page-text">
@@ -58,6 +116,16 @@ const { Content } = await render(post);
           <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
             {post.data.excerpt}
           </p>
+        )}
+
+        {post.data.tags.length > 0 && (
+          <ul class="flex flex-wrap gap-2 mt-2 list-none p-0 m-0">
+            {post.data.tags.map((tag: string) => (
+              <li class="text-[0.8125rem] font-mono px-2.5 py-1 rounded-md bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 text-page-text">
+                #{tag}
+              </li>
+            ))}
+          </ul>
         )}
       </header>
 

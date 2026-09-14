@@ -37,7 +37,7 @@ export const portfolioData = {
     github: "https://github.com/soteiro",
     linkedin: "https://www.linkedin.com/in/diego-ignacio-soto/",
     email: "diego_sarq@hotmail.com",
-    website: "https://diegoignaciosoto.tech",
+    website: "https://soteiro.dev",
     rss: "/rss.xml"
   },  
 

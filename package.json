@@ -6,14 +6,17 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build --force",
+    "dev": "pnpm run og && astro dev",
+    "build": "pnpm run og && astro build --force",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "og": "node --experimental-strip-types scripts/generate-og.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.1",
     "@astrojs/react": "^6.0.5",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
     "@keystatic/astro": "^6.0.0",
     "@keystatic/core": "^0.6.9",
     "@tailwindcss/vite": "^4.3.3",
@@ -22,12 +25,15 @@
     "astro": "^7.3.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "satori": "^0.33.4",
     "tailwindcss": "^4.3.3"
   },
   "allowScripts": {
     "esbuild": true
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "gray-matter": "^4.0.3",
     "wrangler": "^4.130.0"
   }
 }

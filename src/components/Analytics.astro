@@ -1,0 +1,18 @@
+---
+/**
+ * Cloudflare Web Analytics: sin cookies, sin identificadores persistentes y
+ * sin banner de consentimiento. El beacon se carga con `defer` para no entrar
+ * en la ruta crítica ni afectar a los Core Web Vitals.
+ *
+ * Solo se inyecta en producción y con token definido, de modo que el tráfico
+ * de `pnpm dev` no ensucie las métricas.
+ */
+import { CLOUDFLARE_ANALYTICS_TOKEN } from '../config/site';
+
+const enabled = import.meta.env.PROD && Boolean(CLOUDFLARE_ANALYTICS_TOKEN);
+const beacon = JSON.stringify({ token: CLOUDFLARE_ANALYTICS_TOKEN });
+---
+
+{enabled && (
+  <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={beacon}></script>
+)}

@@ -3,36 +3,66 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CloudWavesTop from '../components/CloudWavesTop.astro';
+import SEO from '../components/SEO.astro';
+import Analytics from '../components/Analytics.astro';
 import '../styles/global.css';
 import { portfolioData } from '../data/portfolio';
+import { LOCALE_TAGS, type Locale } from '../config/site';
+import { getLocale } from '../lib/i18n';
+import { personSchema, websiteSchema, jsonLdGraph } from '../lib/seo';
 
 interface Props {
   title?: string;
   description?: string;
+  /** `false` cuando el título ya está completo (la home, por ejemplo). */
+  suffix?: boolean;
+  canonical?: string;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article' | 'profile';
+  noindex?: boolean;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  section?: string;
+  tags?: string[];
+  /** JSON-LD específico de la página; se suma a Person + WebSite. */
+  jsonLd?: string;
+  translations?: Partial<Record<Locale, string>>;
 }
 
 const {
-  title = `${portfolioData.name.display} — ${portfolioData.role}`,
+  title = `${portfolioData.name.display}${' — '}${portfolioData.role}`,
   description = portfolioData.tagline,
+  suffix = true,
+  jsonLd,
+  ...seo
 } = Astro.props;
+
+const locale = getLocale(Astro.url);
 const hasHero = Astro.slots.has('hero');
+
+// Person y WebSite van en todas las páginas: son las entidades que Google
+// necesita ver de forma consistente para asociar el dominio con la persona.
+// `jsonLd` de la página se fusiona en el mismo @graph en vez de emitir un
+// segundo <script>, que es como lo prefiere el parseo de Google.
+const pageNodes = jsonLd ? (JSON.parse(jsonLd) as object[]) : [];
+const graph = jsonLdGraph(personSchema(), websiteSchema(locale), ...pageNodes);
 ---
 
 <!doctype html>
-<html lang="es" data-color-mode="dark">
+<html lang={LOCALE_TAGS[locale]} data-color-mode="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
     <meta name="author" content={portfolioData.name.display} />
 
-    <!-- Open Graph -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <!-- Preconexión al host del beacon de analítica: ahorra el handshake TLS -->
+    <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin />
+
+    <SEO title={title} description={description} suffix={suffix} jsonLd={graph} {...seo} />
 
     <!-- FOUC Prevention Script (Josh's exact inline theme initialization) -->
     <script is:inline>
@@ -54,8 +84,13 @@ const hasHero = Astro.slots.has('hero');
         document.documentElement.setAttribute('data-color-mode', colorMode);
       })();
     </script>
+
+    <Analytics />
   </head>
   <body>
+    <!-- Salto al contenido: accesibilidad y una señal más de estructura -->
+    <a href="#main-content" class="skip-link">Saltar al contenido</a>
+
     <!-- Main Header -->
     <Header />
 

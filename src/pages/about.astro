@@ -3,9 +3,34 @@
 import Layout from '../layouts/Layout.astro';
 import Callout from '../components/Callout.astro';
 import { portfolioData } from '../data/portfolio';
+import { absoluteUrl, breadcrumbSchema, PERSON_ID, WEBSITE_ID } from '../lib/seo';
+
+export const prerender = true;
+
+const jsonLd = JSON.stringify([
+  {
+    '@type': 'AboutPage',
+    '@id': `${absoluteUrl('/about')}#page`,
+    url: absoluteUrl('/about'),
+    name: `Sobre ${portfolioData.name.display}`,
+    description: portfolioData.bio,
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntity: { '@id': PERSON_ID },
+    about: { '@id': PERSON_ID },
+  },
+  breadcrumbSchema([
+    { name: 'Inicio', path: '/' },
+    { name: 'Sobre mí', path: '/about' },
+  ]),
+]);
 ---
 
-<Layout title={`Sobre mí — ${portfolioData.name.display}`}>
+<Layout
+  title="Sobre mí — Backend, Linux & Sistemas IoT"
+  description="Ingeniero de Software especializado en backend y sistemas: daemons concurrentes en Go, Linux Network Namespaces, brokers MQTT y optimización de PostgreSQL sobre 16M+ de filas."
+  type="profile"
+  jsonLd={jsonLd}
+>
   <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20">
     <article>
       <header class="flex flex-col gap-4 mb-12">

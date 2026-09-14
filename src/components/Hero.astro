@@ -22,6 +22,17 @@ import { portfolioData } from '../data/portfolio';
       </span>
     </h1> -->
 
+    <!--
+      La home no tiene encabezado visible desde que se comentó el saludo del
+      hero, y una página sin <h1> pierde su señal más fuerte de tema — más aún
+      siendo la raíz del dominio. Este h1 solo para lectores de pantalla y
+      buscadores repone esa señal sin alterar el diseño. Si en algún momento
+      volvés a mostrar el saludo, quitá este bloque y dejá aquel como h1.
+    -->
+    <h1 class="sr-only">
+      {portfolioData.name.display} — {portfolioData.role}. {portfolioData.tagline}
+    </h1>
+
     <!-- Short Bio -->
     <p class="text-lg text-text-muted max-w-xl leading-relaxed m-0">
       {portfolioData.bio}

@@ -5,10 +5,13 @@ import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Sidebar from '../components/Sidebar.astro';
 import { getCollection } from 'astro:content';
+import { absoluteUrl, PERSON_ID, WEBSITE_ID } from '../lib/seo';
+
+export const prerender = true;
 
 // Proyectos y artículos vienen de las colecciones, gestionadas desde Keystatic
 // (`pnpm dev` -> /keystatic). Sin entradas, cada sección muestra su vacío.
-const projects = (await getCollection('projects')).map((entry) => ({
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).map((entry) => ({
   id: entry.id,
   title: entry.data.title,
   subtitle: entry.data.subtitle,
@@ -21,7 +24,7 @@ const projects = (await getCollection('projects')).map((entry) => ({
   year: entry.data.year ?? undefined,
 }));
 
-const articles = (await getCollection('blog'))
+const articles = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.dateValue.valueOf() - a.data.dateValue.valueOf())
   .map((entry) => ({
     title: entry.data.title,
@@ -31,9 +34,29 @@ const articles = (await getCollection('blog'))
     readTime: entry.data.readTime,
     category: entry.data.category,
   }));
+
+// ProfilePage marca la raíz del dominio como la página oficial de la persona,
+// que es justo lo que buscás cuando alguien googlea tu nombre. El nodo Person
+// completo lo emite el Layout; acá solo se lo referencia por @id.
+const jsonLd = JSON.stringify([
+  {
+    '@type': 'ProfilePage',
+    '@id': `${absoluteUrl('/')}#profile`,
+    url: absoluteUrl('/'),
+    name: 'Diego Soto — Software Engineer',
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntity: { '@id': PERSON_ID },
+    about: { '@id': PERSON_ID },
+  },
+]);
 ---
 
-<Layout>
+<Layout
+  title="Diego Soto — Software Engineer | Backend, Linux & IoT"
+  description="Software Engineer en Valdivia, Chile. Sistemas backend concurrentes en Go, infraestructura Linux y pipelines de telemetría IoT de más de 15M de eventos mensuales."
+  suffix={false}
+  jsonLd={jsonLd}
+>
   <!-- Hero superimposed on CloudWavesTop -->
   <Hero slot="hero" />
 

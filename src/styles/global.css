@@ -415,3 +415,22 @@ html[data-color-mode="dark"] .josh-button-secondary {
 }
 
 
+
+/* Enlace de salto al contenido: oculto hasta recibir foco por teclado. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-background);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 0 0 0.5rem 0;
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  left: 0;
+}
