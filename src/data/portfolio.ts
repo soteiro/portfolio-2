@@ -28,15 +28,15 @@ export const portfolioData = {
   role: "Software Engineer | Backend, Linux & IoT Systems",
   tagline: "Resolviendo problemas técnicos en sistemas backend con Go, infraestructura Linux y telemetría de alta escala.",
   bio: "Ingeniero de Software enfocado en backend y sistemas: daemons concurrentes en Go con aislamiento de red a nivel de kernel, pipelines de telemetría IoT (+15M eventos/mes), optimización de PostgreSQL e infraestructura Linux. Para interfaces y dashboards utilizo Angular.",
-  location: "Valdivia, Chile (Disponible para Remoto / Híbrido)",
-  status: "Disponible para roles Remoto ",
+  location: "Valdivia, Chile (Disponible para Remoto)",
+  status: "Disponible para roles Remoto",
   avatar: "/images/avatar.png",
   
   // Redes sociales y contacto / Social links
   social: {
     github: "https://github.com/soteiro",
     linkedin: "https://www.linkedin.com/in/diego-ignacio-soto/",
-    email: "diego_sarq@hotmail.com",
+    email: "contacto@soteiro.dev",
     website: "https://soteiro.dev",
     rss: "/rss.xml"
   },  
