@@ -18,7 +18,7 @@ tags:
   - Fail2ban
   - Nginx
   - Security
-featured: true
+featured: false
 year: '2025'
 ---
 ## Contexto & Objetivos

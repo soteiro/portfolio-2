@@ -3,6 +3,7 @@
 import { portfolioData } from '../data/portfolio';
 
 const currentYear = new Date().getFullYear();
+const { pathname } = Astro.url;
 ---
 
 <footer class="mt-16 border-t border-card-border bg-surface text-page-text">
@@ -12,7 +13,7 @@ const currentYear = new Date().getFullYear();
       <div class="flex flex-col gap-3 max-w-md">
         <a
           href="/"
-          class="inline-flex items-center gap-2.5 font-display text-lg font-extrabold tracking-tight text-page-text hover:text-primary transition-colors w-fit"
+          class="inline-flex items-center gap-2.5 min-h-11 font-display text-lg font-extrabold tracking-tight text-page-text hover:text-primary transition-colors w-fit"
         >
           <svg
             width="18"
@@ -33,8 +34,9 @@ const currentYear = new Date().getFullYear();
           Ingeniería de software enfocada en sistemas backend en Go, infraestructura Linux y telemetría IoT en producción.
         </p>
 
-        <p class="text-xs font-medium text-text-muted m-0">
-          {portfolioData.location}
+        <p class="inline-flex items-center gap-2 text-xs font-medium text-text-muted m-0">
+          <span class="w-2 h-2 rounded-full bg-status-ok shrink-0" aria-hidden="true"></span>
+          <span>Valdivia, CL (UTC-3/-4) · Remoto y proyectos</span>
         </p>
       </div>
 
@@ -45,22 +47,38 @@ const currentYear = new Date().getFullYear();
         </h2>
         <ul class="flex flex-col gap-0.5 list-none p-0 m-0">
           <li>
-            <a href="/" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+            <a
+              href="/"
+              aria-current={pathname === '/' ? 'page' : undefined}
+              class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
+            >
               Inicio
             </a>
           </li>
           <li>
-            <a href="/projects" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+            <a
+              href="/projects"
+              aria-current={pathname.startsWith('/projects') ? 'page' : undefined}
+              class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
+            >
               Proyectos
             </a>
           </li>
           <li>
-            <a href="/blog" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+            <a
+              href="/blog"
+              aria-current={pathname.startsWith('/blog') ? 'page' : undefined}
+              class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
+            >
               Blog
             </a>
           </li>
           <li>
-            <a href="/about" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+            <a
+              href="/about"
+              aria-current={pathname === '/about' ? 'page' : undefined}
+              class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
+            >
               Sobre mí
             </a>
           </li>
@@ -89,7 +107,7 @@ const currentYear = new Date().getFullYear();
                 rel="noopener noreferrer"
                 class="inline-flex items-center gap-1.5 min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
               >
-                <span>LinkedIn</span>
+                <span>LinkedIn<span class="sr-only"> (abre en una nueva pestaña)</span></span>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M7 17 17 7"></path>
                   <path d="M7 7h10v10"></path>
@@ -105,7 +123,7 @@ const currentYear = new Date().getFullYear();
                 rel="noopener noreferrer"
                 class="inline-flex items-center gap-1.5 min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
               >
-                <span>GitHub</span>
+                <span>GitHub<span class="sr-only"> (abre en una nueva pestaña)</span></span>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M7 17 17 7"></path>
                   <path d="M7 7h10v10"></path>
@@ -117,15 +135,14 @@ const currentYear = new Date().getFullYear();
             <li>
               <a
                 href={portfolioData.social.rss}
-                target="_blank"
-                rel="noopener noreferrer"
                 class="inline-flex items-center gap-1.5 min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
               >
-                <span>Feed RSS</span>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M7 17 17 7"></path>
-                  <path d="M7 7h10v10"></path>
+                  <path d="M4 11a9 9 0 0 1 9 9"></path>
+                  <path d="M4 4a16 16 0 0 1 16 16"></path>
+                  <circle cx="5" cy="19" r="1"></circle>
                 </svg>
+                <span>Feed RSS</span>
               </a>
             </li>
           )}

@@ -37,3 +37,6 @@ pnpm-debug.log*
 
 # Imágenes sociales generadas por `pnpm run og` en cada build.
 public/og/
+
+.impeccable/
+.agents

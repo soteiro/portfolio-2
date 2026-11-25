@@ -14,11 +14,11 @@ const projectHref = project.id ? `/projects/${project.id}` : (project.demoUrl ||
 ---
 
 <article
-  class="project-card group relative flex flex-col justify-between gap-5 p-6 bg-surface border border-card-border rounded-md transition-[border-color,background-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-border-strong min-w-0"
+  class="project-card group relative flex flex-col gap-5 p-6 bg-surface border border-card-border rounded-md transition-[border-color,background-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-border-strong min-w-0"
   data-category={project.category.trim().toLowerCase()}
 >
-  <div class="flex items-start justify-between gap-4 min-w-0">
-    <div class="flex flex-col gap-2 min-w-0 flex-1">
+  <div class="flex flex-col gap-4 min-w-0">
+    <div class="flex flex-col gap-2 min-w-0">
       <h3 class="font-display text-xl sm:text-2xl font-bold leading-snug text-page-text m-0">
         <a
           href={projectHref}
@@ -35,48 +35,39 @@ const projectHref = project.id ? `/projects/${project.id}` : (project.demoUrl ||
       )}
     </div>
 
-    {project.featured && (
-      <div class="flex flex-col gap-1 pt-1 shrink-0" aria-hidden="true">
-        <span class="w-1.5 h-3.5 rounded-[1px] bg-signal"></span>
-        <span class="w-1.5 h-3 rounded-[1px] bg-secondary"></span>
-        <span class="w-1.5 h-2.5 rounded-[1px] bg-ring"></span>
-        <span class="w-1.5 h-3 rounded-[1px] bg-status-ok"></span>
+    <!-- Metadatos en 2 columnas limpias (con código de traza cuando aplica) -->
+    <dl class="grid grid-cols-2 gap-x-4 gap-y-1.5 py-2.5 border-y border-card-border text-xs m-0">
+      <div class="flex flex-col gap-0.5">
+        <dt class="text-text-muted font-medium">Especialidad</dt>
+        <dd class="font-semibold text-secondary m-0">
+          {project.category}{trackCode ? <span class="tabular-data text-text-muted font-normal"> · {trackCode}</span> : ''}
+        </dd>
       </div>
-    )}
+      <div class="flex flex-col gap-0.5">
+        <dt class="text-text-muted font-medium">Periodo</dt>
+        <dd class="tabular-data font-medium text-page-text m-0">{project.year ?? 'En curso'}</dd>
+      </div>
+    </dl>
+
+    <p class="text-[0.9375rem] leading-relaxed text-page-text/90 m-0">
+      {project.description}
+    </p>
   </div>
 
-  <!-- Metadatos en 2 columnas limpias (con código de traza cuando aplica) -->
-  <dl class="grid grid-cols-2 gap-x-4 gap-y-1.5 py-2.5 border-y border-card-border text-xs m-0">
-    <div class="flex flex-col gap-0.5">
-      <dt class="text-text-muted font-medium">Especialidad</dt>
-      <dd class="font-semibold text-secondary m-0">
-        {project.category}{trackCode ? <span class="tabular-data text-text-muted font-normal"> · {trackCode}</span> : ''}
-      </dd>
-    </div>
-    <div class="flex flex-col gap-0.5">
-      <dt class="text-text-muted font-medium">Periodo</dt>
-      <dd class="tabular-data font-medium text-page-text m-0">{project.year ?? 'En curso'}</dd>
-    </div>
-  </dl>
-
-  <p class="text-[0.9375rem] leading-relaxed text-page-text/90 m-0">
-    {project.description}
-  </p>
-
-  <!-- Franja inferior: stack + enlaces siempre alineados a la derecha con objetivos táctiles >=44px -->
-  <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-3 border-t border-card-border">
+  <!-- Franja inferior en 2 filas consistentes: divisores alineados entre columnas + objetivos táctiles >=44px -->
+  <div class="mt-auto flex flex-col gap-1.5 pt-3 border-t border-card-border">
     <p class="tabular-data text-xs text-text-muted m-0 min-w-0">
       {visibleTags.join(' · ')}{extraCount > 0 ? ` · +${extraCount}` : ''}
     </p>
 
-    <div class="flex items-center gap-3 ml-auto shrink-0">
+    <div class="flex items-center justify-end gap-3 shrink-0">
       {project.demoUrl && (
         <a
           href={project.demoUrl}
           target="_blank"
           rel="noopener noreferrer"
           class="relative z-10 inline-flex items-center gap-1 min-h-11 px-1 text-sm font-medium text-text-muted hover:text-page-text transition-colors"
-          aria-label={`Ver demo en vivo de ${project.title}`}
+          aria-label={`Ver demo en vivo de ${project.title} (abre en una nueva pestaña)`}
         >
           <span>Demo</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -91,7 +82,7 @@ const projectHref = project.id ? `/projects/${project.id}` : (project.demoUrl ||
           target="_blank"
           rel="noopener noreferrer"
           class="relative z-10 inline-flex items-center gap-1 min-h-11 px-1 text-sm font-medium text-text-muted hover:text-page-text transition-colors"
-          aria-label={`Ver código fuente de ${project.title}`}
+          aria-label={`Ver código fuente de ${project.title} (abre en una nueva pestaña)`}
         >
           <span>Código</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

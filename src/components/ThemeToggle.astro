@@ -6,9 +6,8 @@
   id="theme-toggle"
   class="inline-flex items-center justify-center w-11 h-11 p-0 border border-card-border rounded bg-surface text-page-text cursor-pointer transition-[border-color,color,background-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary hover:text-primary"
   type="button"
-  aria-label="Cambiar entre tema oscuro y claro"
-  aria-pressed="true"
-  title="Cambiar tema"
+  aria-label="Cambiar a tema claro"
+  title="Cambiar a tema claro"
 >
   <svg
     width="18"
@@ -61,9 +60,9 @@
 
     const syncState = () => {
       const isDark = (document.documentElement.getAttribute('data-color-mode') || 'dark') === 'dark';
-      btn.setAttribute('aria-pressed', String(isDark));
-      btn.setAttribute('aria-label', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
-      btn.setAttribute('title', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
+      const label = isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', label);
     };
 
     syncState();

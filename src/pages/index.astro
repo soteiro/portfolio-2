@@ -5,6 +5,7 @@ import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Sidebar from '../components/Sidebar.astro';
 import { getCollection } from 'astro:content';
+import { portfolioData } from '../data/portfolio';
 import { sortProjects, trackCode } from '../lib/projects';
 import { absoluteUrl, PERSON_ID, WEBSITE_ID } from '../lib/seo';
 
@@ -35,6 +36,7 @@ const technicalArticles = allArticles
     slug: entry.id,
     excerpt: entry.data.excerpt,
     date: entry.data.date,
+    isoDate: entry.data.dateValue.toISOString().slice(0, 10),
     readTime: entry.data.readTime,
     category: entry.data.category,
   }));
@@ -61,7 +63,7 @@ const jsonLd = JSON.stringify([
   <Hero slot="hero" projects={projects} />
 
   <div class="site-container py-12 sm:py-16 flex flex-col gap-16">
-    <!-- Sección 1: Grilla limpia de proyectos (sin filtros innecesarios para 4 ítems; orden unificado con Hero) -->
+    <!-- Sección 1: Grilla limpia de proyectos (orden unificado con Hero) -->
     <section class="flex flex-col gap-6 min-w-0" id="projects">
       <div class="flex flex-wrap items-baseline justify-between gap-2 pb-4 border-b border-card-border">
         <div class="flex items-baseline gap-3">
@@ -72,17 +74,6 @@ const jsonLd = JSON.stringify([
             {projects.length} {projects.length === 1 ? 'proyecto' : 'proyectos'}
           </span>
         </div>
-
-        <a
-          href="/projects"
-          class="inline-flex items-center gap-1.5 min-h-11 text-sm font-display font-semibold text-primary hover:underline"
-        >
-          <span>Índice de proyectos</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-          </svg>
-        </a>
       </div>
 
       {projects.length > 0 ? (
@@ -98,8 +89,8 @@ const jsonLd = JSON.stringify([
       )}
     </section>
 
-    <!-- Sección 2: Artículos técnicos a la izquierda + Contacto y stack a la derecha -->
-    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-10 lg:gap-10 items-start">
+    <!-- Sección 2: Artículos técnicos + Contacto directo balanceados en altura -->
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-10 items-start">
       {technicalArticles.length > 0 && (
         <section class="flex flex-col gap-5 min-w-0" id="articles">
           <div class="flex flex-wrap items-baseline justify-between gap-2 pb-3 border-b border-card-border">
@@ -131,9 +122,9 @@ const jsonLd = JSON.stringify([
                 </h3>
                 <div class="flex flex-wrap items-center gap-2 text-xs text-text-muted">
                   <span class="font-semibold text-secondary">{article.category}</span>
-                  <span>·</span>
-                  <span class="tabular-data">{article.date}</span>
-                  <span>·</span>
+                  <span aria-hidden="true">·</span>
+                  <time datetime={article.isoDate} class="tabular-data">{article.date}</time>
+                  <span aria-hidden="true">·</span>
                   <span class="tabular-data">{article.readTime}</span>
                 </div>
                 <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">{article.excerpt}</p>
@@ -145,5 +136,42 @@ const jsonLd = JSON.stringify([
 
       <Sidebar />
     </div>
+
+    <!-- Franja horizontal de stack en producción (cierre equilibrado y escaneable) -->
+    <section
+      id="skills"
+      class="p-6 bg-surface border border-card-border rounded-md flex flex-col gap-4"
+    >
+      <div class="flex flex-wrap items-baseline justify-between gap-2 pb-3 border-b border-card-border">
+        <h2 class="font-display text-lg font-bold text-page-text m-0">
+          Stack en producción
+        </h2>
+        <a
+          href="/about"
+          class="inline-flex items-center gap-1.5 min-h-11 text-sm font-display font-semibold text-primary hover:underline"
+        >
+          <span>Sobre mí y competencias</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <dl class="grid grid-cols-1 md:grid-cols-2 gap-5 m-0">
+        <div class="flex flex-col gap-1.5 md:pr-5 md:border-r md:border-card-border">
+          <dt class="text-xs font-semibold text-secondary">Lenguajes</dt>
+          <dd class="tabular-data text-xs text-page-text m-0 leading-relaxed">
+            {portfolioData.skills.languages.join(' · ')}
+          </dd>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <dt class="text-xs font-semibold text-secondary">Infraestructura y herramientas</dt>
+          <dd class="tabular-data text-xs text-page-text m-0 leading-relaxed">
+            {portfolioData.skills.frameworks.join(' · ')}
+          </dd>
+        </div>
+      </dl>
+    </section>
   </div>
 </Layout>

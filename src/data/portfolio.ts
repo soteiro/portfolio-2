@@ -51,12 +51,12 @@ export const portfolioData = {
   // Habilidades / Skills
   skills: {
     languages: ["Go", "TypeScript", "SQL (PostgreSQL / SQLite)", "Bash / Shell", "C++ (ESP32)", "Python"],
-    frameworks: ["Angular", "Astro", "Docker", "Ansible", "Node.js / Bun", "Hono", "PlatformIO"],
+    frameworks: ["Linux (Namespaces, iptables, SELinux)", "Ansible", "Docker", "MQTT / EMQX", "Cloudflare Workers", "Angular", "Astro", "Node.js / Bun", "Hono", "PlatformIO"],
     specialties: [
       "Sistemas Backend Concurrentes & Daemons (Go)",
       "Linux Sysadmin, Namespaces & Hardening con SELinux",
       "Telemetría Masiva & Protocolos IoT (MQTT, EMQX, LoRaWAN)",
-      "Optimización de Bases de Datos & Time-Series (+15M filas)",
+      "Optimización de Bases de Datos & Time-Series (+16M filas)",
       "Interfaces y Paneles de Control (Angular con Signals)",
       "Automatización con Ansible & CI/CD (GitHub Actions)"
     ]

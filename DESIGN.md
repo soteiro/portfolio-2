@@ -193,11 +193,11 @@ Una paleta de instrumentación científica de bajo croma estructural (aceros y v
 - **Vacuum Ink / Primary Ink** (`#0b0f14` en oscuro / `#ffffff` en claro — `--color-primary-ink`): Tinta exclusiva sobre superficies rellenas con `--color-primary` (botones primarios y chips de filtro activos).
 
 ### Secondary
-- **Cherenkov Cyan** (`#35d0ff` en oscuro / **Technical Cyan** `#006b8f` en claro — `--color-secondary`): Trazas secundarias (`TRK-02`, `TRK-04`), etiquetas de especialidad/categoría en tarjetas y metadatos, nombres de stack en lectura en vivo y callouts informativos (`type="info"`).
+- **Cherenkov Cyan** (`#35d0ff` en oscuro / **Technical Cyan** `#006b8f` en claro — `--color-secondary`): Trazas secundarias (`TRK-02`, `TRK-04`), etiquetas de especialidad/categoría en tarjetas, artículos y readout en vivo, encabezados del bloque `Stack en producción` y callouts informativos (`type="info"`).
 
 ### Tertiary
-- **Calorimeter Red** (`#ff4d4d` en oscuro / **Calorimeter Crimson** `#d93030` en claro — `--color-energy`): Relleno de barras calorimétricas de métricas reales (`+15M/mes`, `95.18%`, `+16M`), cuñas radiales del arco exterior del detector, segmento inferior del espectro vertical y callouts de advertencia (`type="warning"`).
-- **Nominal Green** (`#2cb67d` en oscuro / **Nominal Forest** `#0f7a4d` en claro — `--color-status-ok`): Reservado exclusivamente al indicador circular de disponibilidad remota (`8×8px`) en cabecera, menú móvil y bloque de contacto.
+- **Calorimeter Red** (`#ff4d4d` en oscuro / **Calorimeter Crimson** `#d93030` en claro — `--color-energy`): Callouts de advertencia (`type="warning"`) y señales de alerta semántica.
+- **Nominal Green** (`#2cb67d` en oscuro / **Nominal Forest** `#0f7a4d` en claro — `--color-status-ok`): Indicador circular de disponibilidad (`8×8px`) en cabecera, Hero móvil, drawer móvil y bloque de contacto, además de la métrica real de cumplimiento de SLA (`95.18%` y su barra proporcional `role="progressbar"`).
 
 ### Neutral
 - **Matte Vacuum / Blueprint Paper** (`#0b0f14` oscuro / `#f3f6f9` claro — `--color-background`): Lienzo base de la página y fondo del control de copia de correo.
@@ -220,9 +220,9 @@ Una paleta de instrumentación científica de bajo croma estructural (aceros y v
 
 ## Typography
 
-**Display Font:** `Barlow` (auto-hospedada con `@fontsource/barlow` en pesos `500`, `600`, `700`, `800`; respaldo `-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`)
-**Body Font:** `Public Sans` (auto-hospedada con `@fontsource/public-sans` en pesos `400`, `500`, `600`, `700`; respaldo `-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`)
-**Label/Mono Font:** `JetBrains Mono` (auto-hospedada con `@fontsource/jetbrains-mono` en pesos `400`, `500`, `600`; respaldo `Menlo, Monaco, Consolas, "Liberation Mono", monospace`)
+**Display Font:** `Barlow` (auto-hospedada con `@fontsource/barlow` subset `latin` en pesos `600`, `700`, `800`; fallback ajustado `Barlow Fallback`)
+**Body Font:** `Public Sans` (auto-hospedada con `@fontsource/public-sans` subset `latin` en pesos `400`, `500`, `600`, `700`; fallback ajustado `Public Sans Fallback`)
+**Label/Mono Font:** `JetBrains Mono` (auto-hospedada con `@fontsource/jetbrains-mono` subset `latin` en pesos `400`, `500`, `600`; fallback ajustado `JetBrains Mono Fallback`)
 
 **Character:** Emparejamiento industrial y editorial de alta legibilidad: `Barlow` aporta hombros geométricos ligeramente condensados con autoridad técnica en titulares y botones, `Public Sans` sostiene párrafos extensos y documentación sin fatiga visual, y `JetBrains Mono` aporta alineación tabular estricta a cifras, códigos de pista y fragmentos de código.
 
@@ -245,8 +245,8 @@ Una paleta de instrumentación científica de bajo croma estructural (aceros y v
 El sitio usa un contenedor centrado `.site-container` con ancho máximo de `1200px` (`--max-width: 75rem`) y relleno lateral fluido `clamp(1.25rem, 3vw, 2.5rem)` (`--viewport-padding`). Las páginas de lectura larga (`/about`, `/projects/[slug]`, `/blog/[slug]`) estrechan el contenedor a `52rem` (`832px`) con medida de prosa acotada a `68ch`.
 
 - **Breakpoints activos (Tailwind v4):** `sm` (`640px`), `md` (`768px` — transición de menú móvil a navegación horizontal y columnas de footer), `lg` (`1024px` — activación de retículas asimétricas de portada y barra de disponibilidad en cabecera).
-- **Composición del Hero:** grilla de 2 columnas en escritorio (`lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.18fr)]`, brecha `40px` / `gap-10`) alineada verticalmente al centro, seguida por una franja continua de índice de 4 sistemas (`grid-cols-2 lg:grid-cols-4`) construida con divisores de 1px (`gap-px bg-card-border`).
-- **Portada bajo el pliegue:** ritmo vertical principal de `64px` (`gap-16`, `py-14 sm:py-16`). Sección 1 muestra encabezado + filtros inmediatos sobre una grilla de proyectos de `1` columna en móvil y `2` columnas desde `1024px` (`gap-5` / `20px`). Sección 2 equilibra artículos técnicos y barra lateral mediante `lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]` (`gap-10`).
+- **Composición del Hero:** grilla de 2 columnas en escritorio (`lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.14fr)]`, brecha `40px`/`48px`) dentro de `<main id="main-content">`, combinando propuesta, CTAs en 1 fila (con copia inline de ancho fijo), 3 KPIs tabulares reales y el diagrama concéntrico con selector `role="tablist"` (`TRK-01..04`).
+- **Portada bajo el pliegue:** ritmo vertical principal de `64px` (`gap-16`, `py-12 sm:py-16`). Sección 1 muestra la grilla limpia de 4 proyectos (`1` columna móvil, `2` columnas desde `1024px`, `gap-5`). Sección 2 empareja los 2 artículos técnicos a la izquierda con `Sidebar` (`#contact`) alineado al borde superior de las tarjetas (`lg:pt-[4.25rem]`), seguido de la franja horizontal `Stack en producción` de 2 columnas.
 - **Footer:** grilla de 3 columnas desde `768px` (`md:grid-cols-[1.6fr_1fr_1fr]`, brecha `40px`) sobre superficie elevada respecto al fondo (`bg-surface`) separada por borde superior de 1px.
 - **Ritmo de espaciado base:** escala de `4px` (`xs`), `8px` (`sm`), `16px` (`md`), `24px` (`p-6`, estándar interno de paneles y tarjetas), `40px` (`gap-10`, separación entre columnas mayores) y `64px` (`gap-16`, separación entre secciones).
 
@@ -283,11 +283,7 @@ Los componentes responden con precisión táctil e inmediata: objetivos mínimos
 - **Primary (`.telemetry-btn-primary`):** Fondo `--color-primary` (`#ffd23a` oscuro / `#0f3d6b` claro), tinta `--color-primary-ink` (`#0b0f14` / `#ffffff`), `Barlow` `700` `0.9375rem`, padding `0.625rem 1.25rem` (`10px 20px`), `gap: 0.5rem`.
 - **Hover / Active / Focus:** Hover aplica `opacity: 0.92` y `translateY(-1px)` en `180ms var(--ease-out-expo)`; Active vuelve a `translateY(0)`; `:focus-visible` dibuja `outline: 2px solid var(--color-primary)` con `outline-offset: 3px`.
 - **Secondary (`.telemetry-btn-secondary`):** Fondo `--color-surface`, borde `1px solid var(--color-border-strong)`, texto `--color-text`, `Barlow` `600` `0.9375rem`, padding `0.625rem 1.125rem` (`10px 18px`). En hover cambia el borde a `--color-primary` y el fondo a `--color-surface-elevated`.
-- **Icon Actions (`ThemeToggle`, GitHub, menú móvil):** Cuadrados de `44×44px` (`w-11 h-11`), radio `4px`, fondo `--color-surface`, borde `1px solid var(--color-border)`, transición hacia borde y trazo `--color-primary`.
-
-### Chips
-- **Style (`.category-chip`):** Botones de filtro inmediato sobre la grilla de proyectos (`min-h-11`, padding `8px 14px`, radio `4px`, `Public Sans` `500` `0.875rem`). En reposo usan `--color-surface`, borde `--color-border` y texto `--color-text`.
-- **State:** En hover refuerzan borde a `--color-border-strong`. En estado activo (`.active` y `aria-pressed="true"`) invierten a fondo `--color-primary`, tinta `--color-primary-ink` y borde `--color-primary`.
+- **Icon Actions (`ThemeToggle`, LinkedIn, GitHub, menú móvil):** Cuadrados de `44×44px` (`w-11 h-11`), radio `4px`, fondo `--color-surface`, borde `1px solid var(--color-border)`, transición hacia borde y trazo `--color-primary`.
 
 ### Cards / Containers
 - **Corner Style:** Radio técnico `6px` (`rounded-md`).
@@ -295,19 +291,19 @@ Los componentes responden con precisión táctil e inmediata: objetivos mínimos
 - **Shadow Strategy:** Cero sombras en reposo y hover (ver *Elevation & Depth*).
 - **Border:** `1px solid var(--color-border)` en tarjetas de proyecto y artículos (transición a `--color-border-strong` en hover); `1px solid var(--color-border-strong)` en bloques destacados de contacto y `Callout`.
 - **Internal Padding:** `24px` (`p-6`) uniforme.
-- **Anatomía de `ProjectCard`:** Titular `<h3>` + subtítulo a la izquierda y, solo en proyectos destacados, indicador vertical de espectro de 4 segmentos (`6px` de ancho, colores `--color-signal`, `--color-secondary`, `--color-ring`, `--color-energy`) a la derecha; tabla `<dl>` de 3 metadatos (`Especialidad`, `Periodo`, `Estado`) debajo del título con bordes superior e inferior `1px`; descripción en prosa; y franja inferior con stack en `.tabular-data` (máximo 4 etiquetas + contador `+N`) y enlaces con iconos SVG uniformes.
+- **Anatomía de `ProjectCard`:** Titular `<h3>` + subtítulo con stretched-link; tabla `<dl>` de 2 metadatos (`Especialidad` con código `TRK-0x` y `Periodo`) debajo del título con bordes superior e inferior `1px`; descripción en prosa; y franja inferior fija al fondo (`mt-auto`) con stack en `.tabular-data` (máximo 4 etiquetas + `+N`) y acciones `Demo` / `Código` / `Ver proyecto` alineadas a la derecha con `min-h-11`.
 
 ### Inputs / Fields
-- **Copy Email Control (`#copy-email-btn`):** Campo interactivo de solo lectura (`min-h-11`, padding `8px 14px`, radio `4px`, fondo `--color-background`, borde `1px solid var(--color-border)`). Muestra la dirección en `JetBrains Mono` `0.75rem` a la izquierda y acción `Copiar` / `Copiado` en `--color-primary` con icono SVG a la derecha, anunciando el estado en vivo mediante `role="status" aria-live="polite"`. En hover refuerza el borde a `--color-primary`.
+- **Copy Email Control (`#copy-email-btn` y `#hero-copy-email-btn`):** Control interactivo de copia directa (`min-h-11`, radio `4px`). En Hero mantiene ancho fijo mediante rejilla superpuesta (`contacto@soteiro.dev` / `Correo copiado`) sin desplazar botones vecinos; en `Sidebar` muestra la dirección en `JetBrains Mono` `0.75rem` junto a `Copiar` / `Copiado`. Ambos anuncian el resultado vía `role="status" aria-live="polite"`, limpian el éxito a los `2.5s` y mantienen persistente el mensaje de recuperación si falla el portapapeles.
 
 ### Navigation
-- **Desktop Header:** Barra fija (`sticky top-0 z-50`, altura `72px` / `4.5rem`), fondo translúcido `--color-header-bg` con `backdrop-blur-md` y borde inferior `1px solid var(--color-border)`. Izquierda: isotipo concéntrico SVG (`22×22px`) + nombre en `Barlow` `800` + divisor vertical e indicador de disponibilidad (`hidden lg:inline-flex`). Centro: 4 enlaces en español (`Inicio`, `Proyectos`, `Blog`, `Sobre mí`) con altura `44px`, radio `4px` y estado activo con `aria-current="page"`, texto `--color-primary`, fondo `--color-surface` y borde `--color-border-strong`. Derecha: enlace GitHub y `ThemeToggle`.
-- **Mobile Drawer:** Botón hamburguesa `44×44px` bajo `768px`; abre panel flotante (`top-[4.75rem]`, `inset-x-4`, radio `6px`, borde `--color-border-strong`, `shadow-2xl`, animación `drawerReveal 200ms`) con cierre por botón, tecla `Escape`, clic fuera o cambio de viewport a escritorio, devolviendo el foco al disparador.
+- **Desktop Header:** Barra fija (`sticky top-0 z-50`, altura `72px` / `4.5rem`), fondo translúcido `--color-header-bg` con `backdrop-blur-md` y borde inferior `1px solid var(--color-border)`. Izquierda: isotipo concéntrico SVG (`22×22px`) + nombre en `Barlow` `800` + divisor vertical e indicador de disponibilidad (`hidden lg:inline-flex`). Centro: 4 enlaces en español (`Inicio`, `Proyectos`, `Blog`, `Sobre mí`) con altura `44px`, radio `4px` y estado activo con `aria-current="page"`, texto `--color-primary`, fondo `--color-surface` y borde `--color-border-strong`. Derecha: enlaces LinkedIn, GitHub y `ThemeToggle`.
+- **Mobile Drawer:** Botón hamburguesa `44×44px` bajo `768px`; abre panel flotante (`role="dialog" aria-modal="true"`, `top-[5rem]`, `inset-x-4`, `max-h-[calc(100dvh-5.75rem)] overflow-y-auto overscroll-contain`, radio `6px`, borde `--color-border-strong`, `shadow-2xl`, animación `drawerReveal 200ms`) con trampa de foco `Tab`/`Shift+Tab`, bloqueo de scroll en `body` y cierre por botón, tecla `Escape`, backdrop o cambio a escritorio devolviendo el foco al disparador.
 
-### Collider Event Display & Calorimeter Metrics (Signature Components)
-- **Diagrama Concéntrico SVG (`Hero.astro`):** `viewBox="0 0 640 460"` flotando directamente sobre el vacío sin marco exterior. Contiene micro-trama circular (`#vacuum-dots`), ejes cartesianos de `1px`, 5 anillos concéntricos (`r=34, 70, 108, 142, 174`) con 12 marcas angulares cada 30°, 5 cuñas calorimétricas radiales en `--color-energy`, 4 trazas cúbicas Bézier con curvas fantasma discontinuas y núcleo central (`r=9` + `r=3.5` en `--color-signal`). Al seleccionar una pista (clic en botón, curva o etiqueta), la pista activa pasa a `opacity: 1`, `stroke-width: 3.25`, nodo `r=6` y halo `r=11`, mientras las inactivas bajan a `opacity: 0.26` y `stroke-width: 1.5` sin atenuar las etiquetas de texto.
-- **Selector de Pistas + Readout en Vivo:** Panel de borde `1px` y radio `6px` con cabecera en rejilla capilar (`grid-cols-2 sm:grid-cols-4 gap-px bg-card-border`) de 4 botones `min-h-11` (`aria-pressed`) sobre una franja `aria-live="polite"` que actualiza título, resumen, código `TRK-0x`, categoría, stack y enlace `Abrir caso`.
-- **Barras Calorimétricas:** Filas de 3 columnas (`valor tabular --color-primary` | carril `10px` de alto con relleno `--color-energy` según porcentaje real | descripción en `--color-text-muted`) separadas del bloque de acciones por un divisor `1px`.
+### Collider Event Display & Production KPIs (Signature Components)
+- **Diagrama Concéntrico SVG (`Hero.astro`):** `viewBox="24 20 592 420"` flotando directamente sobre el vacío (`aria-hidden="true"` para delegar la semántica de teclado al `tablist`). Contiene micro-trama circular (`#vacuum-dots`), ejes cartesianos de `1px`, 5 anillos concéntricos (`r=34, 70, 108, 142, 174`), 12 marcas angulares cada 30°, 4 segmentos radiales reactivos al track seleccionado, 4 trazas cúbicas Bézier con áreas de impacto transparentes (`stroke-width="18"`), curvas fantasma discontinuas y núcleo central (`r=9` + `r=3.5` en `--color-signal`). En `<640px` muestra códigos compactos `01`–`04` vinculados por color al selector inferior.
+- **Selector de Pistas + Readout en Vivo:** Panel de borde `1px` y radio `6px` con barra `role="tablist"` (`grid-cols-2 sm:grid-cols-4 gap-px bg-card-border`), pestañas `role="tab"` con punto de color, acento superior `border-t-2 border-t-primary`, roving `tabindex` y flechas `Arrow`/`Home`/`End`, sobre un `role="tabpanel"` de altura estable (`min-h-[10.5rem] sm:min-h-[8.25rem]`) que actualiza título, resumen, `TRK-0x · Especialidad` (cian), stack (gris mono) y CTA `Ver proyecto`.
+- **KPIs Reales en Producción (`Hero.astro`):** `<dl>` válido (`<dt>` antes de `<dd>` con `order-1`/`order-2`) de 3 métricas reales (`+15M/mes`, `+16M` y `95.18% desde 0%` con barra proporcional `role="progressbar"` en `--color-status-ok`), en 2 columnas + barra completa en móvil y 3 columnas en escritorio, con enlace de atribución a `/about`.
 - **Callout Técnico (`Callout.astro`):** Contenedor `rounded-md` sobre `--color-surface` con borde perimetral uniforme `1px solid var(--color-border-strong)` e icono SVG semántico de `20×20px` coloreado según variante (`info`: `--color-secondary`, `tip`: `--color-primary`, `warning`: `--color-energy`, `quote`: `--color-ring-text`).
 
 ## Do's and Don'ts

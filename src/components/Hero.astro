@@ -16,10 +16,22 @@ function compactTrackName(title: string): string {
   return head.split(/\s+/).slice(0, 2).join(' ');
 }
 
-// Coordenadas en viewBox 592×420 (24 20 592 420) con núcleo en (300, 230)
+// Coordenadas en viewBox 592×420 (24 20 592 420) con núcleo en (300, 230).
+// Orden de lectura natural (01 arriba-izq, 02 arriba-der, 03 abajo-izq, 04 abajo-der)
+// alineado 1:1 con la grilla 2×2 del selector inferior en móvil.
 const trackVisuals = [
   {
     color: 'var(--color-signal)',
+    path: 'M 300 230 C 266 154, 212 108, 144 82',
+    ghostPath: 'M 300 230 C 254 166, 196 124, 152 104',
+    endX: 144,
+    endY: 82,
+    labelX: 132,
+    labelY: 86,
+    align: 'end',
+  },
+  {
+    color: 'var(--color-secondary)',
     path: 'M 300 230 C 318 148, 376 92, 466 64',
     ghostPath: 'M 300 230 C 330 162, 392 110, 452 80',
     endX: 466,
@@ -27,7 +39,16 @@ const trackVisuals = [
     labelX: 478,
     labelY: 68,
     align: 'start',
-    wedgeIndex: 0,
+  },
+  {
+    color: 'var(--color-ring-text)',
+    path: 'M 300 230 C 228 248, 174 302, 146 376',
+    ghostPath: 'M 300 230 C 242 264, 194 318, 166 386',
+    endX: 146,
+    endY: 376,
+    labelX: 134,
+    labelY: 380,
+    align: 'end',
   },
   {
     color: 'var(--color-secondary)',
@@ -38,29 +59,6 @@ const trackVisuals = [
     labelX: 474,
     labelY: 378,
     align: 'start',
-    wedgeIndex: 3,
-  },
-  {
-    color: 'var(--color-ring-text)',
-    path: 'M 300 230 C 266 154, 212 108, 144 82',
-    ghostPath: 'M 300 230 C 254 166, 196 124, 152 104',
-    endX: 144,
-    endY: 82,
-    labelX: 132,
-    labelY: 86,
-    align: 'end',
-    wedgeIndex: 1,
-  },
-  {
-    color: 'var(--color-secondary)',
-    path: 'M 300 230 C 228 248, 174 302, 146 376',
-    ghostPath: 'M 300 230 C 242 264, 194 318, 166 386',
-    endX: 146,
-    endY: 376,
-    labelX: 134,
-    labelY: 380,
-    align: 'end',
-    wedgeIndex: 2,
   },
 ];
 
@@ -96,11 +94,12 @@ function radialWedgePath(cx: number, cy: number, rInner: number, rOuter: number,
   return `M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${rOuter} ${rOuter} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A ${rInner} ${rInner} 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z`;
 }
 
+// Resaltados uniformes en el cuadrante exacto de cada pista (sin alturas arbitrarias)
 const detectorArcSegments = [
-  { d: radialWedgePath(300, 230, 174, 208, -28, -15), trackIndex: 0 },
-  { d: radialWedgePath(300, 230, 174, 202, -12, 1), trackIndex: 2 },
-  { d: radialWedgePath(300, 230, 174, 202, 4, 17), trackIndex: 3 },
-  { d: radialWedgePath(300, 230, 174, 208, 20, 33), trackIndex: 1 },
+  { d: radialWedgePath(300, 230, 174, 192, -148, -124), trackIndex: 0 },
+  { d: radialWedgePath(300, 230, 174, 192, -56, -32), trackIndex: 1 },
+  { d: radialWedgePath(300, 230, 174, 192, 124, 148), trackIndex: 2 },
+  { d: radialWedgePath(300, 230, 174, 192, 32, 56), trackIndex: 3 },
 ];
 
 const ringTicks = Array.from({ length: 12 }, (_, i) => {
@@ -116,7 +115,7 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
 
 <section class="relative overflow-x-clip">
   <div class="site-container py-10 sm:py-14 lg:py-16">
-    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.14fr)] gap-10 lg:gap-12 items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.04fr)_minmax(0,1.06fr)] gap-10 lg:gap-10 items-center">
       <!-- Columna izquierda: identidad, disponibilidad móvil, CTAs en 1 fila y métricas verificables -->
       <div class="flex flex-col gap-6 min-w-0">
         <h1 class="font-display text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-[-0.03em] leading-[1.03] text-page-text m-0">
@@ -125,17 +124,17 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
 
         <p class="inline-flex lg:hidden items-center gap-2 text-xs font-medium text-text-muted m-0">
           <span class="w-2 h-2 rounded-full bg-status-ok shrink-0" aria-hidden="true"></span>
-          <span>Valdivia, CL · Disponible remoto</span>
+          <span>Valdivia, CL (UTC-3/-4) · Remoto y proyectos</span>
         </p>
 
         <p class="text-base sm:text-lg text-text-muted leading-relaxed max-w-[54ch] m-0">
           {portfolioData.bio}
         </p>
 
-        <!-- Acciones directas: una sola fila en escritorio con copia inline sin fricción -->
-        <div class="flex flex-col gap-2 pt-1">
-          <div class="flex flex-wrap items-center gap-2.5">
-            <a href={`mailto:${portfolioData.social.email}`} class="telemetry-btn-primary">
+        <!-- Acciones directas: una sola fila en escritorio, jerarquía clara en móvil, copia inline sin salto -->
+        <div class="flex flex-col gap-1 pt-1">
+          <div class="flex flex-wrap xl:flex-nowrap items-center gap-2">
+            <a href={`mailto:${portfolioData.social.email}`} class="telemetry-btn-primary w-full sm:w-auto px-3.5 shrink-0 whitespace-nowrap">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
                 <rect width="20" height="16" x="2" y="4" rx="2"></rect>
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
@@ -147,61 +146,82 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
               type="button"
               id="hero-copy-email-btn"
               data-email={portfolioData.social.email}
-              class="telemetry-btn-secondary"
+              title="Copiar correo electrónico"
+              aria-label={`Copiar correo ${portfolioData.social.email}`}
+              class="telemetry-btn-secondary flex-1 sm:flex-none px-3 shrink-0 whitespace-nowrap"
               aria-describedby="hero-copy-status"
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
                 <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
                 <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
               </svg>
-              <span data-hero-copy-label>Copiar correo</span>
+              <span class="font-mono text-xs font-medium">{portfolioData.social.email}</span>
+              <span class="grid place-items-center pl-2 ml-0.5 border-l border-card-border text-xs font-semibold text-primary">
+                <span data-hero-copy-default class="col-start-1 row-start-1">Copiar</span>
+                <span data-hero-copy-done class="col-start-1 row-start-1 invisible" aria-hidden="true">Copiado</span>
+              </span>
             </button>
 
-            <a href="#projects" class="telemetry-btn-secondary">
+            <a href="#projects" class="telemetry-btn-secondary px-3 shrink-0 whitespace-nowrap">
               <span>Proyectos</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
                 <path d="M12 5v14"></path>
                 <path d="m19 12-7 7-7-7"></path>
               </svg>
             </a>
           </div>
 
-          <p id="hero-copy-status" role="status" aria-live="polite" class="text-xs text-text-muted m-0 empty:hidden"></p>
+          <p id="hero-copy-status" role="status" aria-live="polite" class="min-h-4 text-xs text-text-muted m-0"></p>
         </div>
 
-        <!-- Métricas reales en producción: 3 KPI tabulares limpios + barra proporcional real solo para 95.18% -->
-        <dl
-          class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-5 border-t border-card-border m-0"
-          aria-label="Métricas reales en producción"
-        >
-          <div class="flex flex-col gap-1 sm:pr-4 sm:border-r sm:border-card-border">
-            <dt class="text-xs font-medium text-text-muted order-2">Eventos IoT procesados</dt>
-            <dd class="tabular-data text-xl font-semibold text-page-text m-0 order-1">+15M/mes</dd>
-          </div>
-
-          <div class="flex flex-col gap-1 sm:pr-4 sm:border-r sm:border-card-border">
-            <dt class="text-xs font-medium text-text-muted order-2">Filas en PostgreSQL</dt>
-            <dd class="tabular-data text-xl font-semibold text-page-text m-0 order-1">+16M</dd>
-          </div>
-
-          <div class="flex flex-col gap-1.5">
-            <div class="flex items-baseline justify-between gap-2">
-              <dd class="tabular-data text-xl font-semibold text-status-ok m-0">95.18%</dd>
-              <span class="tabular-data text-xs text-text-muted">desde 0%</span>
+        <!-- Métricas reales en producción: 3 KPI tabulares válidos (<dt> antes de <dd>) + atribución a /about -->
+        <div class="flex flex-col gap-1.5 pt-5 border-t border-card-border">
+          <dl
+            class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3 sm:gap-4 m-0"
+            aria-label="Métricas reales en producción"
+          >
+            <div class="flex flex-col gap-1 pr-3 sm:pr-4 border-r border-card-border">
+              <dt class="text-xs font-medium text-text-muted order-2">Eventos IoT procesados</dt>
+              <dd class="tabular-data text-xl font-semibold text-page-text m-0 order-1">+15M/mes</dd>
             </div>
-            <div
-              class="h-1.5 w-full bg-surface border border-card-border rounded-[2px] overflow-hidden"
-              role="progressbar"
-              aria-valuenow="95.18"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-label="Cumplimiento de SLA recuperado: 95.18%"
+
+            <div class="flex flex-col gap-1 sm:pr-4 sm:border-r sm:border-card-border">
+              <dt class="text-xs font-medium text-text-muted order-2">Filas en PostgreSQL</dt>
+              <dd class="tabular-data text-xl font-semibold text-page-text m-0 order-1">+16M</dd>
+            </div>
+
+            <div class="col-span-2 sm:col-span-1 pt-3 sm:pt-0 border-t sm:border-t-0 border-card-border flex flex-col gap-1.5">
+              <dt class="text-xs font-medium text-text-muted order-2">Cumplimiento de SLA</dt>
+              <dd class="flex flex-col gap-1.5 m-0 order-1">
+                <span class="flex items-baseline justify-between gap-2">
+                  <span class="tabular-data text-xl font-semibold text-status-ok">95.18%</span>
+                  <span class="tabular-data text-xs text-text-muted">desde 0%</span>
+                </span>
+                <span
+                  class="block h-1.5 w-full bg-surface border border-card-border rounded-[2px] overflow-hidden"
+                  role="progressbar"
+                  aria-valuenow="95.18"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-label="Cumplimiento de SLA recuperado: 95.18%"
+                >
+                  <span class="block h-full bg-status-ok" style="width: 95.18%"></span>
+                </span>
+              </dd>
+            </div>
+          </dl>
+
+          <p class="flex flex-wrap items-center gap-x-2 text-xs text-text-muted m-0">
+            <span>Resultados en telemetría industrial en producción</span>
+            <span aria-hidden="true" class="hidden sm:inline">·</span>
+            <a
+              href="/about"
+              class="inline-flex items-center min-h-11 whitespace-nowrap font-medium text-primary hover:underline"
             >
-              <div class="h-full bg-status-ok" style="width: 95.18%"></div>
-            </div>
-            <dt class="text-xs font-medium text-text-muted">Cumplimiento de SLA</dt>
-          </div>
-        </dl>
+              Ver contexto en Sobre mí
+            </a>
+          </p>
+        </div>
       </div>
 
       <!-- Columna derecha: Sección transversal del detector respirando sobre el vacío -->
@@ -211,8 +231,7 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
             <svg
               viewBox="24 20 592 420"
               class="w-full max-w-[600px] h-auto"
-              role="img"
-              aria-label="Diagrama concéntrico interactivo de los 4 sistemas de ingeniería de Diego Soto"
+              aria-hidden="true"
             >
               <defs>
                 <pattern id="vacuum-dots" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -236,7 +255,7 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
               ))}
 
               <!-- Segmentos del arco exterior vinculados a la pista activa -->
-              <g aria-hidden="true">
+              <g>
                 {detectorArcSegments.map((seg, segIdx) => {
                   const linkedTrack = tracks[seg.trackIndex];
                   const isFirst = seg.trackIndex === 0;
@@ -253,13 +272,21 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
                 })}
               </g>
 
-              <!-- Trazas curvas con feedback hover y reconstrucciones fantasma -->
+              <!-- Trazas curvas con áreas táctiles amplias y reconstrucciones fantasma -->
               {tracks.map((track, idx) => (
                 <g
                   class="event-track-arc cursor-pointer transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:opacity-90"
                   data-track-group={track.id}
-                  opacity={idx === 0 ? '1' : '0.3'}
+                  opacity={idx === 0 ? '1' : '0.38'}
                 >
+                  <path
+                    d={track.path}
+                    fill="none"
+                    stroke="transparent"
+                    stroke-width="18"
+                    stroke-linecap="round"
+                  />
+                  <circle cx={track.endX} cy={track.endY} r="18" fill="transparent" />
                   <path
                     d={track.ghostPath}
                     fill="none"
@@ -272,7 +299,7 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
                     d={track.path}
                     fill="none"
                     stroke={track.color}
-                    stroke-width={idx === 0 ? '3' : '1.6'}
+                    stroke-width={idx === 0 ? '3.25' : '1.5'}
                     stroke-linecap="round"
                     class="transition-[stroke-width] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
                     data-track-path={track.id}
@@ -290,16 +317,16 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
                   <circle
                     cx={track.endX}
                     cy={track.endY}
-                    r={idx === 0 ? '5.5' : '4'}
+                    r={idx === 0 ? '6' : '4'}
                     fill={track.color}
                     data-track-node={track.id}
                   />
                 </g>
               ))}
 
-              <!-- Etiquetas visibles en >=640px (en móvil <640px el selector 2x2 inferior aporta rótulos nítidos de 14px) -->
+              <!-- Etiquetas completas en >=640px y códigos compactos 01-04 en móvil -->
               {tracks.map((track, idx) => (
-                <g class="hidden sm:block cursor-pointer" data-track-label-group={track.id}>
+                <g class="cursor-pointer" data-track-label-group={track.id}>
                   <text
                     x={track.labelX}
                     y={track.labelY}
@@ -308,9 +335,23 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
                     font-family="var(--font-display)"
                     font-size="14"
                     font-weight={idx === 0 ? '700' : '600'}
+                    class="hidden sm:block"
                     data-track-label={track.id}
                   >
                     {track.shortTitle}
+                  </text>
+                  <text
+                    x={track.labelX}
+                    y={track.labelY}
+                    text-anchor={track.align}
+                    fill={idx === 0 ? 'var(--color-text)' : 'var(--color-text-muted)'}
+                    font-family="var(--font-mono)"
+                    font-size="15"
+                    font-weight={idx === 0 ? '700' : '600'}
+                    class="sm:hidden"
+                    data-track-label-mobile={track.id}
+                  >
+                    {String(idx + 1).padStart(2, '0')}
                   </text>
                 </g>
               ))}
@@ -320,16 +361,21 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
             </svg>
           </div>
 
-          <!-- Selector 2x2 / 4x1 + ficha de lectura en vivo -->
+          <!-- Selector 2x2 / 4x1 con semántica tablist + ficha de lectura en vivo -->
           <div class="border border-card-border rounded-md overflow-hidden bg-surface">
             <div
               class="grid grid-cols-2 sm:grid-cols-4 gap-px bg-card-border border-b border-card-border"
-              role="group"
+              role="tablist"
               aria-label="Seleccionar traza de sistema"
             >
               {tracks.map((track, idx) => (
                 <button
                   type="button"
+                  id={`track-tab-${track.id}`}
+                  role="tab"
+                  aria-selected={idx === 0 ? 'true' : 'false'}
+                  aria-controls="event-readout"
+                  tabindex={idx === 0 ? 0 : -1}
                   data-track-select={track.id}
                   data-track-title={track.title}
                   data-track-category={track.category}
@@ -337,14 +383,20 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
                   data-track-stack={track.stack}
                   data-track-href={track.href}
                   data-track-code={track.code}
-                  aria-pressed={idx === 0 ? 'true' : 'false'}
-                  class={`flex flex-col items-start gap-0.5 min-h-11 px-3 py-2.5 text-left border-0 cursor-pointer transition-colors duration-150 ${
+                  class={`flex flex-col items-start gap-0.5 min-h-11 px-3 py-2.5 text-left border-0 border-t-2 cursor-pointer transition-colors duration-150 ${
                     idx === 0
-                      ? 'bg-surface-elevated text-primary'
-                      : 'bg-surface text-text-muted hover:bg-surface-elevated hover:text-page-text'
+                      ? 'bg-surface-elevated text-primary border-t-primary'
+                      : 'bg-surface text-text-muted border-t-transparent hover:bg-surface-elevated hover:text-page-text'
                   }`}
                 >
-                  <span class="tabular-data text-xs">{track.code}</span>
+                  <span class="inline-flex items-center gap-1.5 tabular-data text-xs">
+                    <span
+                      class="w-2 h-2 rounded-full shrink-0"
+                      style={`background-color: ${track.color}`}
+                      aria-hidden="true"
+                    ></span>
+                    <span>{track.code}</span>
+                  </span>
                   <span class="font-display text-sm font-bold truncate w-full">{track.shortTitle}</span>
                 </button>
               ))}
@@ -352,31 +404,34 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
 
             <div
               id="event-readout"
-              aria-live="polite"
-              class="px-4 py-4 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              role="tabpanel"
+              aria-labelledby={`track-tab-${defaultTrack.id}`}
+              class="px-4 py-3.5 sm:px-5 sm:py-4 sm:min-h-[8.25rem] flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4"
             >
-              <div class="flex flex-col gap-1 min-w-0">
+              <div class="flex flex-col gap-1.5 min-w-0">
                 <p id="readout-title" class="font-display text-base font-bold text-page-text m-0">
                   {defaultTrack.title}
                 </p>
-                <p id="readout-summary" class="text-sm text-text-muted leading-snug m-0">
+                <p id="readout-summary" class="hidden sm:block text-sm text-text-muted leading-snug m-0">
                   {defaultTrack.summary}
                 </p>
-                <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                  <span id="readout-code" class="tabular-data text-primary font-semibold">{defaultTrack.code}</span>
-                  <span class="text-text-muted">·</span>
-                  <span id="readout-category" class="font-medium text-text-muted">{defaultTrack.category}</span>
-                  <span class="text-text-muted">·</span>
-                  <span id="readout-stack" class="tabular-data text-secondary">{defaultTrack.stack}</span>
+                <div class="flex flex-col gap-0.5 pt-0.5 sm:pt-1 text-xs">
+                  <div class="flex items-center gap-2">
+                    <span id="readout-code" class="tabular-data text-primary font-semibold">{defaultTrack.code}</span>
+                    <span class="text-text-muted" aria-hidden="true">·</span>
+                    <span id="readout-category" class="font-semibold text-secondary">{defaultTrack.category}</span>
+                  </div>
+                  <p id="readout-stack" class="tabular-data text-text-muted m-0">{defaultTrack.stack}</p>
                 </div>
               </div>
 
               <a
                 id="readout-link"
                 href={defaultTrack.href}
+                aria-label={`Ver proyecto: ${defaultTrack.title}`}
                 class="telemetry-btn-secondary shrink-0 text-sm whitespace-nowrap"
               >
-                <span>Abrir proyecto</span>
+                <span>Ver proyecto</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M5 12h14"></path>
                   <path d="m12 5 7 7-7 7"></path>
@@ -399,13 +454,14 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
     heroController = new AbortController();
     const { signal } = heroController;
 
-    // 1. Selector de trazas del detector + respuesta en segmentos del arco
+    // 1. Selector de trazas del detector (tablist + teclado + respuesta en arco)
     const root = document.getElementById('event-display');
     if (root) {
       const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-track-select]'));
       const groups = Array.from(root.querySelectorAll<SVGGElement>('[data-track-group]'));
       const labelGroups = Array.from(root.querySelectorAll<SVGGElement>('[data-track-label-group]'));
       const arcSegments = Array.from(root.querySelectorAll<SVGPathElement>('[data-arc-segment]'));
+      const readoutEl = document.getElementById('event-readout');
       const codeEl = document.getElementById('readout-code');
       const catEl = document.getElementById('readout-category');
       const titleEl = document.getElementById('readout-title');
@@ -413,24 +469,34 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
       const stackEl = document.getElementById('readout-stack');
       const linkEl = document.getElementById('readout-link') as HTMLAnchorElement | null;
 
-      const selectTrack = (trackId: string) => {
+      const selectTrack = (trackId: string, focusTab = false) => {
         const targetBtn = buttons.find((b) => b.dataset.trackSelect === trackId);
         if (!targetBtn) return;
 
         root.setAttribute('data-active-track', trackId);
+        if (readoutEl && targetBtn.id) {
+          readoutEl.setAttribute('aria-labelledby', targetBtn.id);
+        }
 
         buttons.forEach((btn) => {
           const isActive = btn.dataset.trackSelect === trackId;
-          btn.setAttribute('aria-pressed', String(isActive));
+          btn.setAttribute('aria-selected', String(isActive));
+          btn.setAttribute('tabindex', isActive ? '0' : '-1');
           btn.classList.toggle('bg-surface-elevated', isActive);
           btn.classList.toggle('text-primary', isActive);
+          btn.classList.toggle('border-t-primary', isActive);
           btn.classList.toggle('bg-surface', !isActive);
           btn.classList.toggle('text-text-muted', !isActive);
+          btn.classList.toggle('border-t-transparent', !isActive);
         });
+
+        if (focusTab) {
+          targetBtn.focus();
+        }
 
         groups.forEach((group) => {
           const isActive = group.dataset.trackGroup === trackId;
-          group.setAttribute('opacity', isActive ? '1' : '0.26');
+          group.setAttribute('opacity', isActive ? '1' : '0.38');
 
           const path = group.querySelector<SVGPathElement>('[data-track-path]');
           const node = group.querySelector<SVGCircleElement>('[data-track-node]');
@@ -448,11 +514,10 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
 
         labelGroups.forEach((lg) => {
           const isActive = lg.dataset.trackLabelGroup === trackId;
-          const text = lg.querySelector<SVGTextElement>('[data-track-label]');
-          if (text) {
+          lg.querySelectorAll<SVGTextElement>('text').forEach((text) => {
             text.setAttribute('fill', isActive ? 'var(--color-text)' : 'var(--color-text-muted)');
             text.setAttribute('font-weight', isActive ? '700' : '600');
-          }
+          });
         });
 
         if (codeEl) codeEl.textContent = targetBtn.dataset.trackCode ?? '';
@@ -462,14 +527,38 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
         if (stackEl) stackEl.textContent = targetBtn.dataset.trackStack ?? '';
         if (linkEl && targetBtn.dataset.trackHref) {
           linkEl.href = targetBtn.dataset.trackHref;
+          linkEl.setAttribute('aria-label', `Ver proyecto: ${targetBtn.dataset.trackTitle ?? ''}`);
         }
       };
 
-      buttons.forEach((btn) => {
+      buttons.forEach((btn, idx) => {
         btn.addEventListener(
           'click',
           () => {
             if (btn.dataset.trackSelect) selectTrack(btn.dataset.trackSelect);
+          },
+          { signal }
+        );
+
+        btn.addEventListener(
+          'keydown',
+          (event) => {
+            let nextIdx: number | null = null;
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+              nextIdx = (idx + 1) % buttons.length;
+            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+              nextIdx = (idx - 1 + buttons.length) % buttons.length;
+            } else if (event.key === 'Home') {
+              nextIdx = 0;
+            } else if (event.key === 'End') {
+              nextIdx = buttons.length - 1;
+            }
+
+            if (nextIdx !== null) {
+              event.preventDefault();
+              const nextId = buttons[nextIdx]?.dataset.trackSelect;
+              if (nextId) selectTrack(nextId, true);
+            }
           },
           { signal }
         );
@@ -496,10 +585,11 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
       });
     }
 
-    // 2. Copia rápida inline de correo en el Hero
+    // 2. Copia rápida inline de correo en el Hero (ancho fijo sin salto horizontal + error persistente)
     const copyBtn = document.getElementById('hero-copy-email-btn') as HTMLButtonElement | null;
     const statusEl = document.getElementById('hero-copy-status');
-    const labelEl = copyBtn?.querySelector<HTMLElement>('[data-hero-copy-label]');
+    const defaultLabel = copyBtn?.querySelector<HTMLElement>('[data-hero-copy-default]');
+    const doneLabel = copyBtn?.querySelector<HTMLElement>('[data-hero-copy-done]');
 
     if (copyBtn && statusEl) {
       copyBtn.addEventListener(
@@ -540,17 +630,27 @@ const ringTicks = Array.from({ length: 12 }, (_, i) => {
           }
 
           if (copied) {
-            if (labelEl) labelEl.textContent = 'Copiado';
+            defaultLabel?.classList.add('invisible');
+            doneLabel?.classList.remove('invisible');
+            statusEl.setAttribute('role', 'status');
+            statusEl.classList.remove('text-energy');
+            statusEl.classList.add('text-text-muted');
             statusEl.textContent = `Correo ${email} copiado al portapapeles.`;
+
+            heroCopyTimer = window.setTimeout(() => {
+              defaultLabel?.classList.remove('invisible');
+              doneLabel?.classList.add('invisible');
+              statusEl.textContent = '';
+              heroCopyTimer = null;
+            }, 2500);
           } else {
-            if (labelEl) labelEl.textContent = 'Copiar correo';
+            defaultLabel?.classList.remove('invisible');
+            doneLabel?.classList.add('invisible');
+            statusEl.setAttribute('role', 'alert');
+            statusEl.classList.remove('text-text-muted');
+            statusEl.classList.add('text-energy');
             statusEl.textContent = `No se pudo copiar automáticamente. Copia ${email} manualmente.`;
           }
-
-          heroCopyTimer = window.setTimeout(() => {
-            if (labelEl) labelEl.textContent = 'Copiar correo';
-            heroCopyTimer = null;
-          }, 2500);
         },
         { signal }
       );

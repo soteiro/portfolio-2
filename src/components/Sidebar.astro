@@ -1,10 +1,10 @@
 ---
-// Sidebar.astro — Contacto directo y stack operativo
+// Sidebar.astro — Contacto directo
 import { portfolioData } from '../data/portfolio';
 ---
 
-<aside class="flex flex-col gap-5 min-w-0">
-  <!-- 1. Contacto directo -->
+<aside class="flex flex-col gap-5 min-w-0 lg:pt-[4.25rem]">
+  <!-- Contacto directo -->
   <section
     class="p-6 bg-surface border border-border-strong rounded-md flex flex-col gap-4 min-w-0"
     id="contact"
@@ -16,11 +16,11 @@ import { portfolioData } from '../data/portfolio';
       </p>
       <p class="inline-flex items-center gap-2 text-xs font-medium text-text-muted pt-1 m-0">
         <span class="w-2 h-2 rounded-full bg-status-ok shrink-0" aria-hidden="true"></span>
-        <span>{portfolioData.location}</span>
+        <span>Valdivia, CL (UTC-3/-4) · Remoto y proyectos</span>
       </p>
     </div>
 
-    <div class="flex flex-col gap-2.5 min-w-0">
+    <div class="flex flex-col gap-2 min-w-0">
       <a href={`mailto:${portfolioData.social.email}`} class="telemetry-btn-primary w-full">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
           <rect width="20" height="16" x="2" y="4" rx="2"></rect>
@@ -46,10 +46,10 @@ import { portfolioData } from '../data/portfolio';
         </span>
       </button>
 
-      <p id="copy-email-status" role="status" aria-live="polite" class="text-xs text-text-muted m-0 empty:hidden"></p>
+      <p id="copy-email-status" role="status" aria-live="polite" class="min-h-4 text-xs text-text-muted m-0"></p>
     </div>
 
-    <div class="grid grid-cols-2 gap-2.5 pt-3 border-t border-card-border">
+    <div class="grid grid-cols-2 gap-2.5 -mt-1 pt-3 border-t border-card-border">
       {portfolioData.social.linkedin && (
         <a
           href={portfolioData.social.linkedin}
@@ -57,7 +57,7 @@ import { portfolioData } from '../data/portfolio';
           rel="noopener noreferrer"
           class="telemetry-btn-secondary text-sm"
         >
-          <span>LinkedIn</span>
+          <span>LinkedIn<span class="sr-only"> (abre en una nueva pestaña)</span></span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M7 17 17 7"></path>
             <path d="M7 7h10v10"></path>
@@ -71,30 +71,13 @@ import { portfolioData } from '../data/portfolio';
           rel="noopener noreferrer"
           class="telemetry-btn-secondary text-sm"
         >
-          <span>GitHub</span>
+          <span>GitHub<span class="sr-only"> (abre en una nueva pestaña)</span></span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M7 17 17 7"></path>
             <path d="M7 7h10v10"></path>
           </svg>
         </a>
       )}
-    </div>
-  </section>
-
-  <!-- 2. Stack operativo -->
-  <section class="p-6 bg-surface border border-card-border rounded-md flex flex-col gap-4" id="skills">
-    <h2 class="font-display text-base font-bold text-page-text m-0">
-      Stack en producción
-    </h2>
-    <div class="flex flex-col gap-3 text-sm">
-      <div>
-        <span class="text-xs font-semibold text-secondary block mb-1">Lenguajes</span>
-        <p class="tabular-data text-xs text-page-text m-0 leading-relaxed">{portfolioData.skills.languages.join(' · ')}</p>
-      </div>
-      <div class="pt-3 border-t border-card-border">
-        <span class="text-xs font-semibold text-secondary block mb-1">Infraestructura y herramientas</span>
-        <p class="tabular-data text-xs text-page-text m-0 leading-relaxed">{portfolioData.skills.frameworks.join(' · ')}</p>
-      </div>
     </div>
   </section>
 </aside>
@@ -152,16 +135,23 @@ import { portfolioData } from '../data/portfolio';
 
           if (copied) {
             if (labelEl) labelEl.textContent = 'Copiado';
+            statusEl.setAttribute('role', 'status');
+            statusEl.classList.remove('text-energy');
+            statusEl.classList.add('text-text-muted');
             statusEl.textContent = `Correo ${email} copiado al portapapeles.`;
+
+            copyResetTimer = window.setTimeout(() => {
+              if (labelEl) labelEl.textContent = 'Copiar';
+              statusEl.textContent = '';
+              copyResetTimer = null;
+            }, 2500);
           } else {
             if (labelEl) labelEl.textContent = 'Copiar';
+            statusEl.setAttribute('role', 'alert');
+            statusEl.classList.remove('text-text-muted');
+            statusEl.classList.add('text-energy');
             statusEl.textContent = `No se pudo copiar automáticamente. Usa el botón de correo o copia ${email} manualmente.`;
           }
-
-          copyResetTimer = window.setTimeout(() => {
-            if (labelEl) labelEl.textContent = 'Copiar';
-            copyResetTimer = null;
-          }, 2500);
         },
         { signal }
       );

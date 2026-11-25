@@ -110,13 +110,13 @@ const graph = jsonLdGraph(personSchema(), websiteSchema(locale), ...pageNodes);
 
     <Header />
 
-    {hasHero && (
-      <div class="border-b border-card-border">
-        <slot name="hero" />
-      </div>
-    )}
-
     <main id="main-content" class="flex-1 relative">
+      {hasHero && (
+        <div class="border-b border-card-border">
+          <slot name="hero" />
+        </div>
+      )}
+
       <slot />
     </main>
 
