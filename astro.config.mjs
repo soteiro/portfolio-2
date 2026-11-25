@@ -63,6 +63,23 @@ export default defineConfig({
       ],
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      // En dev, Vite sirve las .woff2 de @fontsource con `Cache-Control: no-cache`,
+      // provocando revalidación y salto tipográfico al navegar entre páginas.
+      // Las fuentes de node_modules son inmutables, igual que /_astro/* en producción.
+      {
+        name: 'cache-fontsource-in-dev',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            const pathname = req.url?.split('?')[0];
+            if (pathname && pathname.includes('@fontsource') && pathname.endsWith('.woff2')) {
+              res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+            }
+            next();
+          });
+        },
+      },
+    ],
   },
 });

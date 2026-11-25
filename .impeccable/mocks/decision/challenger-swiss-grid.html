@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Retícula Editorial Suiza — soteiro.dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1440px; height: 900px; overflow: hidden; background: #f8f8f6; color: #111111; font-family: 'Albert Sans', sans-serif; }
+  .poster { width: 1440px; height: 900px; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 64px 310px 1fr; background-image: linear-gradient(to right, rgba(17,17,17,0.06) 1px, transparent 1px); background-size: 120px 100%; }
+  .nav { grid-column: 1 / -1; border-bottom: 2px solid #111111; display: grid; grid-template-columns: repeat(12, 1fr); align-items: center; padding: 0 40px; }
+  .nav-brand { grid-column: 1 / 5; font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+  .nav-links { grid-column: 5 / 10; display: flex; gap: 32px; font-size: 15px; font-weight: 600; }
+  .nav-links .on { color: #d62828; }
+  .nav-loc { grid-column: 10 / 13; text-align: right; font-size: 13px; font-weight: 600; color: #444; }
+  .hero-left { grid-column: 1 / 9; padding: 36px 40px; border-right: 1px solid #d8dad5; border-bottom: 2px solid #111111; display: flex; flex-direction: column; justify-content: space-between; }
+  h1 { font-size: 72px; font-weight: 900; line-height: 0.96; letter-spacing: -0.04em; max-width: 12ch; }
+  .hero-sub { font-size: 18px; line-height: 1.45; color: #3a3a3a; max-width: 54ch; }
+  .hero-right { grid-column: 9 / 13; border-bottom: 2px solid #111111; padding: 36px 40px; background: #111111; color: #f8f8f6; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+  .signal-bar { width: 100%; height: 10px; background: #d62828; margin-bottom: 18px; }
+  .stat-list { display: flex; flex-direction: column; gap: 14px; }
+  .stat-item { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #2b2b2b; padding-bottom: 10px; }
+  .stat-num { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat-lbl { font-size: 13px; color: #b5b5b5; }
+  .cta-red { background: #d62828; color: #ffffff; font-weight: 700; font-size: 15px; padding: 13px 18px; text-align: center; text-decoration: none; display: block; }
+  .lower-left { grid-column: 1 / 9; padding: 28px 40px; border-right: 1px solid #d8dad5; display: flex; flex-direction: column; gap: 16px; }
+  .filter-strip { display: flex; gap: 24px; border-bottom: 1px solid #111111; padding-bottom: 10px; font-size: 14px; font-weight: 700; }
+  .filter-strip .active { color: #d62828; border-bottom: 3px solid #d62828; padding-bottom: 9px; margin-bottom: -11px; }
+  .proj-row { display: grid; grid-template-columns: 120px 1fr 90px; gap: 20px; border-bottom: 1px solid #d8dad5; padding: 14px 0; align-items: start; }
+  .proj-cat { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #d62828; }
+  .proj-row h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .proj-row p { font-size: 14px; color: #444; line-height: 1.4; }
+  .proj-go { text-align: right; font-weight: 700; font-size: 14px; }
+  .lower-right { grid-column: 9 / 13; padding: 28px 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  .motif { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+  .bar-a { height: 22px; background: #111111; grid-column: 1 / -1; }
+  .bar-b { height: 22px; background: #d62828; }
+  .bar-c { height: 22px; background: #111111; }
+  .notes h3 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .note-item { border-top: 1px solid #d8dad5; padding: 10px 0; font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .contact-foot { border-top: 2px solid #111111; padding-top: 14px; font-size: 14px; display: flex; justify-content: space-between; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="poster">
+  <header class="nav">
+    <div class="nav-brand">DIEGO SOTO</div>
+    <nav class="nav-links"><span class="on">Proyectos</span><span>Artículos</span><span>Sobre mí</span><span>Contacto</span></nav>
+    <div class="nav-loc">VALDIVIA · REMOTO</div>
+  </header>
+  <section class="hero-left">
+    <h1>Sistemas Go, Linux e IoT.</h1>
+    <p class="hero-sub">Ingeniero de Software enfocado en daemons concurrentes con Linux Network Namespaces, hardening de infraestructura y pipelines de telemetría de alta escala.</p>
+  </section>
+  <section class="hero-right">
+    <div>
+      <div class="signal-bar"></div>
+      <div class="stat-list">
+        <div class="stat-item"><span class="stat-num">+15M</span><span class="stat-lbl">eventos IoT / mes</span></div>
+        <div class="stat-item"><span class="stat-num">95.18%</span><span class="stat-lbl">SLA PostgreSQL (+16M filas)</span></div>
+        <div class="stat-item"><span class="stat-num">0%</span><span class="stat-lbl">caídas polling multi-VPN</span></div>
+      </div>
+    </div>
+    <a class="cta-red" href="#">contacto@soteiro.dev →</a>
+  </section>
+  <section class="lower-left">
+    <div class="filter-strip"><span class="active">Todos (4)</span><span>Backend</span><span>DevOps</span><span>IoT</span><span>Fullstack</span></div>
+    <article class="proj-row">
+      <div class="proj-cat">Backend</div>
+      <div><h2>Siphon — Daemon en Go con Linux NetNS</h2><p>Aislamiento de VPNs con rangos IP conflictivos para sensores 3D Hella APS y gateways Milesight.</p></div>
+      <div class="proj-go">Ver →</div>
+    </article>
+    <article class="proj-row">
+      <div class="proj-cat">DevOps</div>
+      <div><h2>Server Provisioning &amp; Security Hardening</h2><p>Playbook Ansible para CentOS Stream: política DROP en iptables, SELinux, SSH y Fail2ban.</p></div>
+      <div class="proj-go">Ver →</div>
+    </article>
+    <article class="proj-row">
+      <div class="proj-cat">Fullstack</div>
+      <div><h2>Cassandra — Personal HQ &amp; OS</h2><p>Binario único en Go con SPA Angular 22, PostgreSQL y distribución Android con Capacitor.</p></div>
+      <div class="proj-go">Ver →</div>
+    </article>
+    <article class="proj-row">
+      <div class="proj-cat">IoT</div>
+      <div><h2>Temply — Monitoreo IoT Ambiental</h2><p>ESP32 en C++, ingestión edge en Hono sobre Cloudflare Workers y panel liviano en Astro.</p></div>
+      <div class="proj-go">Ver →</div>
+    </article>
+  </section>
+  <aside class="lower-right">
+    <div>
+      <div class="motif"><div class="bar-a"></div><div class="bar-b"></div><div class="bar-c"></div></div>
+      <div class="notes">
+        <h3>Artículos técnicos</h3>
+        <div class="note-item">Aislamiento de Redes Industriales en Go con Network Namespaces</div>
+        <div class="note-item">Hardening de Servidores Linux con Ansible y Mitigación SYN Flood</div>
+      </div>
+    </div>
+    <div class="contact-foot"><span>LinkedIn ↗</span><span>GitHub ↗</span><span>Copiar email</span></div>
+  </aside>
+</div>
+</body>
+</html>

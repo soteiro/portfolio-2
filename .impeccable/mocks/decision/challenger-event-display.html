@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Diagrama de Eventos de Telemetría — soteiro.dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1440px; height: 900px; overflow: hidden; background: #090d14; color: #e8eef6; font-family: 'Barlow', sans-serif; }
+  .screen { width: 1440px; height: 900px; display: grid; grid-template-rows: 66px 1fr 120px; }
+  .nav { padding: 0 48px; border-bottom: 1px solid #1c2c40; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-size: 20px; font-weight: 800; letter-spacing: 0.02em; }
+  .brand span { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6c8eb3; margin-left: 12px; font-weight: 400; }
+  .links { display: flex; gap: 28px; font-size: 15px; color: #9fb4cb; }
+  .links .on { color: #f4c945; font-weight: 700; }
+  .center { display: grid; grid-template-columns: 540px 1fr; padding: 34px 48px; gap: 36px; align-items: center; }
+  .copy h1 { font-size: 56px; font-weight: 800; line-height: 1.02; letter-spacing: -0.02em; margin-bottom: 16px; }
+  .copy p { font-size: 18px; line-height: 1.5; color: #9ab0c7; margin-bottom: 24px; }
+  .actions { display: flex; gap: 14px; margin-bottom: 28px; }
+  .btn-y { background: #f4c945; color: #090d14; font-weight: 800; font-size: 15px; padding: 13px 22px; text-decoration: none; border-radius: 4px; }
+  .btn-o { border: 1px solid #3b638c; color: #e8eef6; font-weight: 600; font-size: 15px; padding: 12px 20px; text-decoration: none; border-radius: 4px; }
+  .calorimeter { border-top: 1px solid #1c2c40; padding-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .cal-row { display: grid; grid-template-columns: 110px 1fr 150px; gap: 14px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .cal-bar { height: 10px; background: #131f2e; position: relative; }
+  .cal-fill { position: absolute; left: 0; top: 0; bottom: 0; background: #e04f4f; }
+  .cal-val { color: #f4c945; font-weight: 600; font-size: 14px; }
+  .diagram-wrap { position: relative; height: 620px; display: flex; align-items: center; justify-content: center; }
+  .track-label { position: absolute; background: #0f1724; border: 1px solid #2b4766; padding: 10px 14px; border-radius: 4px; width: 230px; }
+  .track-label strong { display: block; font-size: 15px; margin-bottom: 2px; }
+  .track-label span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8da6c0; }
+  .tl-1 { top: 24px; right: 20px; border-color: #f4c945; }
+  .tl-2 { bottom: 36px; right: 20px; border-color: #38d3e8; }
+  .tl-3 { top: 36px; left: 10px; }
+  .tl-4 { bottom: 36px; left: 10px; }
+  .bottom { border-top: 1px solid #1c2c40; padding: 0 48px; display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; gap: 20px; background: #0c121c; }
+  .b-card { border-left: 2px solid #3b638c; padding-left: 14px; }
+  .b-card.y { border-left-color: #f4c945; }
+  .b-card.c { border-left-color: #38d3e8; }
+  .b-card strong { display: block; font-size: 15px; }
+  .b-card span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8da6c0; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="nav">
+    <div class="brand">DIEGO SOTO <span>VALDIVIA, CL · DISPONIBLE REMOTO</span></div>
+    <nav class="links"><span class="on">Sistemas</span><span>Proyectos</span><span>Artículos</span><span>Sobre mí</span></nav>
+  </header>
+  <main class="center">
+    <section class="copy">
+      <h1>Sistemas backend, Linux y telemetría IoT.</h1>
+      <p>Daemons concurrentes en Go con aislamiento a nivel de kernel, pipelines MQTT de alta escala y servidores Linux endurecidos en producción.</p>
+      <div class="actions">
+        <a class="btn-y" href="#">contacto@soteiro.dev</a>
+        <a class="btn-o" href="#">LinkedIn ↗</a>
+        <a class="btn-o" href="#">GitHub ↗</a>
+      </div>
+      <div class="calorimeter">
+        <div class="cal-row"><span class="cal-val">+15M/mes</span><div class="cal-bar"><div class="cal-fill" style="width:92%"></div></div><span>Eventos IoT</span></div>
+        <div class="cal-row"><span class="cal-val">95.18%</span><div class="cal-bar"><div class="cal-fill" style="width:95%"></div></div><span>SLA PostgreSQL</span></div>
+        <div class="cal-row"><span class="cal-val">+16M</span><div class="cal-bar"><div class="cal-fill" style="width:84%"></div></div><span>Filas auditadas</span></div>
+      </div>
+    </section>
+    <section class="diagram-wrap">
+      <svg width="560" height="560" viewBox="0 0 560 560" fill="none">
+        <circle cx="280" cy="280" r="245" stroke="#223a54" stroke-width="1.5" />
+        <circle cx="280" cy="280" r="185" stroke="#3b638c" stroke-width="1.5" stroke-dasharray="6 6" />
+        <circle cx="280" cy="280" r="120" stroke="#294664" stroke-width="1.5" />
+        <circle cx="280" cy="280" r="55" stroke="#3b638c" stroke-width="1.5" />
+        <line x1="35" y1="280" x2="525" y2="280" stroke="#182a3d" />
+        <line x1="280" y1="35" x2="280" y2="525" stroke="#182a3d" />
+        <path d="M280 280 Q 340 170 465 95" stroke="#f4c945" stroke-width="3" />
+        <path d="M280 280 Q 360 350 470 460" stroke="#38d3e8" stroke-width="2.5" />
+        <path d="M280 280 Q 190 210 95 110" stroke="#38d3e8" stroke-width="2" stroke-opacity="0.7" />
+        <path d="M280 280 Q 210 365 90 455" stroke="#f4c945" stroke-width="2" stroke-opacity="0.7" />
+        <circle cx="280" cy="280" r="7" fill="#f4c945" />
+        <rect x="470" y="258" width="42" height="14" fill="#e04f4f" />
+        <rect x="470" y="276" width="28" height="14" fill="#e04f4f" opacity="0.7" />
+        <rect x="470" y="294" width="18" height="14" fill="#e04f4f" opacity="0.45" />
+      </svg>
+      <div class="track-label tl-1"><strong style="color:#f4c945;">Siphon (Go · NetNS)</strong><span>0% caídas multi-VPN · Hella APS</span></div>
+      <div class="track-label tl-2"><strong style="color:#38d3e8;">Cassandra (Go + Angular)</strong><span>Binario único · PostgreSQL</span></div>
+      <div class="track-label tl-3"><strong>Hardening Ansible</strong><span>CentOS · iptables DROP · SELinux</span></div>
+      <div class="track-label tl-4"><strong>Temply IoT</strong><span>ESP32 · Hono Workers · Astro</span></div>
+    </section>
+  </main>
+  <footer class="bottom">
+    <div class="b-card y"><strong>Siphon</strong><span>GO · LINUX NAMESPACES</span></div>
+    <div class="b-card c"><strong>Server Hardening</strong><span>ANSIBLE · SELINUX</span></div>
+    <div class="b-card"><strong>Cassandra</strong><span>GO · ANGULAR · PG</span></div>
+    <div class="b-card"><strong>Temply IoT</strong><span>ESP32 · CLOUDFLARE</span></div>
+  </footer>
+</div>
+</body>
+</html>

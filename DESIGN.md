@@ -34,61 +34,61 @@ colors:
   light-scrollbar-slate: "#b4c4d4"
 typography:
   display:
-    fontFamily: "Barlow, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Barlow, Barlow Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "clamp(2.25rem, 5vw, 3.5rem)"
     fontWeight: 800
     lineHeight: 1.03
     letterSpacing: "-0.03em"
   page-title:
-    fontFamily: "Barlow, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Barlow, Barlow Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "clamp(1.875rem, 4vw, 2.75rem)"
     fontWeight: 800
     lineHeight: 1.15
     letterSpacing: "-0.025em"
   headline:
-    fontFamily: "Barlow, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Barlow, Barlow Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "clamp(1.5rem, 2.5vw, 1.875rem)"
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: "-0.025em"
   title:
-    fontFamily: "Barlow, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Barlow, Barlow Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "clamp(1.25rem, 2vw, 1.5rem)"
     fontWeight: 700
     lineHeight: 1.375
     letterSpacing: "normal"
   body:
-    fontFamily: "Public Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Public Sans, Public Sans Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.6
     letterSpacing: "normal"
   body-sm:
-    fontFamily: "Public Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Public Sans, Public Sans Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.6
     letterSpacing: "normal"
   body-lg:
-    fontFamily: "Public Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Public Sans, Public Sans Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "1.0625rem"
     fontWeight: 400
     lineHeight: 1.65
     letterSpacing: "normal"
   button:
-    fontFamily: "Barlow, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Barlow, Barlow Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: "0.01em"
   label:
-    fontFamily: "Public Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+    fontFamily: "Public Sans, Public Sans Fallback, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
     fontSize: "0.75rem"
     fontWeight: 600
     lineHeight: 1.4
     letterSpacing: "normal"
   tabular-data:
-    fontFamily: "JetBrains Mono, Menlo, Monaco, Consolas, Liberation Mono, monospace"
+    fontFamily: "JetBrains Mono, JetBrains Mono Fallback, Menlo, Monaco, Consolas, Liberation Mono, monospace"
     fontSize: "0.75rem"
     fontWeight: 500
     lineHeight: 1.5

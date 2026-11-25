@@ -2,6 +2,37 @@
 
 @custom-variant dark (&:where([data-color-mode="dark"], [data-color-mode="dark"] *));
 
+/* Fallbacks con métricas ajustadas a OpenType para evitar saltos (CLS) durante la carga */
+@font-face {
+  font-family: "Barlow Fallback";
+  src: local("Arial Bold"), local("Liberation Sans Bold"), local("Arial"), local("Liberation Sans");
+  font-weight: 600 800;
+  size-adjust: 86.9%;
+  ascent-override: 115.07%;
+  descent-override: 23.01%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Public Sans Fallback";
+  src: local("Arial"), local("Liberation Sans");
+  font-weight: 400 700;
+  size-adjust: 98.7%;
+  ascent-override: 96.25%;
+  descent-override: 22.8%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "JetBrains Mono Fallback";
+  src: local("Courier New"), local("Liberation Mono");
+  font-weight: 400 600;
+  size-adjust: 100.3%;
+  ascent-override: 101.69%;
+  descent-override: 29.91%;
+  line-gap-override: 0%;
+}
+
 @theme {
   --color-page: var(--color-background);
   --color-surface: var(--color-surface);
@@ -23,9 +54,9 @@
   --color-status-ok: var(--color-status-ok);
   --color-code-bg: var(--color-code-bg);
 
-  --font-display: "Barlow", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-sans: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-display: "Barlow", "Barlow Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Public Sans", "Public Sans Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "JetBrains Mono Fallback", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
 /* Light theme: laboratory blueprint paper (high contrast WCAG AA) */
@@ -97,6 +128,7 @@ html[data-color-mode="dark"] {
 
   html {
     font-family: var(--font-sans);
+    font-size-adjust: from-font;
     color: var(--color-text);
     background-color: var(--color-background);
     caret-color: var(--color-primary);
@@ -118,6 +150,7 @@ html[data-color-mode="dark"] {
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
+    font-size-adjust: cap-height from-font;
     text-wrap: balance;
     overflow-wrap: break-word;
   }
@@ -153,6 +186,7 @@ html[data-color-mode="dark"] {
 
   code {
     font-family: var(--font-mono);
+    font-size-adjust: ch-width from-font;
     font-size: 0.875em;
     padding: 0.15em 0.4em;
     background-color: var(--color-code-bg);
@@ -177,6 +211,7 @@ html[data-color-mode="dark"] {
 
   .tabular-data {
     font-family: var(--font-mono);
+    font-size-adjust: ch-width from-font;
     font-variant-numeric: tabular-nums;
   }
 

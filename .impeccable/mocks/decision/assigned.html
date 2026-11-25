@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Bitácora de Operaciones — soteiro.dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Schibsted+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1440px; height: 900px; overflow: hidden; background: #10151c; color: #edf1f5; font-family: 'Schibsted Grotesk', sans-serif; }
+  .frame { width: 1440px; height: 900px; display: flex; flex-direction: column; }
+  .status-bar { height: 42px; padding: 0 56px; border-bottom: 1px solid #253040; display: flex; align-items: center; justify-content: space-between; background: #0c1016; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b5; }
+  .status-live { display: flex; align-items: center; gap: 10px; color: #edf1f5; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #2cb67d; box-shadow: 0 0 0 3px rgba(44,182,125,0.2); }
+  .nav { height: 68px; padding: 0 56px; border-bottom: 1px solid #253040; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 10px; }
+  .brand span { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #8c9bae; font-weight: 400; }
+  .links { display: flex; gap: 28px; font-size: 15px; color: #a7b4c4; }
+  .links .active { color: #edf1f5; font-weight: 600; border-bottom: 2px solid #2cb67d; padding-bottom: 4px; }
+  .main { flex: 1; padding: 40px 56px 32px; display: grid; grid-template-columns: 1.45fr 1fr; gap: 40px; min-height: 0; }
+  .left { display: flex; flex-direction: column; justify-content: space-between; }
+  .hero h1 { font-size: 56px; line-height: 1.04; letter-spacing: -0.03em; font-weight: 800; max-width: 15ch; margin-bottom: 18px; }
+  .hero p { font-size: 18px; line-height: 1.5; color: #a9b6c5; max-width: 56ch; margin-bottom: 26px; }
+  .actions { display: flex; gap: 14px; align-items: center; }
+  .btn-primary { background: #2cb67d; color: #09120e; font-weight: 700; font-size: 15px; padding: 13px 22px; border-radius: 6px; text-decoration: none; }
+  .btn-secondary { background: #171e27; color: #edf1f5; border: 1px solid #2d3a4b; font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 6px; text-decoration: none; }
+  .trace-table { margin-top: 28px; border-top: 1px solid #253040; border-bottom: 1px solid #253040; display: grid; grid-template-columns: repeat(3, 1fr); }
+  .trace-cell { padding: 16px 18px 16px 0; border-right: 1px solid #253040; }
+  .trace-cell:not(:first-child) { padding-left: 18px; }
+  .trace-cell:last-child { border-right: 0; }
+  .metric { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 600; color: #edf1f5; font-variant-numeric: tabular-nums; }
+  .metric-label { font-size: 13px; color: #94a3b5; margin-top: 4px; }
+  .metric-ref { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #e59f38; margin-top: 6px; }
+  .secondary-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+  .dispatch { background: #171e27; border: 1px solid #253040; border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
+  .dispatch h3 { font-size: 18px; font-weight: 700; line-height: 1.25; }
+  .dispatch p { font-size: 14px; color: #9aa8b8; line-height: 1.45; }
+  .sill { border-top: 1px solid #253040; padding-top: 10px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8c9bae; }
+  .right { display: flex; flex-direction: column; gap: 20px; }
+  .lead-inverted { background: #edf1f5; color: #10151c; border-radius: 10px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+  .lead-top { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4a5565; border-bottom: 1px solid #cfd7e0; padding-bottom: 12px; }
+  .lead-badge { color: #0b6e47; font-weight: 600; }
+  .lead-inverted h2 { font-size: 30px; line-height: 1.12; letter-spacing: -0.02em; font-weight: 800; margin: 18px 0 12px; }
+  .lead-inverted p { font-size: 15px; line-height: 1.5; color: #2f3b4a; }
+  .lead-sill { border-top: 1px solid #cfd7e0; margin-top: 20px; padding-top: 14px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #3d4a5c; }
+  .lead-link { color: #10151c; font-weight: 700; font-family: 'Schibsted Grotesk', sans-serif; font-size: 14px; }
+  .contact-box { background: #171e27; border: 1px solid #2d3a4b; border-radius: 10px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+  .contact-row { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 13px; background: #10151c; border: 1px solid #253040; padding: 11px 14px; border-radius: 6px; }
+  .copy-tag { color: #2cb67d; font-weight: 600; }
+  .contact-links { display: flex; gap: 16px; font-size: 14px; color: #a7b4c4; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="status-bar">
+    <div class="status-live"><span class="dot"></span><span>VALDIVIA, CL · DISPONIBLE PARA ROLES REMOTOS Y PROYECTOS TÉCNICOS</span></div>
+    <div>GO · LINUX KERNEL/NETNS · MQTT/IOT · POSTGRESQL</div>
+  </div>
+  <header class="nav">
+    <div class="brand">Diego Soto <span>soteiro.dev</span></div>
+    <nav class="links">
+      <span class="active">Inicio</span><span>Proyectos</span><span>Artículos</span><span>Sobre mí</span>
+    </nav>
+  </header>
+  <main class="main">
+    <section class="left">
+      <div class="hero">
+        <h1>Backend en Go, Linux y telemetría IoT en producción.</h1>
+        <p>Diseño y sostengo daemons concurrentes con aislamiento a nivel de kernel, pipelines de telemetría masiva y servidores Linux endurecidos para operación continua.</p>
+        <div class="actions">
+          <a class="btn-primary" href="#">Escribir a contacto@soteiro.dev</a>
+          <a class="btn-secondary" href="#">Ver casos de estudio</a>
+        </div>
+        <div class="trace-table">
+          <div class="trace-cell">
+            <div class="metric">+15M/mes</div>
+            <div class="metric-label">Eventos IoT procesados</div>
+            <div class="metric-ref">REF · Siphon / EMQX</div>
+          </div>
+          <div class="trace-cell">
+            <div class="metric">95.18%</div>
+            <div class="metric-label">SLA recuperado desde 0%</div>
+            <div class="metric-ref">REF · PostgreSQL +16M filas</div>
+          </div>
+          <div class="trace-cell">
+            <div class="metric">0%</div>
+            <div class="metric-label">Caídas de polling VPN</div>
+            <div class="metric-ref">REF · Linux netns en Go</div>
+          </div>
+        </div>
+      </div>
+      <div class="secondary-list">
+        <article class="dispatch">
+          <div>
+            <h3>Server Hardening Playbook</h3>
+            <p>Aprovisionamiento CentOS 9/10 Stream con iptables DROP, SELinux, SSH y mitigación SYN flood.</p>
+          </div>
+          <div class="sill"><span>ANSIBLE · LINUX · SELINUX</span><span>Caso →</span></div>
+        </article>
+        <article class="dispatch">
+          <div>
+            <h3>Cassandra — Personal HQ</h3>
+            <p>Binario único en Go sirviendo SPA Angular 22, PostgreSQL y empaquetado Capacitor.</p>
+          </div>
+          <div class="sill"><span>GO · ANGULAR · POSTGRESQL</span><span>GitHub →</span></div>
+        </article>
+      </div>
+    </section>
+    <aside class="right">
+      <article class="lead-inverted">
+        <div>
+          <div class="lead-top"><span>CASO LÍDER · BACKEND &amp; KERNEL</span><span class="lead-badge">EN PRODUCCIÓN</span></div>
+          <h2>Siphon — Daemon concurrente en Go con Linux Network Namespaces</h2>
+          <p>Encapsula túneles VPN corporativos con rangos IP en colisión dentro de namespaces aislados para consultar sensores 3D Hella APS y gateways Milesight sin alterar el host principal.</p>
+        </div>
+        <div class="lead-sill">
+          <span>GO · NETNS · VPN · SQLITE · GRAFANA</span>
+          <span class="lead-link">Leer caso →</span>
+        </div>
+      </article>
+      <div class="contact-box">
+        <div style="font-size:16px;font-weight:700;">Contacto directo</div>
+        <div class="contact-row"><span>contacto@soteiro.dev</span><span class="copy-tag">Copiar correo</span></div>
+        <div class="contact-links"><span>LinkedIn ↗</span><span>GitHub ↗</span><span>RSS ↗</span></div>
+      </div>
+    </aside>
+  </main>
+</div>
+</body>
+</html>

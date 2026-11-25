@@ -1,16 +1,20 @@
 ---
 // Layout.astro
-import '@fontsource/barlow/500.css';
-import '@fontsource/barlow/600.css';
-import '@fontsource/barlow/700.css';
-import '@fontsource/barlow/800.css';
-import '@fontsource/public-sans/400.css';
-import '@fontsource/public-sans/500.css';
-import '@fontsource/public-sans/600.css';
-import '@fontsource/public-sans/700.css';
-import '@fontsource/jetbrains-mono/400.css';
-import '@fontsource/jetbrains-mono/500.css';
-import '@fontsource/jetbrains-mono/600.css';
+import '@fontsource/barlow/latin-600.css';
+import '@fontsource/barlow/latin-700.css';
+import '@fontsource/barlow/latin-800.css';
+import '@fontsource/public-sans/latin-400.css';
+import '@fontsource/public-sans/latin-500.css';
+import '@fontsource/public-sans/latin-600.css';
+import '@fontsource/public-sans/latin-700.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-500.css';
+import '@fontsource/jetbrains-mono/latin-600.css';
+
+import barlow700Woff2 from '@fontsource/barlow/files/barlow-latin-700-normal.woff2?url';
+import barlow800Woff2 from '@fontsource/barlow/files/barlow-latin-800-normal.woff2?url';
+import publicSans400Woff2 from '@fontsource/public-sans/files/public-sans-latin-400-normal.woff2?url';
+import publicSans500Woff2 from '@fontsource/public-sans/files/public-sans-latin-500-normal.woff2?url';
 
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -72,6 +76,10 @@ const graph = jsonLdGraph(personSchema(), websiteSchema(locale), ...pageNodes);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={barlow800Woff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={barlow700Woff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={publicSans400Woff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={publicSans500Woff2} as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href={logo} />
     <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
     <meta name="author" content={portfolioData.name.display} />
