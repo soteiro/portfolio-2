@@ -1,12 +1,9 @@
 ---
-title: 2 años en desarollo de software
+title: 2 años en desarrollo de software
 excerpt: >-
-  Ahora, leyendo [*The Senior Engineer Death
-  Spiral*](https://sunilpai.dev/posts/the-senior-engineer-death-spiral) de Sunil
-  Pai, aunque habla de seniors cayendo por su propio peso, me vi reflejado, pero
-  desde la otra orilla. Podrías considerarme un junior por la cantidad de años;
-  yo me describo como un recién nacido en el mundo del software. Si bien ahora
-  ya puedo...
+  Reflexión personal a dos años de comenzar en el desarrollo de software,
+  inspirada en The Senior Engineer Death Spiral de Sunil Pai, sobre el oficio,
+  el criterio técnico y el impacto de las herramientas de IA en el día a día.
 date: 2026-09-26
 readTime: 4 min de lectura
 category: Desarrollo de Software

@@ -6,16 +6,12 @@ import { absoluteUrl, breadcrumbSchema, PERSON_ID, WEBSITE_ID } from '../../lib/
 
 export const prerender = true;
 
-// Más recientes primero. `dateValue` conserva la fecha original del
-// frontmatter; `date` ya viene formateada para mostrar (ver content.config.ts).
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.dateValue.valueOf() - a.data.dateValue.valueOf()
 );
 
 const categories = [...new Set(posts.map((post) => post.data.category))];
 
-// `Blog` + `blogPost` conecta el índice con cada artículo, de modo que Google
-// entienda esta URL como el hub del blog y no como una página suelta más.
 const jsonLd = JSON.stringify([
   {
     '@type': 'Blog',
@@ -50,26 +46,20 @@ const jsonLd = JSON.stringify([
   description="Artículos técnicos y casos de estudio sobre sistemas backend concurrentes en Go, telemetría IoT a gran escala, administración de Linux y optimización de PostgreSQL en producción."
   jsonLd={jsonLd}
 >
-  <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20 flex flex-col gap-10">
-    <header class="flex flex-col gap-6">
-      <span class="text-[0.8125rem] font-bold uppercase tracking-[0.125rem] text-secondary">
-        Escritos & Análisis
-      </span>
-      <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0">
-        Artículos & <span class="text-primary">Casos de Estudio</span>
+  <div class="site-container max-w-[54rem] py-12 sm:py-16 flex flex-col gap-10">
+    <header class="flex flex-col gap-5 pb-8 border-b border-card-border">
+      <h1 class="font-display text-3xl sm:text-4xl md:text-[2.75rem] font-extrabold tracking-tight leading-tight text-page-text m-0">
+        Artículos y <span class="text-ring-text">casos de estudio</span>
       </h1>
-      <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
-        Notas y lecciones de ingeniería sobre sistemas backend en Go, telemetría IoT a gran escala, Linux sysadmin y optimización de bases de datos en producción.
+      <p class="text-base sm:text-lg text-text-muted leading-relaxed max-w-[62ch] m-0">
+        Notas y lecciones de ingeniería sobre sistemas backend en Go, telemetría IoT a gran escala, administración Linux, bases de datos y desarrollo de software.
       </p>
 
       {categories.length > 0 && (
-        <div class="flex flex-wrap items-center gap-2 mt-2">
-          {categories.map((category) => (
-            <span class="px-2.5 py-0.5 rounded-full text-[0.8125rem] font-medium bg-primary/10 text-primary">
-              {category}
-            </span>
-          ))}
-          <span class="text-[0.8125rem] font-mono text-text-muted ml-1">
+        <div class="flex flex-wrap items-center gap-3 text-xs text-text-muted pt-1">
+          <span class="font-medium">{categories.join(' · ')}</span>
+          <span>—</span>
+          <span class="tabular-data text-primary font-semibold">
             {posts.length} {posts.length === 1 ? 'artículo' : 'artículos'}
           </span>
         </div>
@@ -77,25 +67,25 @@ const jsonLd = JSON.stringify([
     </header>
 
     {posts.length > 0 ? (
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-5">
         {posts.map((post) => (
-          <article class="p-6 md:p-7 bg-card-bg border border-card-border rounded-xl flex flex-col gap-2 transition duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
-            <div class="flex items-center gap-2 text-[0.8125rem] text-text-muted">
-              <span class="text-primary font-medium">{post.data.category}</span>
-              <span>•</span>
-              <time datetime={post.data.dateValue.toISOString()}>{post.data.date}</time>
-              <span>•</span>
-              <span>{post.data.readTime}</span>
-            </div>
-
-            <h2 class="text-xl font-bold m-0">
+          <article class="group relative p-6 sm:p-7 bg-surface border border-card-border rounded-md flex flex-col gap-2.5 transition-colors duration-150 hover:border-border-strong">
+            <h2 class="font-display text-xl sm:text-2xl font-bold leading-snug text-page-text m-0">
               <a
                 href={`/blog/${post.id}`}
-                class="text-inherit no-underline transition-colors duration-200 hover:text-primary hover:underline hover:decoration-primary"
+                class="text-inherit no-underline transition-colors duration-150 group-hover:text-primary hover:underline after:content-[''] after:absolute after:inset-0"
               >
                 {post.data.title}
               </a>
             </h2>
+
+            <div class="flex flex-wrap items-center gap-2 text-xs text-text-muted">
+              <span class="font-semibold text-secondary">{post.data.category}</span>
+              <span>·</span>
+              <time class="tabular-data" datetime={post.data.dateValue.toISOString()}>{post.data.date}</time>
+              <span>·</span>
+              <span class="tabular-data">{post.data.readTime}</span>
+            </div>
 
             {post.data.excerpt && (
               <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
@@ -106,8 +96,8 @@ const jsonLd = JSON.stringify([
         ))}
       </div>
     ) : (
-      <p class="text-lg text-text-muted m-0">
-        Todavía no hay artículos publicados. Pronto habrá novedades por acá.
+      <p class="text-base text-text-muted m-0">
+        Todavía no hay artículos publicados.
       </p>
     )}
   </div>

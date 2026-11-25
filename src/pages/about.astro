@@ -31,18 +31,19 @@ const jsonLd = JSON.stringify([
   type="profile"
   jsonLd={jsonLd}
 >
-  <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20">
+  <div class="site-container max-w-[52rem] py-12 sm:py-16">
     <article>
-      <header class="flex flex-col gap-4 mb-12">
-        <span class="text-[0.8125rem] font-bold uppercase tracking-[0.125rem] text-secondary">Trayectoria & Filosofía</span>
-        <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0">¡Hola! Soy <span class="text-primary">{portfolioData.name.display}</span> 👋</h1>
-        <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
+      <header class="flex flex-col gap-5 mb-12 pb-8 border-b border-card-border">
+        <h1 class="font-display text-3xl sm:text-4xl md:text-[2.75rem] font-extrabold tracking-tight leading-tight text-page-text m-0">
+          Sobre <span class="text-ring-text">{portfolioData.name.display}</span>
+        </h1>
+        <p class="text-base sm:text-lg text-text-muted leading-relaxed m-0">
           {portfolioData.role} en {portfolioData.location}. {portfolioData.bio}
         </p>
       </header>
 
-      <section class="flex flex-col gap-6 text-lg leading-relaxed text-page-text">
-        <p>
+      <section class="flex flex-col gap-6 max-w-[68ch] text-base sm:text-[1.0625rem] leading-relaxed text-page-text">
+        <p class="m-0">
           Me especializo en la arquitectura y desarrollo de infraestructura, protocolos de comunicación y motores backend que permiten a sistemas distribuidos e IoT operar de forma segura, concurrente y a gran escala. Mi enfoque combina un entendimiento profundo del hardware, microcontroladores y redes con ingeniería de software rigurosa sobre entornos Linux.
         </p>
 
@@ -50,47 +51,47 @@ const jsonLd = JSON.stringify([
           En sistemas de telemetría y backend distribuido, la red y el hardware fallarán tarde o temprano. El verdadero desafío de ingeniería no es asumir que todo funcionará, sino diseñar sistemas que resistan el fallo: buffering local, concurrencia segura, aislamiento a nivel de kernel y observabilidad real con SLAs medibles.
         </Callout>
 
-        <p>
+        <p class="m-0">
           Opero en la intersección entre el mundo físico (sensores estereoscópicos 3D Hella APS-90, gateways LoRaWAN Milesight UG56) y plataformas cloud de alta exigencia, administrando pipelines que procesan <strong>más de 15 millones de eventos mensuales</strong> bajo requerimientos estrictos de disponibilidad y tolerancia a fallos.
         </p>
 
-        <p>
+        <p class="m-0">
           Esto abarca la resolución de problemas de ingeniería complejos en producción: diseñar daemons concurrentes en Go confinados en <strong>Linux Network Namespaces</strong> para atravesar VPNs con rangos IP conflictivos sin alterar el host, liderar migraciones de brokers MQTT a <strong>EMQX</strong> sin tiempo de inactividad, y auditar consultas SQL en <strong>PostgreSQL</strong> sobre tablas con más de 16M de filas, recuperando los indicadores de cumplimiento de SLA del 0% al <strong>95.18%</strong>.
         </p>
 
-        <p>
+        <p class="m-0">
           En la capa de cliente y frontend, mantengo un enfoque puramente orientado a resolver problemas: cuando un sistema backend necesita un panel operativo o aplicación interactiva, elijo <strong>Angular</strong> por su orden, tipado estricto y reactividad eficiente con Signals. Para contenidos estáticos y portafolios, <strong>Astro</strong> resuelve el problema sin sobrecarga de JavaScript en el cliente. Y ante requerimientos móviles, compilo el frontend con Capacitor como mecanismo pragmático de distribución, sin complejidades artificiales.
         </p>
 
-        <h2 class="text-2xl font-bold mt-6 text-page-text">Competencias Técnicas</h2>
-        <p>
+        <h2 class="font-display text-2xl font-bold mt-6 text-page-text m-0">Competencias técnicas</h2>
+        <p class="m-0">
           Herramientas y tecnologías que utilizo en producción para resolver problemas de escalabilidad y confiabilidad:
         </p>
 
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-6 my-4">
-          <div class="p-6 bg-card-bg border border-card-border rounded-xl">
-            <h3 class="text-base font-bold text-primary mb-4">Lenguajes</h3>
-            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-2">
+          <div class="p-5 bg-surface border border-card-border rounded-md">
+            <h3 class="font-display text-sm font-bold text-secondary mb-3 m-0">Lenguajes</h3>
+            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-sm">
               {portfolioData.skills.languages.map((item) => (
                 <li><code>{item}</code></li>
               ))}
             </ul>
           </div>
 
-          <div class="p-6 bg-card-bg border border-card-border rounded-xl">
-            <h3 class="text-base font-bold text-primary mb-4">Herramientas & Ecosistema</h3>
-            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
+          <div class="p-5 bg-surface border border-card-border rounded-md">
+            <h3 class="font-display text-sm font-bold text-secondary mb-3 m-0">Herramientas</h3>
+            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-sm">
               {portfolioData.skills.frameworks.map((item) => (
                 <li><code>{item}</code></li>
               ))}
             </ul>
           </div>
 
-          <div class="p-6 bg-card-bg border border-card-border rounded-xl">
-            <h3 class="text-base font-bold text-primary mb-4">Áreas de Especialidad</h3>
-            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-[0.9375rem]">
+          <div class="p-5 bg-surface border border-card-border rounded-md">
+            <h3 class="font-display text-sm font-bold text-secondary mb-3 m-0">Especialidades</h3>
+            <ul class="list-none p-0 m-0 flex flex-col gap-2 text-sm text-text-muted">
               {portfolioData.skills.specialties.map((item) => (
-                <li><span>{item}</span></li>
+                <li>{item}</li>
               ))}
             </ul>
           </div>
@@ -100,33 +101,126 @@ const jsonLd = JSON.stringify([
           Priorizo la robustez y la baja sobrecarga operativa: binarios únicos compilados estáticamente en Go, servicios y timers nativos de Systemd, playbooks declarativos en Ansible, políticas DROP estrictas en firewalls y hardening con SELinux.
         </Callout>
 
-        <h2 class="text-2xl font-bold mt-6 text-page-text">Colaboración y Oportunidades</h2>
-        <p>
-          Estoy disponible para asumir nuevos desafíos como <strong>Software Engineer / Backend & IoT Specialist</strong> en modalidad remota . Si tu equipo necesita resolver cuellos de botella en datos en tiempo real, diseñar daemons resilientes o asegurar infraestructura Linux, conversemos.
+        <h2 class="font-display text-2xl font-bold mt-6 text-page-text m-0">Colaboración y oportunidades</h2>
+        <p class="m-0">
+          Estoy disponible para asumir nuevos desafíos como <strong>Software Engineer / Backend & IoT Specialist</strong> en modalidad remota. Si tu equipo necesita resolver cuellos de botella en datos en tiempo real, diseñar daemons resilientes o asegurar infraestructura Linux, conversemos.
         </p>
 
-        <div class="mt-8 p-10 bg-card-bg border-2 border-dashed border-cloud-500 rounded-3xl flex flex-col gap-4 text-center items-center">
-          <h3 class="text-2xl font-bold m-0">¿Hablamos de ingeniería? 📬</h3>
+        <div class="mt-6 p-7 sm:p-8 bg-surface border border-border-strong rounded-md flex flex-col gap-4">
+          <h3 class="font-display text-2xl font-bold m-0 text-page-text">¿Hablamos de ingeniería?</h3>
           <p class="text-text-muted max-w-lg m-0 text-base">
             Escríbeme directamente por correo electrónico o conectemos a través de LinkedIn y GitHub.
           </p>
-          <div class="flex gap-4 flex-wrap justify-center mt-2">
-            <a href={`mailto:${portfolioData.social.email}`} class="josh-button">
-              <span>Enviar un correo</span>
+          <div class="flex gap-3 flex-wrap mt-1">
+            <a href={`mailto:${portfolioData.social.email}`} class="telemetry-btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+              <span>Escribir correo</span>
             </a>
+            <button
+              type="button"
+              id="about-copy-email-btn"
+              data-email={portfolioData.social.email}
+              class="telemetry-btn-secondary"
+              aria-describedby="about-copy-status"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+              </svg>
+              <span data-about-copy-label>Copiar correo</span>
+            </button>
             {portfolioData.social.linkedin && (
-              <a href={portfolioData.social.linkedin} target="_blank" rel="noopener noreferrer" class="josh-button josh-button-secondary">
-                <span>Conectar en LinkedIn</span>
+              <a href={portfolioData.social.linkedin} target="_blank" rel="noopener noreferrer" class="telemetry-btn-secondary">
+                <span>LinkedIn</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7"></path>
+                  <path d="M7 7h10v10"></path>
+                </svg>
               </a>
             )}
             {portfolioData.social.github && (
-              <a href={portfolioData.social.github} target="_blank" rel="noopener noreferrer" class="josh-button josh-button-secondary">
-                <span>Ver GitHub</span>
+              <a href={portfolioData.social.github} target="_blank" rel="noopener noreferrer" class="telemetry-btn-secondary">
+                <span>GitHub</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7"></path>
+                  <path d="M7 7h10v10"></path>
+                </svg>
               </a>
             )}
           </div>
+          <p id="about-copy-status" role="status" aria-live="polite" class="text-xs text-text-muted m-0 empty:hidden"></p>
         </div>
       </section>
     </article>
   </div>
 </Layout>
+
+<script>
+  let aboutCopyController: AbortController | null = null;
+  let aboutCopyTimer: number | null = null;
+
+  function setupAboutCopy() {
+    aboutCopyController?.abort();
+    aboutCopyController = new AbortController();
+    const { signal } = aboutCopyController;
+
+    const copyBtn = document.getElementById('about-copy-email-btn') as HTMLButtonElement | null;
+    const statusEl = document.getElementById('about-copy-status');
+    const labelEl = copyBtn?.querySelector<HTMLElement>('[data-about-copy-label]');
+    if (!copyBtn || !statusEl) return;
+
+    copyBtn.addEventListener(
+      'click',
+      async () => {
+        const email = copyBtn.getAttribute('data-email') ?? '';
+        if (!email) return;
+        if (aboutCopyTimer !== null) {
+          window.clearTimeout(aboutCopyTimer);
+          aboutCopyTimer = null;
+        }
+        let copied = false;
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(email);
+            copied = true;
+          }
+        } catch {
+          copied = false;
+        }
+        if (!copied) {
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = email;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            copied = document.execCommand('copy');
+            document.body.removeChild(ta);
+          } catch {
+            copied = false;
+          }
+        }
+        if (copied) {
+          if (labelEl) labelEl.textContent = 'Copiado';
+          statusEl.textContent = `Correo ${email} copiado al portapapeles.`;
+        } else {
+          if (labelEl) labelEl.textContent = 'Copiar correo';
+          statusEl.textContent = `No se pudo copiar automáticamente. Copia ${email} manualmente.`;
+        }
+        aboutCopyTimer = window.setTimeout(() => {
+          if (labelEl) labelEl.textContent = 'Copiar correo';
+          aboutCopyTimer = null;
+        }, 2500);
+      },
+      { signal }
+    );
+  }
+
+  setupAboutCopy();
+  document.addEventListener('astro:after-swap', setupAboutCopy);
+</script>

@@ -19,16 +19,16 @@ import { portfolioData } from '../data/portfolio.ts';
 const WIDTH = 1200;
 const HEIGHT = 630;
 
-// Paleta tomada de global.css (tema oscuro), para que la previsualización se
-// vea como el sitio y no como una plantilla genérica.
+// Paleta tomada de global.css (tema oscuro — Collider Event Display), para que
+// la previsualización social comparta la misma identidad que el sitio.
 const COLORS = {
-  bg: '#0d0f12',
-  surface: '#13171b',
-  border: 'rgba(255, 255, 255, 0.10)',
-  text: '#f2f5f7',
-  muted: '#9ca8b4',
-  primary: '#809fff',
-  secondary: '#ff1981',
+  bg: '#0b0f14',
+  surface: '#101721',
+  border: '#223244',
+  text: '#edf2f7',
+  muted: '#9fb0c3',
+  primary: '#ffd23a',
+  secondary: '#35d0ff',
 };
 
 // Las rutas se resuelven desde la raíz del proyecto: durante el build el cwd
@@ -39,11 +39,13 @@ let fontCache: Array<{ name: string; data: Buffer; weight: 400 | 600 | 700; styl
 
 function loadFonts() {
   if (fontCache) return fontCache;
-  const dir = path.join(root, 'src/assets/fonts');
+  const barlowDir = path.join(root, 'node_modules/@fontsource/barlow/files');
+  const sansDir = path.join(root, 'node_modules/@fontsource/public-sans/files');
   fontCache = [
-    { name: 'Inter', data: fs.readFileSync(path.join(dir, 'Inter-Regular.ttf')), weight: 400 as const, style: 'normal' as const },
-    { name: 'Inter', data: fs.readFileSync(path.join(dir, 'Inter-SemiBold.ttf')), weight: 600 as const, style: 'normal' as const },
-    { name: 'Inter', data: fs.readFileSync(path.join(dir, 'Inter-Bold.ttf')), weight: 700 as const, style: 'normal' as const },
+    { name: 'Public Sans', data: fs.readFileSync(path.join(sansDir, 'public-sans-latin-400-normal.woff')), weight: 400 as const, style: 'normal' as const },
+    { name: 'Public Sans', data: fs.readFileSync(path.join(sansDir, 'public-sans-latin-600-normal.woff')), weight: 600 as const, style: 'normal' as const },
+    { name: 'Barlow', data: fs.readFileSync(path.join(barlowDir, 'barlow-latin-600-normal.woff')), weight: 600 as const, style: 'normal' as const },
+    { name: 'Barlow', data: fs.readFileSync(path.join(barlowDir, 'barlow-latin-700-normal.woff')), weight: 700 as const, style: 'normal' as const },
   ];
   return fontCache;
 }
@@ -117,7 +119,7 @@ function card({ eyebrow, title, subtitle, meta }: OgCardInput): Node {
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: COLORS.bg,
-      fontFamily: 'Inter',
+      fontFamily: 'Public Sans',
       position: 'relative',
     },
     [
@@ -182,9 +184,10 @@ function card({ eyebrow, title, subtitle, meta }: OgCardInput): Node {
                 'div',
                 {
                   display: 'flex',
+                  fontFamily: 'Barlow',
                   fontSize: titleSize(heading.length),
                   fontWeight: 700,
-                  lineHeight: 1.15,
+                  lineHeight: 1.12,
                   letterSpacing: -1,
                   color: COLORS.text,
                 },
@@ -262,10 +265,10 @@ function card({ eyebrow, title, subtitle, meta }: OgCardInput): Node {
                     {
                       display: 'flex',
                       fontSize: 20,
-                      fontWeight: 400,
+                      fontWeight: 600,
                       color: COLORS.muted,
-                      padding: '10px 18px',
-                      borderRadius: 999,
+                      padding: '10px 16px',
+                      borderRadius: 4,
                       backgroundColor: COLORS.surface,
                       border: `1px solid ${COLORS.border}`,
                     },

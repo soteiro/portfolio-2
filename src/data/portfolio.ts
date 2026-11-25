@@ -1,7 +1,6 @@
 export interface SkillCategory {
   name: string;
   slug: string;
-  count: number;
 }
 
 export interface Project {
@@ -43,10 +42,10 @@ export const portfolioData = {
 
   // Categorías para filtrado / Filter categories
   categories: [
-    { name: "Backend", slug: "backend", count: 3 },
-    { name: "IoT & Telemetría", slug: "iot", count: 2 },
-    { name: "DevOps & Infra", slug: "devops", count: 1 },
-    { name: "Fullstack", slug: "fullstack", count: 1 }
+    { name: "Backend", slug: "backend" },
+    { name: "DevOps & Infra", slug: "devops" },
+    { name: "Fullstack", slug: "fullstack" },
+    { name: "IoT & Telemetría", slug: "iot" }
   ] as SkillCategory[],
 
   // Habilidades / Skills

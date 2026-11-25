@@ -1,250 +1,145 @@
 ---
-import CloudWavesBottom from "./CloudWavesBottom.astro";
-import { portfolioData } from "../data/portfolio";
-import { getHighlights } from "../data/highlights";
+// Footer.astro
+import { portfolioData } from '../data/portfolio';
 
 const currentYear = new Date().getFullYear();
-const highlights = await getHighlights(3);
-
 ---
 
-<footer
-  class="relative mt-24 flex items-center pt-56 pb-12 bg-gradient-b from-sky-from to-sky-to text-page-text overflow-hidden"
->
-  <!-- Inverted Cloud Wave Divider -->
-  <CloudWavesBottom />
-
-  <div class="max-w-1100px mx-auto px-6 relative z-10">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-8 lg:gap-12 pb-12 border-b border-black/10 dark:border-white/10"
-    >
-      <!-- Mascot / Intro Column -->
-      <div class="flex flex-col gap-4 max-w-sm sm:col-span-2 lg:col-span-1">
+<footer class="mt-16 border-t border-card-border bg-surface text-page-text">
+  <div class="site-container py-12">
+    <div class="grid grid-cols-1 md:grid-cols-[1.6fr_1fr_1fr] gap-10 pb-10 border-b border-card-border">
+      <!-- Identidad -->
+      <div class="flex flex-col gap-3 max-w-md">
         <a
           href="/"
-          class="inline-flex items-baseline text-2xl font-bold text-primary"
+          class="inline-flex items-center gap-2.5 font-display text-lg font-extrabold tracking-tight text-page-text hover:text-primary transition-colors w-fit"
         >
-          <span>{portfolioData.name.first}</span>
-          <span class="text-secondary mx-0.5">{portfolioData.name.initial}</span
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="text-primary shrink-0"
+            aria-hidden="true"
           >
-          <span>{portfolioData.name.last}</span>
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"></circle>
+            <circle cx="12" cy="12" r="5" stroke="var(--color-secondary)" stroke-width="1.5"></circle>
+            <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
+          </svg>
+          <span>{portfolioData.name.display}</span>
         </a>
-        <p
-          class="text-[0.9375rem] leading-relaxed text-page-text opacity-85 m-0"
-        >
-          Portafolio de ingeniería de software. Especializado en sistemas concurrentes en Go, telemetría IoT de alta escala e infraestructura Linux resiliente.
+
+        <p class="text-sm leading-relaxed text-text-muted m-0">
+          Ingeniería de software enfocada en sistemas backend en Go, infraestructura Linux y telemetría IoT en producción.
         </p>
 
-        <!-- Social Icons Row -->
-        <div class="flex items-center gap-3 pt-2">
-          {
-            portfolioData.social.github && (
-              <a
-                href={portfolioData.social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg"
-                aria-label="GitHub"
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                  <path d="M9 18c-4.51 2-5-2-7-2" />
-                </svg>
-              </a>
-            )
-          }
-          {
-            portfolioData.social.linkedin && (
+        <p class="text-xs font-medium text-text-muted m-0">
+          {portfolioData.location}
+        </p>
+      </div>
+
+      <!-- Navegación -->
+      <div class="flex flex-col gap-3">
+        <h2 class="font-display text-sm font-bold text-page-text m-0">
+          Navegación
+        </h2>
+        <ul class="flex flex-col gap-0.5 list-none p-0 m-0">
+          <li>
+            <a href="/" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+              Inicio
+            </a>
+          </li>
+          <li>
+            <a href="/projects" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+              Proyectos
+            </a>
+          </li>
+          <li>
+            <a href="/blog" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+              Blog
+            </a>
+          </li>
+          <li>
+            <a href="/about" class="inline-flex items-center min-h-11 text-sm text-text-muted hover:text-primary transition-colors">
+              Sobre mí
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Canales directos -->
+      <div class="flex flex-col gap-3">
+        <h2 class="font-display text-sm font-bold text-page-text m-0">
+          Canales
+        </h2>
+        <ul class="flex flex-col gap-0.5 list-none p-0 m-0">
+          <li>
+            <a
+              href={`mailto:${portfolioData.social.email}`}
+              class="inline-flex items-center min-h-11 text-sm font-mono text-primary hover:underline"
+            >
+              {portfolioData.social.email}
+            </a>
+          </li>
+          {portfolioData.social.linkedin && (
+            <li>
               <a
                 href={portfolioData.social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg"
-                aria-label="LinkedIn"
+                class="inline-flex items-center gap-1.5 min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                  <rect width="4" height="12" x="2" y="9" />
-                  <circle cx="4" cy="4" r="2" />
+                <span>LinkedIn</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7"></path>
+                  <path d="M7 7h10v10"></path>
                 </svg>
               </a>
-            )
-          }
-          {
-            portfolioData.social?.bluesky && (
+            </li>
+          )}
+          {portfolioData.social.github && (
+            <li>
               <a
-                href={portfolioData.social.bluesky}
+                href={portfolioData.social.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg"
-                aria-label="BlueSky"
+                class="inline-flex items-center gap-1.5 min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 25 22"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M12 8.56C12 8.56 7.87 0.22 2.71 1.06C-0.9 1.64 2.18 10.57 3.22 12.07C4.26 13.57 6.32 12.57 6.32 12.57C6.32 12.57 0.64 14.07 5.29 18.57C9.73 22.88 12 16.07 12 16.07" />
-                  <path d="M12.15 8.62C12.15 8.62 16.28 0.28 21.44 1.12C25.06 1.7 21.98 10.63 20.93 12.13C19.89 13.63 17.83 12.63 17.83 12.63C17.83 12.63 23.51 14.13 18.86 18.63C14.42 22.93 12.15 16.13 12.15 16.13" />
+                <span>GitHub</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7"></path>
+                  <path d="M7 7h10v10"></path>
                 </svg>
               </a>
-            )
-          }
-          {
-            portfolioData.social.rss && (
+            </li>
+          )}
+          {portfolioData.social.rss && (
+            <li>
               <a
                 href={portfolioData.social.rss}
                 target="_blank"
-                class="flex items-center justify-center w-9 h-9 rounded-full bg-white/25 dark:bg-black/25 text-page-text transition duration-200 hover:-translate-y-0.5 hover:scale-110 hover:text-primary hover:bg-white dark:hover:bg-card-bg"
-                aria-label="RSS Feed"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 min-h-11 text-sm text-text-muted hover:text-primary transition-colors"
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M4 11 a 9 9 0 0 1 9 9" />
-                  <path d="M4 4 a 16 16 0 0 1 16 16" />
-                  <circle cx="5" cy="19" r="1" />
+                <span>Feed RSS</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7"></path>
+                  <path d="M7 7h10v10"></path>
                 </svg>
               </a>
-            )
-          }
-        </div>
-      </div>
-
-      <!-- Links Column: Navigation -->
-      <div class="flex flex-col gap-3.5">
-        <h3
-          class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0"
-        >
-          Explore
-        </h3>
-        <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
-          <li>
-            <a
-              href="/#projects"
-              class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-              >Featured Work</a
-            >
-          </li>
-          <li>
-            <a
-              href="/blog"
-              class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-              >Blog</a
-            >
-          </li>
-          <li>
-            <a
-              href="/about"
-              class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-              >About Me</a
-            >
-          </li>
-          <li>
-            <a
-              href="/#skills"
-              class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-              >Skills & Stack</a
-            >
-          </li>
-          <li>
-            <a
-              href="/#contact"
-              class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-              >Contact & Inquiries</a
-            >
-          </li>
+            </li>
+          )}
         </ul>
       </div>
-
-      <!-- Links Column: Skills / Stack -->
-      <div class="flex flex-col gap-3.5">
-        <h3
-          class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0"
-        >
-          Categories
-        </h3>
-        <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
-          {
-            portfolioData.categories.slice(0, 4).map((cat) => (
-              <li>
-                <a
-                  href="/#skills"
-                  class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-                >
-                  {cat.name}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <!-- Links Column: Featured Highlights -->
-      {
-        highlights.length > 0 && (
-          <div class="flex flex-col gap-3.5">
-            <h3 class="text-[0.8125rem] font-bold uppercase tracking-wider text-page-text opacity-75 m-0">
-              Highlights
-            </h3>
-            <ul class="flex flex-col gap-2.5 list-none p-0 m-0">
-              {highlights.map((h) => (
-                <li>
-                  <a
-                    href={h.url}
-                    target={h.external ? "_blank" : undefined}
-                    rel={h.external ? "noopener noreferrer" : undefined}
-                    class="text-sm text-page-text opacity-85 hover:opacity-100 hover:text-primary hover:translate-x-0.5 transition duration-200 inline-block"
-                  >
-                    {h.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
     </div>
 
-    <!-- Bottom Copyright & Details -->
-    <div
-      class="flex flex-wrap justify-center   items-center gap-4 pt-8 text-[0.8125rem] opacity-80"
-    >
-      <p class="m-0 p-2">
-        © {currentYear + " "}
-        <a href="https://github.com/soteiro">{portfolioData.name.display}</a>. Crafted with curiosity & Astro.
+    <div class="flex flex-wrap items-center justify-between gap-4 pt-6 text-xs text-text-muted">
+      <p class="m-0">
+        © {currentYear} {portfolioData.name.display} · Valdivia, Chile.
       </p>
-      
+      <p class="m-0">
+        soteiro.dev · Astro + Cloudflare Workers
+      </p>
     </div>
   </div>
 </footer>

@@ -1,82 +1,562 @@
 ---
-import Rainbow from './Rainbow.astro';
-import { portfolioData } from '../data/portfolio';
+// Hero.astro — Sección transversal interactiva de telemetría sobre fondo vacío
+import { portfolioData, type Project } from '../data/portfolio';
+import { trackCode } from '../lib/projects';
+
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props;
+
+function compactTrackName(title: string): string {
+  const head = title.split('—')[0].trim();
+  if (head.length <= 18) return head;
+  if (/hardening/i.test(head)) return 'Server Hardening';
+  return head.split(/\s+/).slice(0, 2).join(' ');
+}
+
+// Coordenadas en viewBox 592×420 (24 20 592 420) con núcleo en (300, 230)
+const trackVisuals = [
+  {
+    color: 'var(--color-signal)',
+    path: 'M 300 230 C 318 148, 376 92, 466 64',
+    ghostPath: 'M 300 230 C 330 162, 392 110, 452 80',
+    endX: 466,
+    endY: 64,
+    labelX: 478,
+    labelY: 68,
+    align: 'start',
+    wedgeIndex: 0,
+  },
+  {
+    color: 'var(--color-secondary)',
+    path: 'M 300 230 C 378 242, 434 294, 462 374',
+    ghostPath: 'M 300 230 C 364 258, 412 314, 444 384',
+    endX: 462,
+    endY: 374,
+    labelX: 474,
+    labelY: 378,
+    align: 'start',
+    wedgeIndex: 3,
+  },
+  {
+    color: 'var(--color-ring-text)',
+    path: 'M 300 230 C 266 154, 212 108, 144 82',
+    ghostPath: 'M 300 230 C 254 166, 196 124, 152 104',
+    endX: 144,
+    endY: 82,
+    labelX: 132,
+    labelY: 86,
+    align: 'end',
+    wedgeIndex: 1,
+  },
+  {
+    color: 'var(--color-secondary)',
+    path: 'M 300 230 C 228 248, 174 302, 146 376',
+    ghostPath: 'M 300 230 C 242 264, 194 318, 166 386',
+    endX: 146,
+    endY: 376,
+    labelX: 134,
+    labelY: 380,
+    align: 'end',
+    wedgeIndex: 2,
+  },
+];
+
+const tracks = projects.slice(0, 4).map((project, index) => {
+  const shortTitle = compactTrackName(project.title);
+  const visual = trackVisuals[index];
+  return {
+    id: project.id ?? `track-${index + 1}`,
+    shortTitle,
+    title: project.title,
+    category: project.category,
+    summary: project.subtitle || project.description,
+    stack: project.tags.slice(0, 4).join(' · '),
+    href: project.id ? `/projects/${project.id}` : '/projects',
+    code: trackCode(index),
+    ...visual,
+  };
+});
+
+const defaultTrack = tracks[0];
+
+// Segmentos exteriores del detector integrados al arco (reaccionan a la pista activa)
+function radialWedgePath(cx: number, cy: number, rInner: number, rOuter: number, degStart: number, degEnd: number) {
+  const rad = (d: number) => (d * Math.PI) / 180;
+  const x1 = cx + rInner * Math.cos(rad(degStart));
+  const y1 = cy + rInner * Math.sin(rad(degStart));
+  const x2 = cx + rOuter * Math.cos(rad(degStart));
+  const y2 = cy + rOuter * Math.sin(rad(degStart));
+  const x3 = cx + rOuter * Math.cos(rad(degEnd));
+  const y3 = cy + rOuter * Math.sin(rad(degEnd));
+  const x4 = cx + rInner * Math.cos(rad(degEnd));
+  const y4 = cy + rInner * Math.sin(rad(degEnd));
+  return `M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${rOuter} ${rOuter} 0 0 1 ${x3.toFixed(1)} ${y3.toFixed(1)} L ${x4.toFixed(1)} ${y4.toFixed(1)} A ${rInner} ${rInner} 0 0 0 ${x1.toFixed(1)} ${y1.toFixed(1)} Z`;
+}
+
+const detectorArcSegments = [
+  { d: radialWedgePath(300, 230, 174, 208, -28, -15), trackIndex: 0 },
+  { d: radialWedgePath(300, 230, 174, 202, -12, 1), trackIndex: 2 },
+  { d: radialWedgePath(300, 230, 174, 202, 4, 17), trackIndex: 3 },
+  { d: radialWedgePath(300, 230, 174, 208, 20, 33), trackIndex: 1 },
+];
+
+const ringTicks = Array.from({ length: 12 }, (_, i) => {
+  const a = (i * 30 * Math.PI) / 180;
+  return {
+    x1: (300 + 168 * Math.cos(a)).toFixed(1),
+    y1: (230 + 168 * Math.sin(a)).toFixed(1),
+    x2: (300 + 178 * Math.cos(a)).toFixed(1),
+    y2: (230 + 178 * Math.sin(a)).toFixed(1),
+  };
+});
 ---
 
-<section class="relative grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center pt-2 sm:pt-6 pb-10 sm:pb-10">
-  <!-- Left Column: Friendly Greeting & CTAs -->
-  <div class=" flex flex-col gap-6 relative z-10">
-    <!-- Status Pill -->
-    <!-- <div class="inline-flex items-center gap-2 px-3.5 py-1.5 w-fit bg-cloud-300/80 dark:bg-cloud-500/80 backdrop-blur-sm border border-cloud-400 dark:border-white/10 rounded-full text-sm font-medium text-page-text shadow-sm">
-      <span class="w-2 h-2 rounded-full bg-success-500 ring-2 ring-success-300 animate-pulse"></span>
-      <span>{portfolioData.status}</span>
-    </div> -->
+<section class="relative overflow-x-clip">
+  <div class="site-container py-10 sm:py-14 lg:py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.14fr)] gap-10 lg:gap-12 items-center">
+      <!-- Columna izquierda: identidad, disponibilidad móvil, CTAs en 1 fila y métricas verificables -->
+      <div class="flex flex-col gap-6 min-w-0">
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-[-0.03em] leading-[1.03] text-page-text m-0">
+          Sistemas backend, <span class="text-ring-text">Linux y telemetría IoT.</span>
+        </h1>
 
-    <!-- Friendly Greeting -->
-    <!-- <h1 class="flex flex-col gap-3 m-0">
-      <span class="block text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight text-page-text">
-        ¡Hola! Soy <span class="text-primary">{portfolioData.name.first}</span>. 👋
-      </span>
-      <span class="block text-xl sm:text-2xl font-medium leading-snug bg-gradient-br from-primary to-secondary bg-clip-text text-transparent">
-        {portfolioData.tagline}
-      </span>
-    </h1> -->
+        <p class="inline-flex lg:hidden items-center gap-2 text-xs font-medium text-text-muted m-0">
+          <span class="w-2 h-2 rounded-full bg-status-ok shrink-0" aria-hidden="true"></span>
+          <span>Valdivia, CL · Disponible remoto</span>
+        </p>
 
-    <!--
-      La home no tiene encabezado visible desde que se comentó el saludo del
-      hero, y una página sin <h1> pierde su señal más fuerte de tema — más aún
-      siendo la raíz del dominio. Este h1 solo para lectores de pantalla y
-      buscadores repone esa señal sin alterar el diseño. Si en algún momento
-      volvés a mostrar el saludo, quitá este bloque y dejá aquel como h1.
-    -->
-    <h1 class="sr-only">
-      {portfolioData.name.display} — {portfolioData.role}. {portfolioData.tagline}
-    </h1>
+        <p class="text-base sm:text-lg text-text-muted leading-relaxed max-w-[54ch] m-0">
+          {portfolioData.bio}
+        </p>
 
-    <!-- Short Bio -->
-    <p class="text-lg text-text-muted max-w-xl leading-relaxed m-0">
-      {portfolioData.bio}
-    </p>
+        <!-- Acciones directas: una sola fila en escritorio con copia inline sin fricción -->
+        <div class="flex flex-col gap-2 pt-1">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <a href={`mailto:${portfolioData.social.email}`} class="telemetry-btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+              <span>Escribir correo</span>
+            </a>
 
-    <!-- CTAs -->
-    <div class="flex flex-wrap gap-4 items-center pt-2">
-      <a href="#projects" class="josh-button">
-        <span>Explorar proyectos</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <polyline points="19 12 12 19 5 12"></polyline>
-        </svg>
-      </a>
-      <a href="#contact" class="josh-button josh-button-secondary">
-        <span>Contactar</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </a>
+            <button
+              type="button"
+              id="hero-copy-email-btn"
+              data-email={portfolioData.social.email}
+              class="telemetry-btn-secondary"
+              aria-describedby="hero-copy-status"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+              </svg>
+              <span data-hero-copy-label>Copiar correo</span>
+            </button>
+
+            <a href="#projects" class="telemetry-btn-secondary">
+              <span>Proyectos</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 5v14"></path>
+                <path d="m19 12-7 7-7-7"></path>
+              </svg>
+            </a>
+          </div>
+
+          <p id="hero-copy-status" role="status" aria-live="polite" class="text-xs text-text-muted m-0 empty:hidden"></p>
+        </div>
+
+        <!-- Métricas reales en producción: 3 KPI tabulares limpios + barra proporcional real solo para 95.18% -->
+        <dl
+          class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-5 border-t border-card-border m-0"
+          aria-label="Métricas reales en producción"
+        >
+          <div class="flex flex-col gap-1 sm:pr-4 sm:border-r sm:border-card-border">
+            <dt class="text-xs font-medium text-text-muted order-2">Eventos IoT procesados</dt>
+            <dd class="tabular-data text-xl font-semibold text-page-text m-0 order-1">+15M/mes</dd>
+          </div>
+
+          <div class="flex flex-col gap-1 sm:pr-4 sm:border-r sm:border-card-border">
+            <dt class="text-xs font-medium text-text-muted order-2">Filas en PostgreSQL</dt>
+            <dd class="tabular-data text-xl font-semibold text-page-text m-0 order-1">+16M</dd>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-baseline justify-between gap-2">
+              <dd class="tabular-data text-xl font-semibold text-status-ok m-0">95.18%</dd>
+              <span class="tabular-data text-xs text-text-muted">desde 0%</span>
+            </div>
+            <div
+              class="h-1.5 w-full bg-surface border border-card-border rounded-[2px] overflow-hidden"
+              role="progressbar"
+              aria-valuenow="95.18"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-label="Cumplimiento de SLA recuperado: 95.18%"
+            >
+              <div class="h-full bg-status-ok" style="width: 95.18%"></div>
+            </div>
+            <dt class="text-xs font-medium text-text-muted">Cumplimiento de SLA</dt>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Columna derecha: Sección transversal del detector respirando sobre el vacío -->
+      {tracks.length > 0 && defaultTrack && (
+        <div id="event-display" data-active-track={defaultTrack.id} class="flex flex-col gap-3 min-w-0">
+          <div class="relative flex items-center justify-center">
+            <svg
+              viewBox="24 20 592 420"
+              class="w-full max-w-[600px] h-auto"
+              role="img"
+              aria-label="Diagrama concéntrico interactivo de los 4 sistemas de ingeniería de Diego Soto"
+            >
+              <defs>
+                <pattern id="vacuum-dots" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="10" cy="10" r="0.85" fill="var(--color-border)" opacity="0.55" />
+                </pattern>
+              </defs>
+
+              <circle cx="300" cy="230" r="174" fill="url(#vacuum-dots)" />
+
+              <line x1="88" y1="230" x2="540" y2="230" stroke="var(--color-border)" stroke-width="1" />
+              <line x1="300" y1="32" x2="300" y2="428" stroke="var(--color-border)" stroke-width="1" />
+
+              <circle cx="300" cy="230" r="174" fill="none" stroke="var(--color-ring)" stroke-width="1.25" />
+              <circle cx="300" cy="230" r="142" fill="none" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="4 4" />
+              <circle cx="300" cy="230" r="108" fill="none" stroke="var(--color-ring)" stroke-width="1" opacity="0.85" />
+              <circle cx="300" cy="230" r="70" fill="none" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="2 4" />
+              <circle cx="300" cy="230" r="34" fill="none" stroke="var(--color-ring)" stroke-width="1.25" />
+
+              {ringTicks.map((t) => (
+                <line x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="var(--color-ring)" stroke-width="1.25" opacity="0.8" />
+              ))}
+
+              <!-- Segmentos del arco exterior vinculados a la pista activa -->
+              <g aria-hidden="true">
+                {detectorArcSegments.map((seg, segIdx) => {
+                  const linkedTrack = tracks[seg.trackIndex];
+                  const isFirst = seg.trackIndex === 0;
+                  return (
+                    <path
+                      d={seg.d}
+                      fill={isFirst ? 'var(--color-signal)' : 'var(--color-ring)'}
+                      opacity={isFirst ? '0.85' : '0.28'}
+                      class="transition-[opacity,fill] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                      data-arc-segment={linkedTrack?.id ?? `seg-${segIdx}`}
+                      data-arc-color={linkedTrack?.color ?? 'var(--color-signal)'}
+                    />
+                  );
+                })}
+              </g>
+
+              <!-- Trazas curvas con feedback hover y reconstrucciones fantasma -->
+              {tracks.map((track, idx) => (
+                <g
+                  class="event-track-arc cursor-pointer transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:opacity-90"
+                  data-track-group={track.id}
+                  opacity={idx === 0 ? '1' : '0.3'}
+                >
+                  <path
+                    d={track.ghostPath}
+                    fill="none"
+                    stroke={track.color}
+                    stroke-width="1"
+                    stroke-dasharray="3 4"
+                    opacity="0.55"
+                  />
+                  <path
+                    d={track.path}
+                    fill="none"
+                    stroke={track.color}
+                    stroke-width={idx === 0 ? '3' : '1.6'}
+                    stroke-linecap="round"
+                    class="transition-[stroke-width] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    data-track-path={track.id}
+                  />
+                  <circle
+                    cx={track.endX}
+                    cy={track.endY}
+                    r={idx === 0 ? '11' : '0'}
+                    fill="none"
+                    stroke={track.color}
+                    stroke-width="1.25"
+                    opacity="0.65"
+                    data-track-halo={track.id}
+                  />
+                  <circle
+                    cx={track.endX}
+                    cy={track.endY}
+                    r={idx === 0 ? '5.5' : '4'}
+                    fill={track.color}
+                    data-track-node={track.id}
+                  />
+                </g>
+              ))}
+
+              <!-- Etiquetas visibles en >=640px (en móvil <640px el selector 2x2 inferior aporta rótulos nítidos de 14px) -->
+              {tracks.map((track, idx) => (
+                <g class="hidden sm:block cursor-pointer" data-track-label-group={track.id}>
+                  <text
+                    x={track.labelX}
+                    y={track.labelY}
+                    text-anchor={track.align}
+                    fill={idx === 0 ? 'var(--color-text)' : 'var(--color-text-muted)'}
+                    font-family="var(--font-display)"
+                    font-size="14"
+                    font-weight={idx === 0 ? '700' : '600'}
+                    data-track-label={track.id}
+                  >
+                    {track.shortTitle}
+                  </text>
+                </g>
+              ))}
+
+              <circle cx="300" cy="230" r="9" fill="var(--color-background)" stroke="var(--color-signal)" stroke-width="2" />
+              <circle cx="300" cy="230" r="3.5" fill="var(--color-signal)" />
+            </svg>
+          </div>
+
+          <!-- Selector 2x2 / 4x1 + ficha de lectura en vivo -->
+          <div class="border border-card-border rounded-md overflow-hidden bg-surface">
+            <div
+              class="grid grid-cols-2 sm:grid-cols-4 gap-px bg-card-border border-b border-card-border"
+              role="group"
+              aria-label="Seleccionar traza de sistema"
+            >
+              {tracks.map((track, idx) => (
+                <button
+                  type="button"
+                  data-track-select={track.id}
+                  data-track-title={track.title}
+                  data-track-category={track.category}
+                  data-track-summary={track.summary}
+                  data-track-stack={track.stack}
+                  data-track-href={track.href}
+                  data-track-code={track.code}
+                  aria-pressed={idx === 0 ? 'true' : 'false'}
+                  class={`flex flex-col items-start gap-0.5 min-h-11 px-3 py-2.5 text-left border-0 cursor-pointer transition-colors duration-150 ${
+                    idx === 0
+                      ? 'bg-surface-elevated text-primary'
+                      : 'bg-surface text-text-muted hover:bg-surface-elevated hover:text-page-text'
+                  }`}
+                >
+                  <span class="tabular-data text-xs">{track.code}</span>
+                  <span class="font-display text-sm font-bold truncate w-full">{track.shortTitle}</span>
+                </button>
+              ))}
+            </div>
+
+            <div
+              id="event-readout"
+              aria-live="polite"
+              class="px-4 py-4 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div class="flex flex-col gap-1 min-w-0">
+                <p id="readout-title" class="font-display text-base font-bold text-page-text m-0">
+                  {defaultTrack.title}
+                </p>
+                <p id="readout-summary" class="text-sm text-text-muted leading-snug m-0">
+                  {defaultTrack.summary}
+                </p>
+                <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                  <span id="readout-code" class="tabular-data text-primary font-semibold">{defaultTrack.code}</span>
+                  <span class="text-text-muted">·</span>
+                  <span id="readout-category" class="font-medium text-text-muted">{defaultTrack.category}</span>
+                  <span class="text-text-muted">·</span>
+                  <span id="readout-stack" class="tabular-data text-secondary">{defaultTrack.stack}</span>
+                </div>
+              </div>
+
+              <a
+                id="readout-link"
+                href={defaultTrack.href}
+                class="telemetry-btn-secondary shrink-0 text-sm whitespace-nowrap"
+              >
+                <span>Abrir proyecto</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   </div>
+</section>
 
-  <!-- Right Column: Whimsical Interactive Rainbow & Sitting Mascot -->
-  <div class="relative flex flex-col items-center justify-center select-none pt-4 lg:pt-0 z-10">
-    <!-- Interactive Rainbow Arch -->
-    <div class="w-full flex justify-center items-center">
-      <Rainbow />
-    </div>
+<script>
+  let heroController: AbortController | null = null;
+  let heroCopyTimer: number | null = null;
 
-    <!-- Sitting Mascot directly in front of the Rainbow -->
-    <!-- <div class="relative -mt-32 sm:-mt-38 md:-mt-44 z-10 flex flex-col items-center pointer-events-none">
-      <img
-        src="/images/avatar.png"
-        alt={portfolioData.name.display}
-        width="280"
-        height="280"
-        class="w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.35)]"
-        loading="eager"
-        decoding="async"
-      />-->
-      <!-- Soft ground contact shadow resting on the hill curve -->
-      <!--  <div class="w-32 sm:w-40 h-3 bg-black/25 dark:bg-black/40 rounded-[100%] blur-[6px] -mt-2"></div>
-    </div> -->
-  </div>
-</section>  
+  function setupHero() {
+    heroController?.abort();
+    heroController = new AbortController();
+    const { signal } = heroController;
+
+    // 1. Selector de trazas del detector + respuesta en segmentos del arco
+    const root = document.getElementById('event-display');
+    if (root) {
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-track-select]'));
+      const groups = Array.from(root.querySelectorAll<SVGGElement>('[data-track-group]'));
+      const labelGroups = Array.from(root.querySelectorAll<SVGGElement>('[data-track-label-group]'));
+      const arcSegments = Array.from(root.querySelectorAll<SVGPathElement>('[data-arc-segment]'));
+      const codeEl = document.getElementById('readout-code');
+      const catEl = document.getElementById('readout-category');
+      const titleEl = document.getElementById('readout-title');
+      const summaryEl = document.getElementById('readout-summary');
+      const stackEl = document.getElementById('readout-stack');
+      const linkEl = document.getElementById('readout-link') as HTMLAnchorElement | null;
+
+      const selectTrack = (trackId: string) => {
+        const targetBtn = buttons.find((b) => b.dataset.trackSelect === trackId);
+        if (!targetBtn) return;
+
+        root.setAttribute('data-active-track', trackId);
+
+        buttons.forEach((btn) => {
+          const isActive = btn.dataset.trackSelect === trackId;
+          btn.setAttribute('aria-pressed', String(isActive));
+          btn.classList.toggle('bg-surface-elevated', isActive);
+          btn.classList.toggle('text-primary', isActive);
+          btn.classList.toggle('bg-surface', !isActive);
+          btn.classList.toggle('text-text-muted', !isActive);
+        });
+
+        groups.forEach((group) => {
+          const isActive = group.dataset.trackGroup === trackId;
+          group.setAttribute('opacity', isActive ? '1' : '0.26');
+
+          const path = group.querySelector<SVGPathElement>('[data-track-path]');
+          const node = group.querySelector<SVGCircleElement>('[data-track-node]');
+          const halo = group.querySelector<SVGCircleElement>('[data-track-halo]');
+          if (path) path.setAttribute('stroke-width', isActive ? '3.25' : '1.5');
+          if (node) node.setAttribute('r', isActive ? '6' : '4');
+          if (halo) halo.setAttribute('r', isActive ? '11' : '0');
+        });
+
+        arcSegments.forEach((seg) => {
+          const isActive = seg.dataset.arcSegment === trackId;
+          seg.setAttribute('fill', isActive ? (seg.dataset.arcColor ?? 'var(--color-signal)') : 'var(--color-ring)');
+          seg.setAttribute('opacity', isActive ? '0.85' : '0.28');
+        });
+
+        labelGroups.forEach((lg) => {
+          const isActive = lg.dataset.trackLabelGroup === trackId;
+          const text = lg.querySelector<SVGTextElement>('[data-track-label]');
+          if (text) {
+            text.setAttribute('fill', isActive ? 'var(--color-text)' : 'var(--color-text-muted)');
+            text.setAttribute('font-weight', isActive ? '700' : '600');
+          }
+        });
+
+        if (codeEl) codeEl.textContent = targetBtn.dataset.trackCode ?? '';
+        if (catEl) catEl.textContent = targetBtn.dataset.trackCategory ?? '';
+        if (titleEl) titleEl.textContent = targetBtn.dataset.trackTitle ?? '';
+        if (summaryEl) summaryEl.textContent = targetBtn.dataset.trackSummary ?? '';
+        if (stackEl) stackEl.textContent = targetBtn.dataset.trackStack ?? '';
+        if (linkEl && targetBtn.dataset.trackHref) {
+          linkEl.href = targetBtn.dataset.trackHref;
+        }
+      };
+
+      buttons.forEach((btn) => {
+        btn.addEventListener(
+          'click',
+          () => {
+            if (btn.dataset.trackSelect) selectTrack(btn.dataset.trackSelect);
+          },
+          { signal }
+        );
+      });
+
+      groups.forEach((group) => {
+        group.addEventListener(
+          'click',
+          () => {
+            if (group.dataset.trackGroup) selectTrack(group.dataset.trackGroup);
+          },
+          { signal }
+        );
+      });
+
+      labelGroups.forEach((lg) => {
+        lg.addEventListener(
+          'click',
+          () => {
+            if (lg.dataset.trackLabelGroup) selectTrack(lg.dataset.trackLabelGroup);
+          },
+          { signal }
+        );
+      });
+    }
+
+    // 2. Copia rápida inline de correo en el Hero
+    const copyBtn = document.getElementById('hero-copy-email-btn') as HTMLButtonElement | null;
+    const statusEl = document.getElementById('hero-copy-status');
+    const labelEl = copyBtn?.querySelector<HTMLElement>('[data-hero-copy-label]');
+
+    if (copyBtn && statusEl) {
+      copyBtn.addEventListener(
+        'click',
+        async () => {
+          const email = copyBtn.getAttribute('data-email') ?? '';
+          if (!email) return;
+
+          if (heroCopyTimer !== null) {
+            window.clearTimeout(heroCopyTimer);
+            heroCopyTimer = null;
+          }
+
+          let copied = false;
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(email);
+              copied = true;
+            }
+          } catch {
+            copied = false;
+          }
+
+          if (!copied) {
+            try {
+              const textarea = document.createElement('textarea');
+              textarea.value = email;
+              textarea.setAttribute('readonly', '');
+              textarea.style.position = 'fixed';
+              textarea.style.opacity = '0';
+              document.body.appendChild(textarea);
+              textarea.select();
+              copied = document.execCommand('copy');
+              document.body.removeChild(textarea);
+            } catch {
+              copied = false;
+            }
+          }
+
+          if (copied) {
+            if (labelEl) labelEl.textContent = 'Copiado';
+            statusEl.textContent = `Correo ${email} copiado al portapapeles.`;
+          } else {
+            if (labelEl) labelEl.textContent = 'Copiar correo';
+            statusEl.textContent = `No se pudo copiar automáticamente. Copia ${email} manualmente.`;
+          }
+
+          heroCopyTimer = window.setTimeout(() => {
+            if (labelEl) labelEl.textContent = 'Copiar correo';
+            heroCopyTimer = null;
+          }, 2500);
+        },
+        { signal }
+      );
+    }
+  }
+
+  setupHero();
+  document.addEventListener('astro:after-swap', setupHero);
+</script>

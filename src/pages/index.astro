@@ -5,13 +5,12 @@ import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Sidebar from '../components/Sidebar.astro';
 import { getCollection } from 'astro:content';
+import { sortProjects, trackCode } from '../lib/projects';
 import { absoluteUrl, PERSON_ID, WEBSITE_ID } from '../lib/seo';
 
 export const prerender = true;
 
-// Proyectos y artículos vienen de las colecciones, gestionadas desde Keystatic
-// (`pnpm dev` -> /keystatic). Sin entradas, cada sección muestra su vacío.
-const projects = (await getCollection('projects', ({ data }) => !data.draft)).map((entry) => ({
+const projects = sortProjects(await getCollection('projects', ({ data }) => !data.draft)).map((entry) => ({
   id: entry.id,
   title: entry.data.title,
   subtitle: entry.data.subtitle,
@@ -24,8 +23,13 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).ma
   year: entry.data.year ?? undefined,
 }));
 
-const articles = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.dateValue.valueOf() - a.data.dateValue.valueOf())
+// La portada se reserva para artículos técnicos; las notas personales viven en /blog.
+const allArticles = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.dateValue.valueOf() - a.data.dateValue.valueOf()
+);
+
+const technicalArticles = allArticles
+  .filter((entry) => entry.data.category !== 'Desarrollo de Software')
   .map((entry) => ({
     title: entry.data.title,
     slug: entry.id,
@@ -35,9 +39,6 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
     category: entry.data.category,
   }));
 
-// ProfilePage marca la raíz del dominio como la página oficial de la persona,
-// que es justo lo que buscás cuando alguien googlea tu nombre. El nodo Person
-// completo lo emite el Layout; acá solo se lo referencia por @id.
 const jsonLd = JSON.stringify([
   {
     '@type': 'ProfilePage',
@@ -57,58 +58,91 @@ const jsonLd = JSON.stringify([
   suffix={false}
   jsonLd={jsonLd}
 >
-  <!-- Hero superimposed on CloudWavesTop -->
-  <Hero slot="hero" />
+  <Hero slot="hero" projects={projects} />
 
-  <div class="site-container ">
-    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-[1.9fr_1fr] gap-14 lg:gap-12 -mt-20 sm:-mt-32 lg:-mt-40 pb-10" id="projects">
-      <!-- Left Column: Projects & Articles -->
-      <section class="flex flex-col gap-8">
-        <div class="flex items-baseline justify-between mb-2">
-          <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Proyectos & Creaciones</h2>
-          <span class="text-[0.8125rem] font-mono text-text-muted">{projects.length} proyectos</span>
+  <div class="site-container py-12 sm:py-16 flex flex-col gap-16">
+    <!-- Sección 1: Grilla limpia de proyectos (sin filtros innecesarios para 4 ítems; orden unificado con Hero) -->
+    <section class="flex flex-col gap-6 min-w-0" id="projects">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 pb-4 border-b border-card-border">
+        <div class="flex items-baseline gap-3">
+          <h2 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-page-text m-0">
+            Proyectos en producción
+          </h2>
+          <span class="tabular-data text-xs text-text-muted">
+            {projects.length} {projects.length === 1 ? 'proyecto' : 'proyectos'}
+          </span>
         </div>
 
-        <div class="flex flex-col gap-8">
-          {projects.length > 0 ? (
-            projects.map((project) => <ProjectCard project={project} />)
-          ) : (
-            <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
-              Todavía no hay proyectos publicados.
-            </p>
-          )}
-        </div>
+        <a
+          href="/projects"
+          class="inline-flex items-center gap-1.5 min-h-11 text-sm font-display font-semibold text-primary hover:underline"
+        >
+          <span>Índice de proyectos</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
 
-        <!-- Latest Writing / Articles Section -->
-        {articles && articles.length > 0 && (
-          <div class="mt-14 flex flex-col gap-6" id="articles">
-            <div class="flex items-baseline justify-between mb-2">
-              <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Artículos & Casos de Estudio</h2>
-            </div>
-            <div class="flex flex-col gap-6">
-              {articles.map((article) => (
-                <article class="p-6 md:p-7 bg-card-bg border border-card-border rounded-xl flex flex-col gap-2 transition duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-lg">
-                  <div class="flex items-center gap-2 text-[0.8125rem] text-text-muted">
-                    <span class="text-primary font-medium">{article.category}</span>
-                    <span>•</span>
-                    <span>{article.date}</span>
-                    <span>•</span>
-                    <span>{article.readTime}</span>
-                  </div>
-                  <h3 class="text-xl font-bold m-0">
-                    <a href={`/blog/${article.slug}`} class="text-inherit no-underline transition-colors duration-200 hover:text-primary hover:underline hover:decoration-primary">
-                      {article.title}
-                    </a>
-                  </h3>
-                  <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">{article.excerpt}</p>
-                </article>
-              ))}
-            </div>
+      {projects.length > 0 ? (
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {projects.map((project, index) => (
+            <ProjectCard project={project} trackCode={index < 4 ? trackCode(index) : undefined} />
+          ))}
+        </div>
+      ) : (
+        <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
+          Todavía no hay proyectos publicados.
+        </p>
+      )}
+    </section>
+
+    <!-- Sección 2: Artículos técnicos a la izquierda + Contacto y stack a la derecha -->
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] gap-10 lg:gap-10 items-start">
+      {technicalArticles.length > 0 && (
+        <section class="flex flex-col gap-5 min-w-0" id="articles">
+          <div class="flex flex-wrap items-baseline justify-between gap-2 pb-3 border-b border-card-border">
+            <h2 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-page-text m-0">
+              Artículos técnicos
+            </h2>
+            <a
+              href="/blog"
+              class="inline-flex items-center gap-1.5 min-h-11 text-sm font-display font-semibold text-primary hover:underline"
+            >
+              <span>Ver todo el blog ({allArticles.length})</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
           </div>
-        )}
-      </section>
 
-      <!-- Right Column: Categories Filter, Popular Highlights, Newsletter/Contact -->
+          <div class="flex flex-col gap-4">
+            {technicalArticles.map((article) => (
+              <article class="group relative p-6 bg-surface border border-card-border rounded-md flex flex-col gap-2.5 transition-colors duration-150 hover:border-border-strong">
+                <h3 class="font-display text-xl font-bold leading-snug text-page-text m-0">
+                  <a
+                    href={`/blog/${article.slug}`}
+                    class="text-inherit no-underline transition-colors duration-150 group-hover:text-primary hover:underline after:content-[''] after:absolute after:inset-0"
+                  >
+                    {article.title}
+                  </a>
+                </h3>
+                <div class="flex flex-wrap items-center gap-2 text-xs text-text-muted">
+                  <span class="font-semibold text-secondary">{article.category}</span>
+                  <span>·</span>
+                  <span class="tabular-data">{article.date}</span>
+                  <span>·</span>
+                  <span class="tabular-data">{article.readTime}</span>
+                </div>
+                <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">{article.excerpt}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
       <Sidebar />
     </div>
   </div>

@@ -1,132 +1,173 @@
 ---
-// Sidebar.astro
-// Josh W. Comeau sidebar with Category filter tags, Popular/Featured items, and Contact/Newsletter callout
+// Sidebar.astro — Contacto directo y stack operativo
 import { portfolioData } from '../data/portfolio';
-import { getHighlights } from '../data/highlights';
-
-const highlights = await getHighlights();
 ---
 
-<aside class="flex flex-col gap-14">
-  <!-- 1. Categories / Skills Filter Section -->
-  <section class="flex flex-col gap-5" id="skills">
-    <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Filtrar por Especialidad</h2>
-    <div class="flex flex-wrap gap-2" id="category-filter-group">
+<aside class="flex flex-col gap-5 min-w-0">
+  <!-- 1. Contacto directo -->
+  <section
+    class="p-6 bg-surface border border-border-strong rounded-md flex flex-col gap-4 min-w-0"
+    id="contact"
+  >
+    <div class="flex flex-col gap-1.5">
+      <h2 class="font-display text-xl font-bold text-page-text m-0">¿Hablamos de ingeniería?</h2>
+      <p class="text-sm text-text-muted leading-relaxed m-0">
+        Disponible para entrevistas de ingeniería backend/sistemas y proyectos técnicos de Linux o telemetría IoT.
+      </p>
+      <p class="inline-flex items-center gap-2 text-xs font-medium text-text-muted pt-1 m-0">
+        <span class="w-2 h-2 rounded-full bg-status-ok shrink-0" aria-hidden="true"></span>
+        <span>{portfolioData.location}</span>
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-2.5 min-w-0">
+      <a href={`mailto:${portfolioData.social.email}`} class="telemetry-btn-primary w-full">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+          <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+        </svg>
+        <span>Escribir correo</span>
+      </a>
+
       <button
-        class="category-chip active relative inline-flex items-center px-3.5 py-1.5 text-sm font-medium text-page-text bg-transparent border-0 cursor-pointer rounded-lg transition duration-200 hover:-translate-y-0.5 hover:text-primary [&.active]:text-white [&.active_.chip-bg]:bg-primary [&.active_.chip-bg]:border-primary"
-        data-filter="all"
+        type="button"
+        id="copy-email-btn"
+        data-email={portfolioData.social.email}
+        class="inline-flex items-center justify-between gap-2 min-h-11 px-3.5 py-2 rounded bg-page border border-card-border text-sm text-page-text cursor-pointer transition-colors duration-150 hover:border-primary min-w-0"
+        aria-describedby="copy-email-status"
       >
-        <span class="chip-bg absolute inset-0 -z-10 rounded-lg bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 transition duration-200"></span>
-        <span>Todos los proyectos</span>
+        <span class="font-mono text-xs truncate">{portfolioData.social.email}</span>
+        <span class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+          </svg>
+          <span data-copy-label>Copiar</span>
+        </span>
       </button>
-      {portfolioData.categories.map((cat) => (
-        <button
-          class="category-chip relative inline-flex items-center px-3.5 py-1.5 text-sm font-medium text-page-text bg-transparent border-0 cursor-pointer rounded-lg transition duration-200 hover:-translate-y-0.5 hover:text-primary [&.active]:text-white [&.active_.chip-bg]:bg-primary [&.active_.chip-bg]:border-primary"
-          data-filter={cat.slug}
+
+      <p id="copy-email-status" role="status" aria-live="polite" class="text-xs text-text-muted m-0 empty:hidden"></p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2.5 pt-3 border-t border-card-border">
+      {portfolioData.social.linkedin && (
+        <a
+          href={portfolioData.social.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="telemetry-btn-secondary text-sm"
         >
-          <span class="chip-bg absolute inset-0 -z-10 rounded-lg bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 transition duration-200"></span>
-          <span>{cat.name}</span>
-        </button>
-      ))}
+          <span>LinkedIn</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17 17 7"></path>
+            <path d="M7 7h10v10"></path>
+          </svg>
+        </a>
+      )}
+      {portfolioData.social.github && (
+        <a
+          href={portfolioData.social.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="telemetry-btn-secondary text-sm"
+        >
+          <span>GitHub</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17 17 7"></path>
+            <path d="M7 7h10v10"></path>
+          </svg>
+        </a>
+      )}
     </div>
   </section>
 
-  <!-- 2. Highlights / Popular Content -->
-  <section class="flex flex-col gap-5 sticky top-28">
-    {highlights.length > 0 && (
-    <Fragment>
-    <h2 class="text-sm font-bold uppercase tracking-[0.125rem] text-secondary m-0">Destacados</h2>
-    <ol class="flex flex-col gap-4 list-none p-0 m-0">
-      {highlights.map((item) => (
-        <li>
-          <a
-            href={item.url}
-            target={item.external ? '_blank' : undefined}
-            rel={item.external ? 'noopener noreferrer' : undefined}
-            class="group flex items-start gap-3 text-base font-medium leading-snug text-page-text transition duration-200 hover:text-primary hover:translate-x-1"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="shrink-0 mt-[0.2rem] text-decorative transition duration-200 group-hover:text-primary group-hover:translate-x-0.5"
-            >
-              <line x1="5" y1="12" x2="18" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-            <span>{item.title}</span>
-          </a>
-        </li>
-      ))}
-    </ol>
-    </Fragment>
-    )}
-
-    <!-- 3. Work Inquiry / Quick Newsletter Box -->
-    <div class="mt-4 p-7 bg-card-bg border-2 border-dashed border-cloud-500 rounded-2xl shadow-sm flex flex-col gap-3" id="contact">
-      <h3 class="text-lg font-bold text-page-text m-0">¿Hablamos de ingeniería? 📬</h3>
-      <p class="text-sm text-text-muted leading-relaxed m-0">
-        Disponible para resolver retos en sistemas concurrentes, telemetría IoT o infraestructura Linux.
-      </p>
-      
-      <form onsubmit="event.preventDefault(); alert('¡Gracias por tu interés! Configura tu servicio de formularios (Formspree, Resend, etc.) aquí.');">
-        <div class="flex items-center gap-2 bg-page border border-card-border rounded-lg p-1 pl-3 mt-2 focus-within:ring-2 focus-within:ring-primary">
-          <input
-            type="email"
-            placeholder="Tu correo electrónico..."
-            required
-            class="flex-1 border-0 bg-transparent text-sm text-page-text outline-none"
-            aria-label="Tu correo electrónico"
-          />
-          <button
-            type="submit"
-            class="flex items-center justify-center w-8 h-8 border-0 rounded-md bg-primary text-white cursor-pointer transition duration-200 hover:scale-105 hover:brightness-110"
-            aria-label="Send message"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
-        </div>
-      </form>
+  <!-- 2. Stack operativo -->
+  <section class="p-6 bg-surface border border-card-border rounded-md flex flex-col gap-4" id="skills">
+    <h2 class="font-display text-base font-bold text-page-text m-0">
+      Stack en producción
+    </h2>
+    <div class="flex flex-col gap-3 text-sm">
+      <div>
+        <span class="text-xs font-semibold text-secondary block mb-1">Lenguajes</span>
+        <p class="tabular-data text-xs text-page-text m-0 leading-relaxed">{portfolioData.skills.languages.join(' · ')}</p>
+      </div>
+      <div class="pt-3 border-t border-card-border">
+        <span class="text-xs font-semibold text-secondary block mb-1">Infraestructura y herramientas</span>
+        <p class="tabular-data text-xs text-page-text m-0 leading-relaxed">{portfolioData.skills.frameworks.join(' · ')}</p>
+      </div>
     </div>
   </section>
 </aside>
 
 <script>
-  function setupCategoryFiltering() {
-    const group = document.getElementById('category-filter-group');
-    if (!group) return;
+  let sidebarController: AbortController | null = null;
+  let copyResetTimer: number | null = null;
 
-    const buttons = group.querySelectorAll<HTMLButtonElement>('.category-chip');
-    const cards = document.querySelectorAll<HTMLElement>('.josh-card');
+  function setupSidebar() {
+    sidebarController?.abort();
+    sidebarController = new AbortController();
+    const { signal } = sidebarController;
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    const copyBtn = document.getElementById('copy-email-btn') as HTMLButtonElement | null;
+    const statusEl = document.getElementById('copy-email-status');
+    const labelEl = copyBtn?.querySelector<HTMLElement>('[data-copy-label]');
 
-        const filter = btn.getAttribute('data-filter');
+    if (copyBtn && statusEl) {
+      copyBtn.addEventListener(
+        'click',
+        async () => {
+          const email = copyBtn.getAttribute('data-email') ?? '';
+          if (!email) return;
 
-        cards.forEach(card => {
-          const category = card.getAttribute('data-category');
-          if (filter === 'all' || category === filter) {
-            card.style.display = 'flex';
-          } else {
-            card.style.display = 'none';
+          if (copyResetTimer !== null) {
+            window.clearTimeout(copyResetTimer);
+            copyResetTimer = null;
           }
-        });
-      });
-    });
+
+          let copied = false;
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(email);
+              copied = true;
+            }
+          } catch {
+            copied = false;
+          }
+
+          if (!copied) {
+            try {
+              const textarea = document.createElement('textarea');
+              textarea.value = email;
+              textarea.setAttribute('readonly', '');
+              textarea.style.position = 'fixed';
+              textarea.style.opacity = '0';
+              document.body.appendChild(textarea);
+              textarea.select();
+              copied = document.execCommand('copy');
+              document.body.removeChild(textarea);
+            } catch {
+              copied = false;
+            }
+          }
+
+          if (copied) {
+            if (labelEl) labelEl.textContent = 'Copiado';
+            statusEl.textContent = `Correo ${email} copiado al portapapeles.`;
+          } else {
+            if (labelEl) labelEl.textContent = 'Copiar';
+            statusEl.textContent = `No se pudo copiar automáticamente. Usa el botón de correo o copia ${email} manualmente.`;
+          }
+
+          copyResetTimer = window.setTimeout(() => {
+            if (labelEl) labelEl.textContent = 'Copiar';
+            copyResetTimer = null;
+          }, 2500);
+        },
+        { signal }
+      );
+    }
   }
 
-  setupCategoryFiltering();
-  document.addEventListener('astro:after-swap', setupCategoryFiltering);
+  setupSidebar();
+  document.addEventListener('astro:after-swap', setupSidebar);
 </script>

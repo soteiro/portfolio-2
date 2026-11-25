@@ -8,9 +8,6 @@ import {
   ogImageUrl,
 } from '../../lib/seo';
 
-// Prerenderizado: el contenido es estático, así que cada artículo se sirve
-// como HTML plano desde el edge. Además es lo que permite que @astrojs/sitemap
-// descubra estas URLs — un sitemap no puede enumerar rutas de SSR.
 export const prerender = true;
 
 export async function getStaticPaths() {
@@ -26,9 +23,6 @@ const url = absoluteUrl(path);
 const description = post.data.seoDescription ?? post.data.excerpt;
 const image = post.data.ogImage ? absoluteUrl(post.data.ogImage) : ogImageUrl(path);
 const modified = post.data.updated ?? undefined;
-
-// `wordCount` es una señal de profundidad que Google usa para distinguir un
-// artículo real de una nota de tres líneas.
 const wordCount = post.body?.trim().split(/\s+/).length ?? undefined;
 
 const jsonLd = JSON.stringify([
@@ -62,24 +56,13 @@ const jsonLd = JSON.stringify([
   tags={post.data.tags}
   jsonLd={jsonLd}
 >
-  <div class="site-container max-w-[50rem] relative z-10 -mt-12 pt-8 pb-20">
+  <div class="site-container max-w-[52rem] py-10 sm:py-14">
     <nav class="mb-8" aria-label="Migas de pan">
       <a
         href="/blog"
-        class="inline-flex items-center gap-2 text-sm font-medium text-text-muted hover:text-primary transition-colors duration-200"
+        class="inline-flex items-center gap-2 min-h-11 text-sm font-medium text-text-muted hover:text-primary transition-colors"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -89,18 +72,22 @@ const jsonLd = JSON.stringify([
 
     <article>
       <header class="flex flex-col gap-4 mb-10 pb-8 border-b border-card-border">
-        <div class="flex flex-wrap items-center gap-3 text-sm text-text-muted">
-          <span class="px-2.5 py-0.5 rounded-full font-medium bg-primary/10 text-primary">{post.data.category}</span>
-          <span>•</span>
-          <time datetime={post.data.dateValue.toISOString()}>{String(post.data.date)}</time>
-          <span>•</span>
-          <span>{post.data.readTime}</span>
+        <h1 class="font-display text-3xl sm:text-4xl md:text-[2.75rem] font-extrabold tracking-tight leading-tight text-page-text m-0">
+          {post.data.title}
+        </h1>
+
+        <div class="flex flex-wrap items-center gap-2.5 text-xs text-text-muted">
+          <span class="font-semibold text-secondary">{post.data.category}</span>
+          <span>·</span>
+          <time class="tabular-data" datetime={post.data.dateValue.toISOString()}>{String(post.data.date)}</time>
+          <span>·</span>
+          <span class="tabular-data">{post.data.readTime}</span>
           {modified && (
             <>
-              <span>•</span>
+              <span>·</span>
               <span>
                 Actualizado el{' '}
-                <time datetime={modified.toISOString()}>
+                <time class="tabular-data" datetime={modified.toISOString()}>
                   {modified.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </time>
               </span>
@@ -108,28 +95,20 @@ const jsonLd = JSON.stringify([
           )}
         </div>
 
-        <h1 class="text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight m-0 text-page-text">
-          {post.data.title}
-        </h1>
-
         {post.data.excerpt && (
-          <p class="text-lg sm:text-xl text-text-muted leading-relaxed m-0">
+          <p class="text-base sm:text-lg text-text-muted leading-relaxed m-0">
             {post.data.excerpt}
           </p>
         )}
 
         {post.data.tags.length > 0 && (
-          <ul class="flex flex-wrap gap-2 mt-2 list-none p-0 m-0">
-            {post.data.tags.map((tag: string) => (
-              <li class="text-[0.8125rem] font-mono px-2.5 py-1 rounded-md bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 text-page-text">
-                #{tag}
-              </li>
-            ))}
-          </ul>
+          <p class="tabular-data text-xs text-text-muted pt-1 m-0">
+            {post.data.tags.join(' · ')}
+          </p>
         )}
       </header>
 
-      <section class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-page-text flex flex-col gap-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-2 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_p]:m-0 [&_ul]:list-disc [&_ul]:pl-6 [&_code]:bg-cloud-300 dark:[&_code]:bg-cloud-500 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_pre]:bg-card-bg [&_pre]:border [&_pre]:border-card-border [&_pre]:p-4 [&_pre]:rounded-xl [&_pre]:overflow-x-auto">
+      <section class="max-w-[68ch] text-base sm:text-[1.0625rem] leading-relaxed text-page-text flex flex-col gap-5 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-1 [&_h3]:font-display [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-5 [&_p]:m-0 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:my-1 [&_a]:text-primary [&_a]:underline [&_pre]:bg-surface [&_pre]:border [&_pre]:border-card-border [&_pre]:p-4 [&_pre]:rounded-md [&_pre]:overflow-x-auto [&_pre]:text-sm">
         <Content />
       </section>
     </article>

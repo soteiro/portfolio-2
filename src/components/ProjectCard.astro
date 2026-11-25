@@ -1,93 +1,115 @@
 ---
-// ProjectCard.astro
-// Josh W. Comeau signature card with hover underline, tag pills, and cascading chevron arrows
+// ProjectCard.astro — Tarjeta estilo Event Summary con stretched-link y 2 columnas limpias de metadatos
 import type { Project } from '../data/portfolio';
 
 interface Props {
   project: Project;
+  trackCode?: string;
 }
 
-const { project } = Astro.props;
+const { project, trackCode } = Astro.props;
+const visibleTags = project.tags.slice(0, 4);
+const extraCount = Math.max(0, project.tags.length - visibleTags.length);
+const projectHref = project.id ? `/projects/${project.id}` : (project.demoUrl || project.githubUrl || '#');
 ---
 
-<article class="josh-card group relative flex flex-col gap-4 p-8 bg-card-bg border border-card-border rounded-2xl shadow-sm transition duration-250 hover:-translate-y-1 hover:shadow-xl hover:border-primary" data-category={project.category.toLowerCase()}>
-  <div>
-    <div class="flex items-center gap-2 mb-2">
-      <span class="text-xs font-bold uppercase tracking-wider text-secondary">{project.category}</span>
-      {project.year && <span class="text-xs text-text-muted">{project.year}</span>}
-      {project.featured && <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-warning-100 dark:bg-warning-300 text-warning-700">★ Destacado</span>}
+<article
+  class="project-card group relative flex flex-col justify-between gap-5 p-6 bg-surface border border-card-border rounded-md transition-[border-color,background-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-border-strong min-w-0"
+  data-category={project.category.trim().toLowerCase()}
+>
+  <div class="flex items-start justify-between gap-4 min-w-0">
+    <div class="flex flex-col gap-2 min-w-0 flex-1">
+      <h3 class="font-display text-xl sm:text-2xl font-bold leading-snug text-page-text m-0">
+        <a
+          href={projectHref}
+          class="text-inherit no-underline transition-colors duration-150 group-hover:text-primary hover:underline after:content-[''] after:absolute after:inset-0"
+        >
+          {project.title}
+        </a>
+      </h3>
+
+      {project.subtitle && (
+        <p class="text-[0.9375rem] font-medium text-text-muted leading-snug m-0">
+          {project.subtitle}
+        </p>
+      )}
     </div>
 
-    <!-- Title with hover underline effect -->
-    <h3 class="m-0 text-2xl font-bold leading-snug">
-      <a href={project.id ? `/projects/${project.id}` : (project.demoUrl || project.githubUrl || "#")} class="text-page-text hover:underline hover:decoration-[2.5px] hover:decoration-primary hover:underline-offset-[3px] hover:text-primary transition-colors duration-200">
-        {project.title}
-      </a>
-    </h3>
-
-    {project.subtitle && (
-      <p class="mt-1.5 text-base font-medium text-text-muted m-0">{project.subtitle}</p>
-    )}
-  </div>
-
-  <p class="text-base leading-relaxed text-page-text m-0">{project.description}</p>
-
-  <!-- Tech tags -->
-  <div class="flex flex-wrap gap-2">
-    {project.tags.map((tag) => (
-      <span class="text-[0.8125rem] font-mono px-2.5 py-1 rounded-md bg-cloud-300 dark:bg-cloud-500 dark:border dark:border-gray-300 text-page-text transition-colors duration-200">#{tag}</span>
-    ))}
-  </div>
-
-  <!-- Footer with Read More / View Demo & Cascading Chevron Arrows -->
-  <div class="flex items-center justify-between pt-3 border-t border-card-border">
-    <a
-      href={project.id ? `/projects/${project.id}` : (project.demoUrl || project.githubUrl || "#")}
-      class="inline-flex items-center gap-2 text-[0.9375rem] font-bold text-primary no-underline relative"
-    >
-      <span>Ver proyecto</span>
-      <div class="relative w-9 h-3" aria-hidden="true">
-        <svg width="36" height="12" viewBox="0 0 36 12" fill="none" class="absolute top-0 left-0">
-          <!-- Chevron 1 -->
-          <path
-            d="M0.75 6H11.25 M6 0.75L11.25 6L6 11.25"
-            class="stroke-primary stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round] opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-0"
-          ></path>
-          <!-- Chevron 2 -->
-          <path
-            d="M15 10L19.5 5.5L15 1"
-            class="stroke-primary stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round] opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-100"
-          ></path>
-          <!-- Chevron 3 -->
-          <path
-            d="M23 10L27.5 5.5L23 1"
-            stroke-opacity="0.66"
-            class="stroke-primary stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round] opacity-0 transition-opacity duration-150 group-hover:opacity-70 group-hover:delay-200"
-          ></path>
-          <!-- Chevron 4 -->
-          <path
-            d="M31 10L35.5 5.5L31 1"
-            stroke-opacity="0.35"
-            class="stroke-primary stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round] opacity-0 transition-opacity duration-150 group-hover:opacity-40 group-hover:delay-300"
-          ></path>
-        </svg>
+    {project.featured && (
+      <div class="flex flex-col gap-1 pt-1 shrink-0" aria-hidden="true">
+        <span class="w-1.5 h-3.5 rounded-[1px] bg-signal"></span>
+        <span class="w-1.5 h-3 rounded-[1px] bg-secondary"></span>
+        <span class="w-1.5 h-2.5 rounded-[1px] bg-ring"></span>
+        <span class="w-1.5 h-3 rounded-[1px] bg-status-ok"></span>
       </div>
-    </a>
-
-    {project.githubUrl && (
-      <a
-        href={project.githubUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-1.5 text-sm text-text-muted hover:text-page-text transition-colors duration-200"
-        aria-label="Ver código fuente"
-        title="Código fuente"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-        </svg>
-        <span>Código</span>
-      </a>
     )}
+  </div>
+
+  <!-- Metadatos en 2 columnas limpias (con código de traza cuando aplica) -->
+  <dl class="grid grid-cols-2 gap-x-4 gap-y-1.5 py-2.5 border-y border-card-border text-xs m-0">
+    <div class="flex flex-col gap-0.5">
+      <dt class="text-text-muted font-medium">Especialidad</dt>
+      <dd class="font-semibold text-secondary m-0">
+        {project.category}{trackCode ? <span class="tabular-data text-text-muted font-normal"> · {trackCode}</span> : ''}
+      </dd>
+    </div>
+    <div class="flex flex-col gap-0.5">
+      <dt class="text-text-muted font-medium">Periodo</dt>
+      <dd class="tabular-data font-medium text-page-text m-0">{project.year ?? 'En curso'}</dd>
+    </div>
+  </dl>
+
+  <p class="text-[0.9375rem] leading-relaxed text-page-text/90 m-0">
+    {project.description}
+  </p>
+
+  <!-- Franja inferior: stack + enlaces siempre alineados a la derecha con objetivos táctiles >=44px -->
+  <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-3 border-t border-card-border">
+    <p class="tabular-data text-xs text-text-muted m-0 min-w-0">
+      {visibleTags.join(' · ')}{extraCount > 0 ? ` · +${extraCount}` : ''}
+    </p>
+
+    <div class="flex items-center gap-3 ml-auto shrink-0">
+      {project.demoUrl && (
+        <a
+          href={project.demoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="relative z-10 inline-flex items-center gap-1 min-h-11 px-1 text-sm font-medium text-text-muted hover:text-page-text transition-colors"
+          aria-label={`Ver demo en vivo de ${project.title}`}
+        >
+          <span>Demo</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17 17 7"></path>
+            <path d="M7 7h10v10"></path>
+          </svg>
+        </a>
+      )}
+      {project.githubUrl && (
+        <a
+          href={project.githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="relative z-10 inline-flex items-center gap-1 min-h-11 px-1 text-sm font-medium text-text-muted hover:text-page-text transition-colors"
+          aria-label={`Ver código fuente de ${project.title}`}
+        >
+          <span>Código</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 17 17 7"></path>
+            <path d="M7 7h10v10"></path>
+          </svg>
+        </a>
+      )}
+      <span
+        class="inline-flex items-center gap-1 min-h-11 text-sm font-display font-bold text-primary group-hover:underline"
+        aria-hidden="true"
+      >
+        <span>Ver proyecto</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </span>
+    </div>
   </div>
 </article>

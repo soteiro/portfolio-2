@@ -1,18 +1,26 @@
 ---
 /**
- * Cloudflare Web Analytics: sin cookies, sin identificadores persistentes y
- * sin banner de consentimiento. El beacon se carga con `defer` para no entrar
- * en la ruta crítica ni afectar a los Core Web Vitals.
- *
- * Solo se inyecta en producción y con token definido, de modo que el tráfico
- * de `pnpm dev` no ensucie las métricas.
+ * Scripts de analítica restringidos exclusivamente a producción (`import.meta.env.PROD`),
+ * cargados con `defer`/`async` para no bloquear el renderizado ni contaminar métricas en `dev`.
  */
 import { CLOUDFLARE_ANALYTICS_TOKEN } from '../config/site';
 
-const enabled = import.meta.env.PROD && Boolean(CLOUDFLARE_ANALYTICS_TOKEN);
+const isProd = import.meta.env.PROD;
+const cloudflareEnabled = isProd && Boolean(CLOUDFLARE_ANALYTICS_TOKEN);
 const beacon = JSON.stringify({ token: CLOUDFLARE_ANALYTICS_TOKEN });
 ---
 
-{enabled && (
-  <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={beacon}></script>
+{isProd && (
+  <>
+    <link rel="preconnect" href="https://analytics.ahrefs.com" crossorigin />
+    <script is:inline async src="https://analytics.ahrefs.com/analytics.js" data-key="2eeMxA1tZ9gEeZKibo8/jA"></script>
+    <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="7750d2dd-ae15-4467-adfc-0cd66035a0df"></script>
+  </>
+)}
+
+{cloudflareEnabled && (
+  <>
+    <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin />
+    <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={beacon}></script>
+  </>
 )}

@@ -1,8 +1,19 @@
 ---
 // Layout.astro
+import '@fontsource/barlow/500.css';
+import '@fontsource/barlow/600.css';
+import '@fontsource/barlow/700.css';
+import '@fontsource/barlow/800.css';
+import '@fontsource/public-sans/400.css';
+import '@fontsource/public-sans/500.css';
+import '@fontsource/public-sans/600.css';
+import '@fontsource/public-sans/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/jetbrains-mono/600.css';
+
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import CloudWavesTop from '../components/CloudWavesTop.astro';
 import SEO from '../components/SEO.astro';
 import Analytics from '../components/Analytics.astro';
 import '../styles/global.css';
@@ -11,11 +22,7 @@ import { LOCALE_TAGS, type Locale } from '../config/site';
 import { getLocale } from '../lib/i18n';
 import { personSchema, websiteSchema, jsonLdGraph } from '../lib/seo';
 
-// El logo se importa en vez de referenciarse desde public/: así Astro lo emite
-// en /_astro/ con un hash de contenido en el nombre. Es la única forma de que
-// un cambio de logo llegue de inmediato — un archivo de public/ conserva su
-// URL, y tanto el navegador como el edge de Cloudflare siguen sirviendo la
-// versión cacheada. Con hash, cada versión es una URL nueva.
+// Importado desde src/assets para emitirlo en /_astro/ con hash de contenido.
 import logo from '../assets/logo-portfolio.svg?url';
 
 interface Props {
@@ -48,11 +55,15 @@ const {
 const locale = getLocale(Astro.url);
 const hasHero = Astro.slots.has('hero');
 
-// Person y WebSite van en todas las páginas: son las entidades que Google
-// necesita ver de forma consistente para asociar el dominio con la persona.
-// `jsonLd` de la página se fusiona en el mismo @graph en vez de emitir un
-// segundo <script>, que es como lo prefiere el parseo de Google.
-const pageNodes = jsonLd ? (JSON.parse(jsonLd) as object[]) : [];
+let pageNodes: object[] = [];
+if (jsonLd) {
+  try {
+    const parsed = JSON.parse(jsonLd);
+    if (Array.isArray(parsed)) pageNodes = parsed;
+  } catch {
+    pageNodes = [];
+  }
+}
 const graph = jsonLdGraph(personSchema(), websiteSchema(locale), ...pageNodes);
 ---
 
@@ -62,37 +73,21 @@ const graph = jsonLdGraph(personSchema(), websiteSchema(locale), ...pageNodes);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href={logo} />
-    <link rel="preconnect" href="https://analytics.ahrefs.com" crossorigin />
-    <script src="https://analytics.ahrefs.com/analytics.js" data-key="2eeMxA1tZ9gEeZKibo8/jA" async></script>
-    <!--
-      Fallback para navegadores sin soporte de favicon SVG y para los bots que
-      piden /favicon.ico a la raíz por convención, sin mirar estos <link>.
-      Antes este mismo tag declaraba type="image/x-icon" apuntando al SVG, un
-      tipo MIME que no corresponde y que algunos navegadores descartan.
-    -->
     <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="7750d2dd-ae15-4467-adfc-0cd66035a0df"></script>
     <meta name="author" content={portfolioData.name.display} />
-
-    <!-- Preconexión al host del beacon de analítica: ahorra el handshake TLS -->
-    <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin />
 
     <SEO title={title} description={description} suffix={suffix} jsonLd={graph} {...seo} />
 
-    <!-- FOUC Prevention Script (Josh's exact inline theme initialization) -->
+    <!-- Inicialización síncrona del tema (oscuro por defecto) para evitar parpadeo -->
     <script is:inline>
-      (function() {
+      (function () {
         const DEFAULT_MODE = 'dark';
         let colorMode;
         try {
           colorMode = localStorage.getItem('saved-color-theme');
         } catch (e) {}
 
-        if (!colorMode) {
-          colorMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-
-        if (!['light', 'dark'].includes(colorMode)) {
+        if (colorMode !== 'light' && colorMode !== 'dark') {
           colorMode = DEFAULT_MODE;
         }
 
@@ -103,23 +98,20 @@ const graph = jsonLdGraph(personSchema(), websiteSchema(locale), ...pageNodes);
     <Analytics />
   </head>
   <body>
-    <!-- Salto al contenido: accesibilidad y una señal más de estructura -->
     <a href="#main-content" class="skip-link">Saltar al contenido</a>
 
-    <!-- Main Header -->
     <Header />
 
-    <!-- Multi-layered Cloud Waves Header / Hero -->
-    <CloudWavesTop hasHero={hasHero}>
-      <slot name="hero" />
-    </CloudWavesTop>
+    {hasHero && (
+      <div class="border-b border-card-border">
+        <slot name="hero" />
+      </div>
+    )}
 
-    <!-- Main Page Content -->
-    <main id="main-content" class="flex-1 relative z-5">
+    <main id="main-content" class="flex-1 relative">
       <slot />
     </main>
 
-    <!-- Site Footer with Inverted Clouds -->
     <Footer />
   </body>
 </html>
