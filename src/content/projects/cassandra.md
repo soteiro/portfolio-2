@@ -17,6 +17,7 @@ tags:
   - Capacitor
   - Linux
 featured: true
+demoUrl: https://demo-cassandra.soteiro.dev/
 githubUrl: https://github.com/soteiro/cassandra
 year: '2026'
 ---
